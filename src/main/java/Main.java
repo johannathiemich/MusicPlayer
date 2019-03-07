@@ -7,8 +7,6 @@ import java.util.ArrayList;
 public class Main {
 
     public static void main(String[] args) {
-        MusicPlayerGUI player = new MusicPlayerGUI("MyTunes");
-        player.setVisible(true);
 
         //CreateCoffeeDB db = new CreateCoffeeDB();
 
@@ -21,10 +19,14 @@ public class Main {
 
 
         ArrayList<Song> library = db.getSongLibrary();
-        System.out.println(library.toString());        //this is not working for some reason
+        System.out.println(library.toString());
         db.addSong(newSong);
 
         library = db.getSongLibrary();
         System.out.println(library.toString());
+
+        MusicPlayerGUI player = new MusicPlayerGUI("MyTunes");
+        player.setVisible(true);
     }
+
 }

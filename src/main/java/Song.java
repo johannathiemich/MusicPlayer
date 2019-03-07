@@ -19,6 +19,18 @@ public class Song {
         this.genre = pGenre;
     }
 
+    public String[] toArray() {
+        String[] properties = new String[7];
+        properties[0] = this.getPath();
+        properties[1] = this.getTitle();
+        properties[2] = this.getArtist();
+        properties[3] = this.getAlbum();
+        properties[4] = Integer.toString(this.getYear());
+        properties[5] = this.getComment();
+        properties[6] = this.getGenre();
+        return properties;
+    }
+
 
     public String getPath() {
         return path;
