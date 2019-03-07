@@ -56,9 +56,10 @@ public class DatabaseHandler {
             statement = conn.createStatement();
             statement.execute(sql);
             DriverManager.getConnection(shutdownURL);
+            System.out.println("Added song successfully.");
             return true;
         } catch (SQLException e) {
-            if (e.getSQLState().equals("")) {
+            if (e.getSQLState().equals("23505")) {
                 System.out.println("Song is already saved in the database.");
             } else if (e.getSQLState().equals("XJ015")) {
                 System.out.println("Derby shutdown normally.");
@@ -119,9 +120,8 @@ public class DatabaseHandler {
                 library.add(song);
             }
             results.close();
-            statement.close();
+            conn.close();
 
-            DriverManager.getConnection(shutdownURL);
         } catch (SQLException e) {
             if (e.getSQLState().equals("XJ015")) {
                 System.out.println("Derby shutdown normally.");

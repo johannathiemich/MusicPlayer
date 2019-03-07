@@ -19,10 +19,12 @@ public class Main {
         Song newSong = new Song("ddd", "dd", "dd", "dd", 200,
                 "dd", "ss");
 
-        ArrayList<Song> library =  db.getSongLibrary();
-        System.out.println(library.toString());
-        //this is not working for some reason
-        //db.addSong(mySong);
+
+        ArrayList<Song> library = db.getSongLibrary();
+        System.out.println(library.toString());        //this is not working for some reason
+        db.addSong(newSong);
+
+        library = db.getSongLibrary();
         System.out.println(library.toString());
     }
 }
