@@ -10,12 +10,11 @@ import java.util.ArrayList;
 
 public class MusicPlayerGUI extends JFrame {
 
-    JPanel mainPanel;
-    JPanel tablePanel;
-    JPanel bottomButtonPanel;
+    private JPanel mainPanel;
+    private JPanel bottomButtonPanel;
 
     JTable songTable;
-    JScrollPane scrollTable;
+    JScrollPane scrollPane;
     JButton startSong;
 
     private DatabaseHandler db = new DatabaseHandler();
@@ -26,7 +25,6 @@ public class MusicPlayerGUI extends JFrame {
         BasicPlayer player = new BasicPlayer();
 
         mainPanel = new JPanel();
-        tablePanel = new JPanel();
         bottomButtonPanel = new JPanel();
 
         songTable = new JTable();
