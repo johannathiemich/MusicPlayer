@@ -9,5 +9,12 @@ public class Main {
         MusicPlayerGUI player = new MusicPlayerGUI("MyTunes");
         player.setVisible(true);
 
+        //CreateCoffeeDB db = new CreateCoffeeDB();
+
+        DatabaseHandler db = new DatabaseHandler();
+        Song mySong = new Song("myPath", "myTitle", "myArtist", "myAlbum",
+                "2000", "myComment", "myGenre");
+
+        db.addSong(mySong);
     }
 }
