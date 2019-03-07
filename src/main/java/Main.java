@@ -2,6 +2,7 @@ import com.mpatric.mp3agic.*;
 import javazoom.jlgui.basicplayer.BasicPlayer;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class Main {
 
@@ -13,8 +14,15 @@ public class Main {
 
         DatabaseHandler db = new DatabaseHandler();
         Song mySong = new Song("myPath", "myTitle", "myArtist", "myAlbum",
-                "2000", "myComment", "myGenre");
+                2000, "myComment", "myGenre");
 
-        db.addSong(mySong);
+        Song newSong = new Song("ddd", "dd", "dd", "dd", 200,
+                "dd", "ss");
+
+        ArrayList<Song> library =  db.getSongLibrary();
+        System.out.println(library.toString());
+        //this is not working for some reason
+        //db.addSong(mySong);
+        System.out.println(library.toString());
     }
 }

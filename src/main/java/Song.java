@@ -4,11 +4,11 @@ public class Song {
     private String title;
     private String artist;
     private String album;
-    private String year;
+    private int year;
     private String comment;
     private String genre;
 
-    public Song(String pPath, String pTitle, String pArtist, String pAlbum, String pYear, String pComment,
+    public Song(String pPath, String pTitle, String pArtist, String pAlbum, int pYear, String pComment,
                 String pGenre) {
         this.path = pPath;
         this.title = pTitle;
@@ -36,7 +36,7 @@ public class Song {
         return album;
     }
 
-    public String getYear() {
+    public int getYear() {
         return year;
     }
 
