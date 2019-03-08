@@ -16,6 +16,11 @@ public class MusicPlayerGUI extends JFrame {
     JTable songTable;
     JScrollPane scrollPane;
     JButton startSong;
+    JButton nextSong;
+    JButton prevSong;
+    JButton stopSong;
+    JSlider scrollVolume;
+
 
     private DatabaseHandler db = new DatabaseHandler();
 
@@ -32,8 +37,21 @@ public class MusicPlayerGUI extends JFrame {
         updateTable();
         JScrollPane scrollTable = new JScrollPane(songTable);
 
+        stopSong = new JButton("Stop");
+        bottomButtonPanel.add(stopSong);
+
+        prevSong = new JButton("<<");
+        bottomButtonPanel.add(prevSong);
+
         startSong = new JButton("Play");
         bottomButtonPanel.add(startSong);
+
+        nextSong = new JButton(">>");
+        bottomButtonPanel.add(nextSong);
+
+        scrollVolume = new JSlider();
+        bottomButtonPanel.add(scrollVolume);
+
 
         this.add(scrollTable, BorderLayout.CENTER);
         this.add(bottomButtonPanel, BorderLayout.SOUTH);
