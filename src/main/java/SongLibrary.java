@@ -2,14 +2,13 @@ import java.util.ArrayList;
 
 public class SongLibrary {
     private ArrayList<Song> songList;
-    //what else?
+    //or just make SongLibrary extends ArrayList<Song>
 
     /**
      * Construct an empty library
      */
     public SongLibrary(){
-        //initialize songArrayList...?
-
+        //initialize songArrayList
     }
 
     /**
@@ -22,7 +21,7 @@ public class SongLibrary {
 
     /**
      * Add a song to the library, if not present.
-     * @param song song to be added to the list
+     * @param song to be added to the list
      */
     public void addSong(Song song){
         if(songList.contains(song)){
@@ -36,7 +35,7 @@ public class SongLibrary {
      * Add multiple songs to the library, if not present.
      * @param songArray songs to be added to the list
      */
-    public void addSong(ArrayList<Song> songArray){
+    public void addMutipleSongs(ArrayList<Song> songArray){
         for (Song song : songArray) {
             addSong(song);
         }
@@ -44,7 +43,7 @@ public class SongLibrary {
 
     /**
      * Delete a song from the library, if present.
-     * @param song song to be removed from the list
+     * @param song to be removed from the list
      */
     public void deleteSong(Song song){
         if(songList.contains(song)) {

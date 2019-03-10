@@ -1,3 +1,6 @@
+//TODO remove this MP3Handler class
+
+/*
 import com.mpatric.mp3agic.*;
 
 import java.io.IOException;
@@ -7,6 +10,7 @@ public class MP3Handler {
     public MP3Handler() {
     }
 
+    //TODO move createSong to Song Class
     public static Song createSong(String filePath) {
         Song selectedSong = null;
         try {
@@ -30,3 +34,4 @@ public class MP3Handler {
         return selectedSong;
     }
 }
+*/
