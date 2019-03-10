@@ -4,6 +4,9 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+//TODO reprogram AddButtonAction
+/*
+
 public class AddButtonAction extends AbstractAction {
     private String file;
     private DatabaseHandler databaseHandler;
@@ -20,3 +23,4 @@ public class AddButtonAction extends AbstractAction {
         databaseHandler.addSong(song);
     }
 }
+*/

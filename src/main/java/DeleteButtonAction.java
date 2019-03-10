@@ -4,6 +4,9 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+//TODO reprogram DeleteButtonAction
+
+/*
 public class DeleteButtonAction extends AbstractAction {
     private String file;
     private DatabaseHandler databaseHandler;
@@ -20,3 +23,4 @@ public class DeleteButtonAction extends AbstractAction {
         databaseHandler.deleteSong(song);
     }
 }
+*/

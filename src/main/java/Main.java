@@ -7,17 +7,18 @@ import java.util.ArrayList;
 public class Main {
 
     public static void main(String[] args) {
-        MusicPlayerGUI player = new MusicPlayerGUI("MyTunes");
-        player.setVisible(true);
+        MusicPlayerGUI playerView = new MusicPlayerGUI("MyTunes 0.3");
+
+        playerView.setVisible(true);
+
+
         //CreateCoffeeDB db = new CreateCoffeeDB();
 
         /*DatabaseHandler db = new DatabaseHandler();
         Song mySong = new Song("myPath", "myTitle", "myArtist", "myAlbum",
                 2000, "myComment", "myGenre");
-
         Song newSong = new Song("ddd", "dd", "dd", "dd", 200,
                 "dd", "ss");
-
 
         ArrayList<Song> library = db.getSongLibrary();
         System.out.println(library.toString());
@@ -27,7 +28,8 @@ public class Main {
         System.out.println(library.toString());
 
         MusicPlayerGUI player = new MusicPlayerGUI("MyTunes");
-        player.setVisible(true);*/
+        player.setVisible(true);
+        */
     }
 
 }

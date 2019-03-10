@@ -14,7 +14,7 @@ public class MusicPlayerGUI extends JFrame {
     private JPanel bottomButtonPanel;
 
     JTable songTable;
-    JScrollPane scrollPane;
+    JScrollPane tableScrollPane;
     JButton startSong;
     JButton nextSong;
     JButton prevSong;
@@ -22,6 +22,7 @@ public class MusicPlayerGUI extends JFrame {
     JSlider scrollVolume;
 
 
+    //TODO separate DatabaseHandler from View
     private DatabaseHandler db = new DatabaseHandler();
 
     public MusicPlayerGUI(String title) {
@@ -35,7 +36,7 @@ public class MusicPlayerGUI extends JFrame {
         songTable = new JTable();
         initializeTable();
         updateTable();
-        JScrollPane scrollTable = new JScrollPane(songTable);
+        tableScrollPane = new JScrollPane(songTable);
 
         stopSong = new JButton("Stop");
         bottomButtonPanel.add(stopSong);
@@ -52,12 +53,14 @@ public class MusicPlayerGUI extends JFrame {
         scrollVolume = new JSlider();
         bottomButtonPanel.add(scrollVolume);
 
+        //TODO bottomButtonPanel layout
 
-        this.add(scrollTable, BorderLayout.CENTER);
+        this.add(tableScrollPane, BorderLayout.CENTER);
         this.add(bottomButtonPanel, BorderLayout.SOUTH);
         this.pack();
     }
 
+    //TODO separate updateTable() from Data manipulation. Code below should be done in Controller.
     public void updateTable() {
         //DefaultTableModel tableModel = (DefaultTableModel) songTable.getModel();
 
@@ -72,10 +75,14 @@ public class MusicPlayerGUI extends JFrame {
         //songTable.setModel(tableModel);
         //tableModel.fireTableDataChanged();
         songTable = new JTable(data, columns);
+
     }
 
     public void initializeTable() {
         songTable = new JTable();
         songTable.setFillsViewportHeight(true);
     }
+
+    //TODO add addActionListener methods for Table
+    //TODO add addActionListener methods for Buttons
 }

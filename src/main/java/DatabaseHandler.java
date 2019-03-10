@@ -113,7 +113,7 @@ public class DatabaseHandler {
                 String title = results.getString(2);
                 String artist = results.getString(3);
                 String album = results.getString(4);
-                int year = results.getInt(5);
+                String year = results.getString(5);
                 String comment = results.getString(6);
                 String genre = results.getString(7);
                 Song song = new Song(file_path, title, artist, album, year, comment, genre);
