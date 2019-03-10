@@ -20,7 +20,7 @@ public class SongLibrary {
     }
 
     /**
-     * Add a song to the library, if not present.
+     * Add a Song to the library, if not present.
      * @param song to be added to the list
      */
     public void addSong(Song song){

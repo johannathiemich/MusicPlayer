@@ -13,6 +13,7 @@ public class MusicPlayerGUI extends JFrame {
     private JPanel mainPanel;
     private JPanel bottomButtonPanel;
 
+    //TODO private fields
     JTable songTable;
     JScrollPane tableScrollPane;
     JButton startSong;
@@ -53,7 +54,7 @@ public class MusicPlayerGUI extends JFrame {
         scrollVolume = new JSlider();
         bottomButtonPanel.add(scrollVolume);
 
-        //TODO bottomButtonPanel layout
+        //TODO layout bottomButtonPanel
 
         this.add(tableScrollPane, BorderLayout.CENTER);
         this.add(bottomButtonPanel, BorderLayout.SOUTH);
@@ -83,6 +84,8 @@ public class MusicPlayerGUI extends JFrame {
         songTable.setFillsViewportHeight(true);
     }
 
-    //TODO add addActionListener methods for Table
-    //TODO add addActionListener methods for Buttons
+
+    //TODO add addActionListener for Table
+    //TODO add addActionListener for Buttons
+    //TODO add addActionListener for Slider
 }
