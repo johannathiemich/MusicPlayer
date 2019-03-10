@@ -3,7 +3,8 @@ import javazoom.jlgui.basicplayer.BasicPlayer;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.plaf.basic.BasicOptionPaneUI;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -24,6 +25,7 @@ public class MainController {
 
     //Other Controllers
     private BasicPlayer player;
+    //private PlayerController playerController;
 
     /**
      * Construct a main controller and initialize all modules
@@ -34,13 +36,20 @@ public class MainController {
         db = new DatabaseHandler();
         player = new BasicPlayer();
 
+        playerView.updateTableView(db.getSongLibrary());
+
         playerView.setVisible(true);
 
         addListeners();
+        addListenersToTable();
 
     }
 
     //TODO add inner classes of ActionListener for Table, Buttons, Slider
+
+    /**
+     * Add Listeners to buttons, volume slider
+     */
     public void addListeners(){
         //Buttons
         playerView.startSong.addActionListener(new ActionListener() {
@@ -80,6 +89,27 @@ public class MainController {
                     System.out.println("Volume: " + volume);
                 }
 
+            }
+        });
+    }
+
+    /**
+     * Add Listeners for table related actions
+     */
+    public void addListenersToTable(){
+        //Table row selected
+        playerView.songTable.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
+            JTable table = playerView.songTable;
+
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if(!e.getValueIsAdjusting()) {
+                    int selectedRow = playerView.songTable.getSelectedRow();
+                    String title = table.getValueAt(selectedRow, 1).toString();
+                    String artist = table.getValueAt(selectedRow, 2).toString();
+
+                    System.out.println("ROW " + selectedRow + " '" + title + " - " + artist + "' is selected.");
+                }
             }
         });
     }

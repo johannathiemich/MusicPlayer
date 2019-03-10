@@ -24,10 +24,12 @@ public class SongLibrary {
      * @param song to be added to the list
      */
     public void addSong(Song song){
+        System.out.print("Song '"+song.getTitle()+"'");
         if(songList.contains(song)){
-            System.out.println("The song '"+song.getTitle()+"' already exist in the library");
+            System.out.println(" already exists in library");
         }else{
             songList.add(song);
+            System.out.println(" is added to library");
         }
     }
 
@@ -46,10 +48,12 @@ public class SongLibrary {
      * @param song to be removed from the list
      */
     public void deleteSong(Song song){
+        System.out.print("The song '"+song.getTitle()+"'");
         if(songList.contains(song)) {
             songList.remove(song);
+            System.out.println(" is deleted from library");
         }else{
-            System.out.println("The song '"+song.getTitle()+"' does not exist in the library");
+            System.out.println(" does not exist in library");
         }
     }
 

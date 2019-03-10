@@ -1,6 +1,7 @@
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 
 import javazoom.jlgui.basicplayer.BasicPlayer;
 
@@ -22,21 +23,20 @@ public class MusicPlayerGUI extends JFrame {
     JButton stopSong;
     JSlider scrollVolume;
 
+    private String[] columnHeader;
+    private DefaultTableModel tableModel;
 
-    //TODO separate DatabaseHandler from View
-    private DatabaseHandler db = new DatabaseHandler();
 
-    public MusicPlayerGUI(String title) {
-        this.setTitle(title);
+    public MusicPlayerGUI(String frameTitle) {
+        this.setTitle(frameTitle);
 
-        BasicPlayer player = new BasicPlayer();
+        columnHeader = new String[]{"Path", "Title", "Artist", "Album", "Year", "Comment", "Genre"};
 
         mainPanel = new JPanel();
         bottomButtonPanel = new JPanel();
 
-        songTable = new JTable();
         initializeTable();
-        updateTable();
+
         tableScrollPane = new JScrollPane(songTable);
 
         stopSong = new JButton("Stop");
@@ -56,36 +56,31 @@ public class MusicPlayerGUI extends JFrame {
 
         //TODO layout bottomButtonPanel
 
+        //TODO standard menu
+
         this.add(tableScrollPane, BorderLayout.CENTER);
         this.add(bottomButtonPanel, BorderLayout.SOUTH);
         this.pack();
     }
 
-    //TODO separate updateTable() from Data manipulation. Code below should be done in Controller.
-    public void updateTable() {
-        //DefaultTableModel tableModel = (DefaultTableModel) songTable.getModel();
-
-        String[] columns = {"Path", "Title", "Artist", "Album", "Year", "Comment", "Genre"};
-        ArrayList<Song> library = db.getSongLibrary();
-        String[][] data = new String[library.size()][7];
-        for (int i = 0; i < library.size(); i++) {
-            Song current = library.get(i);
-            data[i] = current.toArray();
-           //tableModel.addRow(data[i]);
-        }
-        //songTable.setModel(tableModel);
-        //tableModel.fireTableDataChanged();
-        songTable = new JTable(data, columns);
-
-    }
-
     public void initializeTable() {
-        songTable = new JTable();
+        tableModel = new DefaultTableModel(columnHeader,0);
+        songTable = new JTable(tableModel);
+
         songTable.setFillsViewportHeight(true);
+        songTable.setShowHorizontalLines(true);
     }
 
+    //This will be useful when the view needs to change after 'Add Song To Library' action
+    public void addRowToTableView(String[] row){
+        tableModel.addRow(row);
+    }
 
-    //TODO add addActionListener for Table
-    //TODO add addActionListener for Buttons
-    //TODO add addActionListener for Slider
+    public void updateTableView(ArrayList<Song> library) {
+
+        for(int i=0; i<library.size(); i++){
+            tableModel.addRow(library.get(i).toArray());
+        }
+    }
+
 }
