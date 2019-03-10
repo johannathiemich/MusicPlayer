@@ -7,10 +7,10 @@ import java.util.ArrayList;
 public class Main {
 
     public static void main(String[] args) {
-        MusicPlayerGUI playerView = new MusicPlayerGUI("MyTunes 0.3");
+        //MusicPlayerGUI playerView = new MusicPlayerGUI("MyTunes 0.5");
+        //playerView.setVisible(true);
 
-        playerView.setVisible(true);
-
+        MainController controller = new MainController();
 
         //CreateCoffeeDB db = new CreateCoffeeDB();
 

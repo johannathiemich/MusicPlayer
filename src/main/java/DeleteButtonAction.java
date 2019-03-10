@@ -1,12 +1,12 @@
+//TODO reprogram DeleteButtonAction
+
+/*
 import javazoom.jlgui.basicplayer.BasicPlayer;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-//TODO reprogram DeleteButtonAction
-
-/*
 public class DeleteButtonAction extends AbstractAction {
     private String file;
     private DatabaseHandler databaseHandler;
