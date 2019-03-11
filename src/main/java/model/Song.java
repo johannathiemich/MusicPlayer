@@ -1,3 +1,5 @@
+package model;
+
 import com.mpatric.mp3agic.*;
 
 import java.io.IOException;
@@ -13,14 +15,14 @@ public class Song {
     private String genre;
 
     /**
-     * Construct an empty Song object
+     * Construct an empty model.Song object
      */
     public Song(){
         setProperties("-","-","-","-","-","-","-");
     }
 
     /**
-     * Construct a Song object from properties
+     * Construct a model.Song object from properties
      */
     public Song(String pPath, String pTitle, String pArtist, String pAlbum,
                 String pYear, String pComment, String pGenre) {
@@ -28,7 +30,7 @@ public class Song {
     }
 
     /**
-     * Construct a Song object from a valid MP3 File path
+     * Construct a model.Song object from a valid MP3 File path
      * @param filePath
      */
     public Song(String filePath){
@@ -55,7 +57,7 @@ public class Song {
     }
 
     /**
-     * Transform the Song object to an array of strings
+     * Transform the model.Song object to an array of strings
      * @return string array of song properties
      */
     //getPropertiesInArray

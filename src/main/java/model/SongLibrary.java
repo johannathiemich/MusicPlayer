@@ -1,7 +1,9 @@
+package model;
+
 import java.util.ArrayList;
 
 public class SongLibrary extends ArrayList<Song>{
-    //or just make SongLibrary extends ArrayList<Song>
+    //or just make model.SongLibrary extends ArrayList<model.Song>
 
     /**
      * Construct an empty library
@@ -19,11 +21,11 @@ public class SongLibrary extends ArrayList<Song>{
     }
 
     /**
-     * Add a Song to the library, if not present.
+     * Add a model.Song to the library, if not present.
      * @param song to be added to the list
      */
     public void addSong(Song song){
-        System.out.print("Song '"+song.getTitle()+"'");
+        System.out.print("model.Song '"+song.getTitle()+"'");
         if(this.contains(song)){
             System.out.println(" already exists in library");
         }else{

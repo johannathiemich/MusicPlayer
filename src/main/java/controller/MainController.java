@@ -1,4 +1,10 @@
+package controller;
+
 import javazoom.jlgui.basicplayer.BasicPlayer;
+import model.DatabaseHandler;
+import model.Song;
+import model.SongLibrary;
+import view.MusicPlayerGUI;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -32,7 +38,7 @@ public class MainController {
      */
     public MainController(){
         //assign modules
-        playerView = new MusicPlayerGUI("MainController Testing");
+        playerView = new MusicPlayerGUI("controller.MainController Testing");
         db = new DatabaseHandler();
         library = new SongLibrary(db.getSongLibrary());
         player = new BasicPlayer();
