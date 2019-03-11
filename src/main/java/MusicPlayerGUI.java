@@ -28,7 +28,8 @@ public class MusicPlayerGUI extends JFrame {
 
 
     public MusicPlayerGUI(String frameTitle) {
-        this.setTitle(frameTitle);
+        super(frameTitle);
+        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         columnHeader = new String[]{"Path", "Title", "Artist", "Album", "Year", "Comment", "Genre"};
 
@@ -66,7 +67,7 @@ public class MusicPlayerGUI extends JFrame {
     public void initializeTable() {
         tableModel = new DefaultTableModel(columnHeader,0);
         songTable = new JTable(tableModel){
-            //Disable user editing
+            //block table contents editing
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
