@@ -3,7 +3,6 @@ package model;
 import java.util.ArrayList;
 
 public class SongLibrary extends ArrayList<Song>{
-    //or just make SongLibrary extends ArrayList<Song>
 
     /**
      * Construct an empty library
