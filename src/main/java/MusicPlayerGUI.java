@@ -65,7 +65,13 @@ public class MusicPlayerGUI extends JFrame {
 
     public void initializeTable() {
         tableModel = new DefaultTableModel(columnHeader,0);
-        songTable = new JTable(tableModel);
+        songTable = new JTable(tableModel){
+            //Disable user editing
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
 
         songTable.setFillsViewportHeight(true);
         songTable.setShowHorizontalLines(true);
