@@ -52,6 +52,8 @@ public class MainController {
         addListenersToTable();
     }
 
+
+    //TODO relocate addListener to view and restructure view/controller
     /**
      * Add Listeners to buttons, volume slider
      */

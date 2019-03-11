@@ -3,8 +3,11 @@ package view;
 import model.Song;
 
 import javax.swing.*;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 
@@ -76,7 +79,7 @@ public class MusicPlayerGUI extends JFrame {
         songTable.setShowHorizontalLines(true);
     }
 
-    //This will be useful when the view needs to change after 'Add model.Song To Library' action
+    //Useful when table view needs to change after 'Add Song To Library' action
     public void addRowToTableView(String[] row){ 
         tableModel.addRow(row);
     }
@@ -87,9 +90,33 @@ public class MusicPlayerGUI extends JFrame {
             tableModel.addRow(library.get(i).toArray());
         }
     }
-    
+
+    //For 'Play'<->'Pause' text change
     public void setPlayBtnText(String text){
         playBtn.setText(text);
     }
 
+    //Add listeners to components
+    public void addPlayBtnListener(ActionListener listener){
+        playBtn.addActionListener(listener);
+    }
+    public void addPStopBtnListener(ActionListener listener){
+        stopBtn.addActionListener(listener);
+    }
+    public void addPrevBtnListener(ActionListener listener){
+        prevBtn.addActionListener(listener);
+    }
+    public void addNextBtnListener(ActionListener listener){
+        nextBtn.addActionListener(listener);
+    }
+    public void addVolumeSliderListener(ChangeListener listener){
+        volumeSlider.addChangeListener(listener);
+    }
+    public void addTableListener(ListSelectionListener listener){
+        songTable.getSelectionModel().addListSelectionListener(listener);
+    }
+
+    public void displayErrorMessage(String errorMessage){
+        JOptionPane.showMessageDialog(this, errorMessage);
+    }
 }
