@@ -55,7 +55,7 @@ public class DatabaseHandler {
             return true;
         } catch (SQLException e) {
             if (e.getSQLState().equals("23505")) {
-                System.out.println("model.Song is already saved in the database.");
+                System.out.println("Song is already saved in the database.");
             } else if (e.getSQLState().equals("XJ015")) {
                 System.out.println("Derby shutdown normally.");
             } else {
@@ -80,7 +80,7 @@ public class DatabaseHandler {
         } catch (SQLException e) {
             //TODO error code
             if (e.getSQLState().equals("")) {
-                System.out.println("model.Song not found in the database.");
+                System.out.println("Song not found in the database.");
             } else if (e.getSQLState().equals("XJ015")) {
                 System.out.println("Derby shutdown normally.");
             } else {

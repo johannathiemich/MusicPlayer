@@ -1,12 +1,16 @@
 package controller;
 
-import javazoom.jlgui.basicplayer.BasicPlayer;
-import javazoom.jlgui.basicplayer.BasicPlayerException;
 import model.Song;
 import model.SongLibrary;
+import javazoom.jlgui.basicplayer.BasicPlayer;
+import javazoom.jlgui.basicplayer.BasicPlayerException;
 
 import java.io.File;
 
+/**
+ * This Controller has reusable player control functions:
+ * Play, Stop, Pause, Resume, Previous, Next.
+ */
 public class PlayerController {
     private BasicPlayer player;
     private Song currentSong;       //different from selectedSong

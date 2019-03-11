@@ -1,10 +1,10 @@
 package controller;
 
-import javazoom.jlgui.basicplayer.BasicPlayer;
-import model.DatabaseHandler;
 import model.Song;
 import model.SongLibrary;
+import model.DatabaseHandler;
 import view.MusicPlayerGUI;
+import javazoom.jlgui.basicplayer.BasicPlayer;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
