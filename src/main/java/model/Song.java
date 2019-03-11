@@ -15,14 +15,14 @@ public class Song {
     private String genre;
 
     /**
-     * Construct an empty model.Song object
+     * Construct an empty Song object
      */
     public Song(){
         setProperties("-","-","-","-","-","-","-");
     }
 
     /**
-     * Construct a model.Song object from properties
+     * Construct a Song object from properties
      */
     public Song(String pPath, String pTitle, String pArtist, String pAlbum,
                 String pYear, String pComment, String pGenre) {
@@ -30,7 +30,7 @@ public class Song {
     }
 
     /**
-     * Construct a model.Song object from a valid MP3 File path
+     * Construct a Song object from a valid MP3 File path
      * @param filePath
      */
     public Song(String filePath){
@@ -48,6 +48,7 @@ public class Song {
                         id3v2Tag.getYear(),id3v2Tag.getComment(), id3v2Tag.getGenreDescription() );
             }
         } catch (IOException e) {
+            System.err.println("[ERROR] File Not Found. filePath='"+filePath+"'");
             e.printStackTrace();
         } catch (UnsupportedTagException e) {
             e.printStackTrace();
@@ -57,7 +58,7 @@ public class Song {
     }
 
     /**
-     * Transform the model.Song object to an array of strings
+     * Transform the Song object to an array of strings
      * @return string array of song properties
      */
     //getPropertiesInArray
@@ -74,43 +75,40 @@ public class Song {
     }
 
 
+    //getters and setters
     public String getPath() {
         return path;
     }
-
     public String getTitle() {
         return title;
     }
-
     public String getArtist() {
         return artist;
     }
-
     public String getAlbum() {
         return album;
     }
-
     public String getYear() {
         return year;
     }
-
     public String getComment() {
         return comment;
     }
-
     public String getGenre() {
         return genre;
     }
+    public String getTitleAndArtist() { return title + " - " + artist; }
+
 
     public void setProperties(String pPath, String pTitle, String pArtist, String pAlbum, String pYear, String pComment,
                               String pGenre){
         this.path = pPath;
-        this.title = pTitle;
-        this.artist = pArtist;
-        this.album = pAlbum;
-        this.year = pYear;
-        this.comment = pComment;
-        this.genre = pGenre;
+        this.title = (pTitle==null) ? "unknown" : pTitle;
+        this.artist = (pArtist==null) ? "unknown" : pArtist;
+        this.album = (pAlbum==null) ? "unknown" : pAlbum;
+        this.year = (pYear==null) ? "" : pYear;
+        this.comment = (pComment==null) ? "" : pComment;
+        this.genre = (pGenre==null) ? "" : pGenre;
     }
 
 }
