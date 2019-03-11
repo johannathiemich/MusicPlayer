@@ -1,6 +1,6 @@
 package view;
 
-import model.Song;
+import model.SongLibrary;
 
 import javax.swing.*;
 import javax.swing.event.ChangeListener;
@@ -8,7 +8,6 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
 
 public class MusicPlayerGUI extends JFrame {
@@ -37,6 +36,13 @@ public class MusicPlayerGUI extends JFrame {
         mainPanel = new JPanel();
         bottomPanel = new JPanel();
 
+        //create table and setup
+        songTable = new JTable(){
+            @Override   //block table contents editing
+            public boolean isCellEditable(int row, int column) { return false; }
+        };
+        songTable.setFillsViewportHeight(true);
+        songTable.setShowHorizontalLines(true);
         initializeTable();
 
         tableScrollPane = new JScrollPane(songTable);
@@ -67,16 +73,8 @@ public class MusicPlayerGUI extends JFrame {
 
     public void initializeTable() {
         tableModel = new DefaultTableModel(columnHeader,0);
-        songTable = new JTable(tableModel){
-            //block table contents editing
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
+        songTable.setModel(tableModel);
 
-        songTable.setFillsViewportHeight(true);
-        songTable.setShowHorizontalLines(true);
     }
 
     //Useful when table view needs to change after 'Add Song To Library' action
@@ -84,8 +82,8 @@ public class MusicPlayerGUI extends JFrame {
         tableModel.addRow(row);
     }
 
-    public void updateTableView(ArrayList<Song> library) {
-
+    public void updateTableView(SongLibrary library) {
+        initializeTable();
         for(int i=0; i<library.size(); i++){
             tableModel.addRow(library.get(i).toArray());
         }
@@ -96,6 +94,7 @@ public class MusicPlayerGUI extends JFrame {
     }
 
     //For 'Play'<->'Pause' text change
+    public String getPlayBtnText() { return playBtn.getText(); }
     public void setPlayBtnText(String text){
         playBtn.setText(text);
     }

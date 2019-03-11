@@ -1,6 +1,8 @@
 package controller;
 
+import javazoom.jlgui.basicplayer.BasicPlayer;
 import model.DatabaseHandler;
+import model.Song;
 import model.SongLibrary;
 import view.MusicPlayerGUI;
 
@@ -29,6 +31,8 @@ public class MainController {
     //Other Controllers
     private PlayerController playerControl;
 
+    private Song selectedSong;  //different from currentSong
+
     /**
      * Construct a main controller and initialize all modules
      */
@@ -36,8 +40,9 @@ public class MainController {
         //assign modules
         playerView = new MusicPlayerGUI("controller.MainController Testing");
         db = new DatabaseHandler();
-        library = new SongLibrary(db.getSongLibrary());
+        library = new SongLibrary(db.getSongLibrary()); //should always be up to date with db
         playerControl = new PlayerController();
+        selectedSong = new Song();
 
         //setup presentation
         playerView.updateTableView(library);
@@ -51,15 +56,54 @@ public class MainController {
         playerView.addVolumeSliderListener(new VolumeSliderListener());
         playerView.addTableListener(new TableListener());
 
+        //test();
+    }
+
+    //THIS IS FOR TESTING ------------------------- PLAYER WORKS GREAT!
+    //PUT MP3 FILES IN YOUR LOCAL DIRECTORY TO TEST
+    SongLibrary testLibrary = new SongLibrary();
+    Song testSong = new Song();
+    public void test(){
+        System.out.println("========= TESTING! MP3files in local directory");
+        testLibrary.addSong(new Song("/Users/sella/downloads/mp3/cinemaparadiso.mp3"));
+        testLibrary.addSong(new Song("/Users/sella/downloads/mp3/Jamaica Farewell by Harry Belafonte.mp3"));
+        testLibrary.addSong(new Song("invalid file Path"));
+        testLibrary.addSong(new Song("/Users/sella/downloads/mp3/HONOLULU CITY LIGHTS KAPONO.mp3"));
+        testLibrary.addSong(new Song("/Users/sella/downloads/mp3/03 Cotton Fields.mp3"));
+        playerControl = new PlayerController(testLibrary);
+        playerView.updateTableView(testLibrary);
+        library = testLibrary;
     }
 
     //Listeners
     class PlayBtnListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            System.out.println("PLAY button is pressed.");
-//            playerControl.setCurrentSong(testSong);
-//            playerControl.playSong();
+            int playerStatus = playerControl.getPlayerStatus();
+            String btnText = playerView.getPlayBtnText();
+            System.out.println(btnText+" button is pressed.");
+
+            switch (playerStatus) {
+                //Pause Action
+                case BasicPlayer.PLAYING :
+                    playerControl.pauseSong();
+                    btnText = "Resume";
+                    break;
+                //Resume Action
+                case BasicPlayer.PAUSED :
+                    playerControl.resumeSong();
+                    btnText = "Pause";
+                    break;
+                //Play Action
+                case BasicPlayer.STOPPED :
+                default:
+                    playerControl.setCurrentSong(selectedSong);
+                    playerControl.playSong();
+                    btnText = "Pause";
+                    System.out.println("playerStatus: "+playerStatus);
+                    break;
+            }
+            playerView.setPlayBtnText(btnText);
         }
     }
 
@@ -67,7 +111,8 @@ public class MainController {
         @Override
         public void actionPerformed(ActionEvent e) {
             System.out.println("STOP button is pressed.");
-            //TODO Stop the selected song
+            playerView.setPlayBtnText("Play");
+            playerControl.stopSong();
         }
     }
 
@@ -75,7 +120,7 @@ public class MainController {
         @Override
         public void actionPerformed(ActionEvent e) {
             System.out.println("PREV button is pressed.");
-            //TODO Play the previous song of the current song
+            //TODO Play the previous song in the library
         }
     }
 
@@ -83,7 +128,7 @@ public class MainController {
         @Override
         public void actionPerformed(ActionEvent e) {
             System.out.println("NEXT button is pressed.");
-            //TODO Play the next song of the current song
+            //TODO Play the next song in the library
         }
     }
 
@@ -112,12 +157,16 @@ public class MainController {
         public void valueChanged(ListSelectionEvent e) {
             if (!e.getValueIsAdjusting()) {
                 int selectedRow = table.getSelectedRow();
-                String title = table.getValueAt(selectedRow, 1).toString();
-                String artist = table.getValueAt(selectedRow, 2).toString();
+                System.out.print("Row "+selectedRow+" is selected. ");
+                try {
+                    String title = table.getValueAt(selectedRow, 1).toString();
+                    String artist = table.getValueAt(selectedRow, 2).toString();
+                    System.out.print(title + " - " + artist);
+                } finally {
+                    System.out.println();
+                }
 
-                System.out.println("ROW " + selectedRow + " '" + title + " - " + artist + "' is selected.");
-
-                //TODO set currentSong to be the Song at selectedRow
+                selectedSong = library.get(selectedRow);
             }
         }
     }

@@ -3,8 +3,6 @@ import controller.MainController;
 public class Main {
 
     public static void main(String[] args) {
-        //view.MusicPlayerGUI playerView = new view.MusicPlayerGUI("MyTunes 0.5");
-        //playerView.setVisible(true);
 
         MainController controller = new MainController();
         //CreateCoffeeDB db = new CreateCoffeeDB();
