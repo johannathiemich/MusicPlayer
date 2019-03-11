@@ -91,6 +91,10 @@ public class MusicPlayerGUI extends JFrame {
         }
     }
 
+    public JTable getSongTable(){
+        return songTable;
+    }
+
     //For 'Play'<->'Pause' text change
     public void setPlayBtnText(String text){
         playBtn.setText(text);
@@ -100,7 +104,7 @@ public class MusicPlayerGUI extends JFrame {
     public void addPlayBtnListener(ActionListener listener){
         playBtn.addActionListener(listener);
     }
-    public void addPStopBtnListener(ActionListener listener){
+    public void addStopBtnListener(ActionListener listener){
         stopBtn.addActionListener(listener);
     }
     public void addPrevBtnListener(ActionListener listener){
