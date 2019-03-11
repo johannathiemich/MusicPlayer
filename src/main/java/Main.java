@@ -11,10 +11,10 @@ public class Main {
         //playerView.setVisible(true);
 
         MainController controller = new MainController();
-
         //CreateCoffeeDB db = new CreateCoffeeDB();
 
-        /*DatabaseHandler db = new DatabaseHandler();
+        /*
+        DatabaseHandler db = new DatabaseHandler();
         Song mySong = new Song("myPath", "myTitle", "myArtist", "myAlbum",
                 2000, "myComment", "myGenre");
         Song newSong = new Song("ddd", "dd", "dd", "dd", 200,
@@ -31,5 +31,4 @@ public class Main {
         player.setVisible(true);
         */
     }
-
 }

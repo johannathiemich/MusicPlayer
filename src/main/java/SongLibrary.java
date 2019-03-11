@@ -1,7 +1,6 @@
 import java.util.ArrayList;
 
-public class SongLibrary {
-    private ArrayList<Song> songList;
+public class SongLibrary extends ArrayList<Song>{
     //or just make SongLibrary extends ArrayList<Song>
 
     /**
@@ -16,7 +15,7 @@ public class SongLibrary {
      * @param songArray
      */
     public SongLibrary(ArrayList<Song> songArray){
-        songList = songArray;
+        this.addAll(songArray);
     }
 
     /**
@@ -25,10 +24,10 @@ public class SongLibrary {
      */
     public void addSong(Song song){
         System.out.print("Song '"+song.getTitle()+"'");
-        if(songList.contains(song)){
+        if(this.contains(song)){
             System.out.println(" already exists in library");
         }else{
-            songList.add(song);
+            this.add(song);
             System.out.println(" is added to library");
         }
     }
@@ -49,12 +48,13 @@ public class SongLibrary {
      */
     public void deleteSong(Song song){
         System.out.print("The song '"+song.getTitle()+"'");
-        if(songList.contains(song)) {
-            songList.remove(song);
+        if(this.contains(song)) {
+            this.remove(song);
             System.out.println(" is deleted from library");
         }else{
             System.out.println(" does not exist in library");
         }
     }
+
 
 }
