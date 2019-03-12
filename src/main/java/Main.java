@@ -8,7 +8,7 @@ public class Main {
         //CreateCoffeeDB db = new CreateCoffeeDB();
 
         /*
-        model.DatabaseHandler db = new model.DatabaseHandler();
+        database.DatabaseHandler db = new database.DatabaseHandler();
         model.Song mySong = new model.Song("myPath", "myTitle", "myArtist", "myAlbum",
                 2000, "myComment", "myGenre");
         model.Song newSong = new model.Song("ddd", "dd", "dd", "dd", 200,

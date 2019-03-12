@@ -1,4 +1,6 @@
-package model;
+package database;
+
+import model.Song;
 
 import java.sql.*;
 import java.util.ArrayList;

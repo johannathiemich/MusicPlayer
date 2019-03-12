@@ -2,7 +2,7 @@ package controller;
 
 import model.Song;
 import model.SongLibrary;
-import model.DatabaseHandler;
+import database.DatabaseHandler;
 import view.MusicPlayerGUI;
 import javazoom.jlgui.basicplayer.BasicPlayer;
 
