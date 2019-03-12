@@ -27,7 +27,6 @@ public class MainController {
     private MusicPlayerGUI playerView;
     //Models
     private SongLibrary library;
-    private DatabaseHandler db;
     //Other Controllers
     private PlayerController playerControl;
 
@@ -39,8 +38,7 @@ public class MainController {
     public MainController() {
         //assign modules
         playerView = new MusicPlayerGUI("controller.MainController Testing");
-        db = new DatabaseHandler();
-        library = new SongLibrary(db.getSongLibrary()); //should always be up to date with db
+        library = new SongLibrary(); //should always be up to date with db
         playerControl = new PlayerController();
         selectedSong = new Song();
 

@@ -4,11 +4,13 @@ import java.util.ArrayList;
 
 public class SongLibrary extends ArrayList<Song>{
 
+    private DatabaseHandler dbHandler;
     /**
      * Construct an empty library
      */
     public SongLibrary(){
-        //initialize songArrayList
+        this.dbHandler = new DatabaseHandler();
+        this.addAll(dbHandler.getSongLibrary());
     }
 
     /**
@@ -17,6 +19,7 @@ public class SongLibrary extends ArrayList<Song>{
      */
     public SongLibrary(ArrayList<Song> songArray){
         this.addAll(songArray);
+        this.dbHandler = new DatabaseHandler();
     }
 
     /**
@@ -30,6 +33,7 @@ public class SongLibrary extends ArrayList<Song>{
                 System.out.println(" already exists in library");
             } else {
                 this.add(song);
+                this.dbHandler.addSong(song);
                 System.out.println(" is added to library");
             }
         }
@@ -53,6 +57,7 @@ public class SongLibrary extends ArrayList<Song>{
         System.out.print("The song '"+song.getTitle()+"'");
         if(this.contains(song)) {
             this.remove(song);
+            this.dbHandler.deleteSong(song);
             System.out.println(" is deleted from library");
         }else{
             System.out.println(" does not exist in library");
