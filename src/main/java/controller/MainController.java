@@ -54,6 +54,7 @@ public class MainController {
         playerView.addVolumeSliderListener(new VolumeSliderListener());
         playerView.addTableListener(new TableListener());
         playerView.addSongItemListener(new AddSongListener());
+        playerView.openSongItemListener(new OpenSongListener());
 
         //test();
     }
@@ -195,7 +196,7 @@ public class MainController {
             String selectedPath = "";
             if (chooser.showOpenDialog(playerView) == JFileChooser.APPROVE_OPTION) {
                 selectedPath = chooser.getSelectedFile().getAbsolutePath();
-                playerControl.playSong();
+                playerControl.playSong(new Song(selectedPath));
             }
         }
     }
