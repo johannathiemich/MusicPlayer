@@ -53,6 +53,7 @@ public class MainController {
         playerView.addNextBtnListener(new NextBtnListener());
         playerView.addVolumeSliderListener(new VolumeSliderListener());
         playerView.addTableListener(new TableListener());
+        playerView.addSongItemListener(new AddSongListener());
 
         //test();
     }
@@ -165,6 +166,36 @@ public class MainController {
                 }
 
                 selectedSong = library.get(selectedRow);
+            }
+        }
+    }
+
+    class AddSongListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            System.out.println("Add song is pressed.");
+            JFileChooser chooser = new JFileChooser();
+            chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            String selectedPath = "";
+            if (chooser.showOpenDialog(playerView) == JFileChooser.APPROVE_OPTION) {
+                selectedPath = chooser.getSelectedFile().getAbsolutePath();
+                library.add(new Song(selectedPath));
+                playerView.updateTableView(library);
+            }
+        }
+    }
+
+    class OpenSongListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            System.out.println("Play song not in library is pressed.");
+            JFileChooser chooser = new JFileChooser();
+            chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            String selectedPath = "";
+            if (chooser.showOpenDialog(playerView) == JFileChooser.APPROVE_OPTION) {
+                selectedPath = chooser.getSelectedFile().getAbsolutePath();
+                playerControl.playSong();
             }
         }
     }
