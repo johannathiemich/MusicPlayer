@@ -15,7 +15,7 @@ public class DatabaseHandler {
         Connection conn = null;
         Statement statement = null;
         String sql = "CREATE TABLE SONGS (SONG_PATH VARCHAR(512) PRIMARY KEY, TITLE VARCHAR(256), ARTIST VARCHAR(256), " +
-                "ALBUM VARCHAR(256), YEAR_PUBLISHED INT, COMMENT VARCHAR(256), GENRE VARCHAR(256))";
+                "ALBUM VARCHAR(256), YEAR_PUBLISHED VARCHAR(256), COMMENT VARCHAR(256), GENRE VARCHAR(256))";
         try {
             conn = DriverManager.getConnection(createDatabaseURL);
             statement = conn.createStatement();
@@ -50,7 +50,7 @@ public class DatabaseHandler {
             conn = DriverManager.getConnection(createDatabaseURL);
             statement = conn.createStatement();
             statement.execute(sql);
-            DriverManager.getConnection(shutdownURL);
+            conn.close();
             System.out.println("Added song successfully.");
             return true;
         } catch (SQLException e) {
@@ -76,7 +76,7 @@ public class DatabaseHandler {
             conn = DriverManager.getConnection(createDatabaseURL);
             statement = conn.createStatement();
             statement.execute(sql);
-            DriverManager.getConnection(shutdownURL);
+            conn.close();
         } catch (SQLException e) {
             //TODO error code
             if (e.getSQLState().equals("")) {

@@ -7,7 +7,13 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetDropEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.util.ArrayList;
 
 
 public class MusicPlayerGUI extends JFrame {
@@ -15,17 +21,17 @@ public class MusicPlayerGUI extends JFrame {
     private JPanel mainPanel;
     private JScrollPane tableScrollPane;
     private JPanel bottomPanel;
-    private JPanel topPanel;
 
     private JMenuBar menuBar;
     private JMenu menu;
     private JMenuItem addSngItem;
     private JMenuItem openSongItem;
-    private JPanel helpPanel;
 
     private JTable songTable;
     private DefaultTableModel tableModel;
     private String[] columnHeader;
+
+    //private JPanel dragDropPanel;
 
     private JButton playBtn;
     private JButton nextBtn;
@@ -42,7 +48,6 @@ public class MusicPlayerGUI extends JFrame {
 
         mainPanel = new JPanel();
         bottomPanel = new JPanel();
-        topPanel = new JPanel(new FlowLayout());
 
         menuBar = new JMenuBar();
         menu = new JMenu("File");
@@ -60,6 +65,8 @@ public class MusicPlayerGUI extends JFrame {
         initializeTable();
 
         tableScrollPane = new JScrollPane(songTable);
+       // dragDropPanel = new JPanel();
+      //  dragDropPanel.add(tableScrollPane);
 
         stopBtn = new JButton("Stop");
         bottomPanel.add(stopBtn);
@@ -114,6 +121,8 @@ public class MusicPlayerGUI extends JFrame {
         return songTable;
     }
 
+    public JScrollPane getScrollPane() { return this.tableScrollPane; }
+
     //For 'Play'<->'Pause' text change
     public String getPlayBtnText() { return playBtn.getText(); }
     public void setPlayBtnText(String text){
@@ -121,6 +130,7 @@ public class MusicPlayerGUI extends JFrame {
     }
 
     //Add listeners to components
+    public void addDragDropListener(DropTarget target) {tableScrollPane.setDropTarget(target);}
     public void openSongItemListener(ActionListener listener) { openSongItem.addActionListener(listener);}
     public void addSongItemListener(ActionListener listener) { addSngItem.addActionListener(listener);}
     public void addPlayBtnListener(ActionListener listener){
