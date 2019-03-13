@@ -84,8 +84,8 @@ public class MusicPlayerGUI extends JFrame {
         initializeTable();
 
         popUpMenu = new JPopupMenu();
-        deleteSongMenuItemPopup = new JMenuItem("Delete Song");
-        addSongMenuItemPopup = new JMenuItem("Add Song");
+        deleteSongMenuItemPopup = new JMenuItem("Delete This Song");
+        addSongMenuItemPopup = new JMenuItem("Add A Song");
         popUpMenu.add(deleteSongMenuItemPopup);
         popUpMenu.add(addSongMenuItemPopup);
 
@@ -159,7 +159,14 @@ public class MusicPlayerGUI extends JFrame {
 
     //getters and setters
     public JTable getSongTable(){ return songTable; }
-    public JPopupMenu getPopUpMenu() { return popUpMenu; }
+    public JPopupMenu getPopUpMenu() {
+        deleteSongMenuItemPopup.setVisible(true);
+        return popUpMenu;
+    }
+    public JPopupMenu getPopUpMenuInBlankspace(){
+        deleteSongMenuItemPopup.setVisible(false);
+        return popUpMenu;
+    }
     public JScrollPane getScrollPane() { return this.tableScrollPane; }
 
     //For 'Play'<->'Pause' text change

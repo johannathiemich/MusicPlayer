@@ -3,6 +3,7 @@ package controller;
 import javazoom.jlgui.basicplayer.BasicPlayer;
 import model.Song;
 import model.SongLibrary;
+import view.ListDialog;
 import view.MusicPlayerGUI;
 
 import javax.swing.*;
@@ -342,41 +343,68 @@ public class MainController {
     }
 
     class DeleteSongMenuItemListener implements ActionListener {
-
         @Override
         public void actionPerformed(ActionEvent e) {
-            //TODO implement functionality
-        }
+            ListDialog.showDialog(playerView, playerView, "Choose the song to be deleted.",
+                    "Song Library", library.convertToString(), library.convertToString()[0],
+                    library.convertToString()[0]);
+            String selectedSong = ListDialog.getSelectedValue().split("\\[")[0].trim();
+            if (library.getSongByPath(selectedSong) != null) {
+                library.deleteSong(library.getSongByPath(selectedSong));
+                playerView.updateTableView(library);
+            }
+          }
     }
 
     public void addDeleteSongListener() {
         playerView.getSongTable().addMouseListener( new MouseAdapter()
         {
-            public void mousePressed(MouseEvent e)
-            {
-                if (playerView.getSongTable().rowAtPoint((e.getPoint())) == -1) {
+            JTable source;
+            int row = 0, col = 0, rowCount = 0;
+            boolean isRowInbound;
+
+            public void mousePressed(MouseEvent e) {
+                // Get the mouse position in the table
+                source = (JTable)e.getSource();
+                rowCount = source.getRowCount();
+                row = source.rowAtPoint( e.getPoint() );
+                col = source.columnAtPoint( e.getPoint() );
+                isRowInbound = (row >= 0) && (row < rowCount);
+
+                //Right-click Popup Trigger for MacOS
+                if (e.isPopupTrigger())
+                {
+                    if ( isRowInbound ) {   //right click in table
+                        System.out.println("right clicked inside of the table");
+                        source.changeSelection(row, col, false, false);
+                        playerView.getPopUpMenu().show(e.getComponent(), e.getX(), e.getY());
+                    } else {                //right click out of table
+                        System.out.println("right clicked outside of the table");
+                        playerView.getPopUpMenuInBlankspace().show(e.getComponent(), e.getX(), e.getY());
+                    }
+                }
+
+                //Deselect Row when selected out out table
+                if ( ! isRowInbound ) {
                     playerView.getSongTable().clearSelection();
                     System.out.println("Deselected row");
                 }
+
             }
 
             public void mouseReleased(MouseEvent e)
             {
+                //Right-click Popup Trigger for Windows
                 if (e.isPopupTrigger())
                 {
-                    JTable source = (JTable)e.getSource();
-                    int row = source.rowAtPoint( e.getPoint() );
-                    int column = source.columnAtPoint( e.getPoint() );
-
-                    if (! source.isRowSelected(row) && row >= 0 && row < library.size()) {
-                        source.changeSelection(row, column, false, false);
+                    if ( isRowInbound ) {   //right click in table
+                        System.out.println("right clicked inside of the table");
+                        source.changeSelection(row, col, false, false);
                         playerView.getPopUpMenu().show(e.getComponent(), e.getX(), e.getY());
-                    } else if (source.isRowSelected(row) && row >= 0 && row < library.size()) {
-                        playerView.getPopUpMenu().show(e.getComponent(), e.getX(), e.getY());
-                    } else if (row < 0 || row >= library.size()) {
-                        source.clearSelection();
+                    } else {                //right click out of table
+                        System.out.println("right clicked outside of the table");
+                        playerView.getPopUpMenuInBlankspace().show(e.getComponent(), e.getX(), e.getY());
                     }
-
                 }
             }
         });
