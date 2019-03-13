@@ -68,6 +68,7 @@ public class MainController {
 
         playerView.addAddSongMenuItemListener(new AddSongMenuItemListener());
         playerView.addOpenSongMenuItemListener(new OpenSongMenuItemListener());
+        playerView.addExitApplicationMenuItemListener(new ExitApplicationMenuItemListener());
 
         //Add listeners for popup menu
         playerView.addDeleteSongListener(new DeleteSongMenuItemListener());
@@ -307,6 +308,13 @@ public class MainController {
             }
         }
     }
+
+    class ExitApplicationMenuItemListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            System.exit(0);
+            }
+        }
 
     class DeleteSongMenuItemListener implements ActionListener {
         @Override

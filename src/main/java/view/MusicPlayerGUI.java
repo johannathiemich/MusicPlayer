@@ -22,6 +22,7 @@ public class MusicPlayerGUI extends JFrame {
     private JMenu menu;
     private JMenuItem addSongMenuItem;
     private JMenuItem openSongMenuItem;
+    private JMenuItem exitApplicationMenuItem;
 
     private JTable songTable;
     private DefaultTableModel tableModel;
@@ -51,6 +52,7 @@ public class MusicPlayerGUI extends JFrame {
         menu = new JMenu("File");
         addSongMenuItem = new JMenuItem("Add File to Library");
         openSongMenuItem = new JMenuItem("Open");
+        exitApplicationMenuItem = new JMenuItem("Exit Application");
         createMenu();
 
         //create table and setup
@@ -97,6 +99,7 @@ public class MusicPlayerGUI extends JFrame {
         this.menu.setPreferredSize(new Dimension(50, this.menu.getPreferredSize().height));
         this.menu.add(addSongMenuItem);
         this.menu.add(openSongMenuItem);
+        this.menu.add(exitApplicationMenuItem);
         this.menuBar.add(menu);
     }
 
@@ -152,6 +155,9 @@ public class MusicPlayerGUI extends JFrame {
     }
     public void addAddSongMenuItemListener(ActionListener listener) {
         addSongMenuItem.addActionListener(listener);
+    }
+    public void addExitApplicationMenuItemListener (ActionListener listener) {
+        exitApplicationMenuItem.addActionListener(listener);
     }
     //Add listener to popup menu
     public void addDeleteSongListener(ActionListener listener) {
