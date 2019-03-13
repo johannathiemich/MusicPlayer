@@ -7,13 +7,8 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
-import java.awt.dnd.DropTargetDropEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.util.ArrayList;
 
 
 public class MusicPlayerGUI extends JFrame {
@@ -115,6 +110,14 @@ public class MusicPlayerGUI extends JFrame {
         for(int i=0; i<library.size(); i++){
             tableModel.addRow(library.get(i).toArray());
         }
+    }
+
+    /**
+     * Changes the row selection of the table view.
+     * @param rowIndex row to be selected.
+     */
+    public void changeTableRowSelection(int rowIndex){
+        songTable.changeSelection(rowIndex,0,false,false);
     }
 
     public JTable getSongTable(){

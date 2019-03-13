@@ -1,25 +1,22 @@
 package controller;
 
+import javazoom.jlgui.basicplayer.BasicPlayer;
 import model.Song;
 import model.SongLibrary;
-import database.DatabaseHandler;
 import view.MusicPlayerGUI;
-import javazoom.jlgui.basicplayer.BasicPlayer;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
+import java.awt.datatransfer.DataFlavor;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
-import java.awt.datatransfer.DataFlavor;
 import java.awt.dnd.DropTargetDropEvent;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -47,7 +44,11 @@ public class MainController {
         //assign modules
         playerView = new MusicPlayerGUI("controller.MainController Testing");
         library = new SongLibrary(); //should always be up to date with db
-        playerControl = new PlayerController();
+
+        // [TEST1]
+        //TESTAddSongToLibrary();
+
+        playerControl = new PlayerController(library);
         selectedSong = new Song();
 
         //setup presentation
@@ -65,13 +66,12 @@ public class MainController {
         playerView.openSongItemListener(new OpenSongListener());
         addDragDropListener();
 
-        //test();
     }
-    //THIS IS FOR TESTING ------------------------- PLAYER WORKS GREAT!
-    //PUT MP3 FILES IN YOUR LOCAL DIRECTORY TO TEST
-    SongLibrary testLibrary = new SongLibrary();
-    Song testSong = new Song();
-    public void test(){
+
+    // [TEST1] THIS IS TO TEST PLAYER CONTROL ACTIONS --------------------
+    // PUT MP3 FILES IN YOUR LOCAL DIRECTORY TO TEST
+    public void TESTAddSongToLibrary(){
+        SongLibrary testLibrary = new SongLibrary();
         System.out.println("========= TESTING! MP3files in local directory");
         testLibrary.addSong(new Song("/Users/sella/downloads/mp3/cinemaparadiso.mp3"));
         testLibrary.addSong(new Song("/Users/sella/downloads/mp3/Jamaica Farewell by Harry Belafonte.mp3"));
@@ -128,7 +128,29 @@ public class MainController {
         @Override
         public void actionPerformed(ActionEvent e) {
             System.out.println("PREV button is pressed.");
-            //TODO Play the previous song in the library
+            //TODO Better call playerControl.playPrevSong() and let it do all the jobs below.
+
+            int prevRow;
+            int selectedRow = playerView.getSongTable().getSelectedRow();
+            int lastRow = playerView.getSongTable().getRowCount() - 1;
+
+            if(selectedRow == 0) {
+                prevRow = lastRow;
+            } else {
+                prevRow = selectedRow - 1;
+            }
+
+            // Update row selection on the view
+            playerView.changeTableRowSelection(prevRow);
+            // Get the previous song from the library
+            Song prevSong = library.get(prevRow);
+            selectedSong = prevSong;
+
+            // Set prevSong as a current one and play it
+            playerControl.setCurrentSong(prevSong);
+            playerControl.playSong();
+            // Change the button text
+            playerView.setPlayBtnText("Pause");
         }
     }
 
@@ -136,7 +158,29 @@ public class MainController {
         @Override
         public void actionPerformed(ActionEvent e) {
             System.out.println("NEXT button is pressed.");
-            //TODO Play the next song in the library
+            //TODO Better call playerControl.playNextSong() and let it do all the jobs below.
+
+            int nextRow;
+            int selectedRow = playerView.getSongTable().getSelectedRow();
+            int lastRow = playerView.getSongTable().getRowCount() - 1;
+
+            if(selectedRow == lastRow) {
+                nextRow = 0;    //nextRow goes to the top
+            } else {
+                nextRow = selectedRow + 1;
+            }
+
+            // Update row selection on the view
+            playerView.changeTableRowSelection(nextRow);
+            // Get the previous song from the library
+            Song nextSong = library.get(nextRow);
+            selectedSong = nextSong;
+
+            // Set prevSong as a current one and play it
+            playerControl.setCurrentSong(nextSong);
+            playerControl.playSong();
+            // Change the button text
+            playerView.setPlayBtnText("Pause");
         }
     }
 

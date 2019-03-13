@@ -1,5 +1,7 @@
 package model;
 
+import database.DatabaseHandler;
+
 import java.util.ArrayList;
 
 public class SongLibrary extends ArrayList<Song>{
