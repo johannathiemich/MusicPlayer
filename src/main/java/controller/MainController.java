@@ -114,19 +114,19 @@ public class MainController {
                 //Pause Action
                 case BasicPlayer.PLAYING :
                     playerControl.pauseSong();
-                    btnText = "Resume";
+                    btnText = ">";
                     break;
                 //Resume Action
                 case BasicPlayer.PAUSED :
                     playerControl.resumeSong();
-                    btnText = "Pause";
+                    btnText = "=";
                     break;
                 //Play Action
                 case BasicPlayer.STOPPED :
                 default:
                     playerControl.setCurrentSong(selectedSong);
                     playerControl.playSong();
-                    btnText = "Pause";
+                    btnText = "=";
                     System.out.println("playerStatus: "+playerStatus);
                     break;
             }
@@ -138,7 +138,7 @@ public class MainController {
         @Override
         public void actionPerformed(ActionEvent e) {
             System.out.println("[BUTTON] STOP button is pressed.");
-            playerView.setPlayBtnText("Play");
+            playerView.setPlayBtnText(">");
             playerControl.stopSong();
         }
     }
@@ -169,7 +169,7 @@ public class MainController {
             playerControl.setCurrentSong(prevSong);
             playerControl.playSong();
             // Change the button text
-            playerView.setPlayBtnText("Pause");
+            playerView.setPlayBtnText("=");
         }
     }
 
@@ -199,7 +199,7 @@ public class MainController {
             playerControl.setCurrentSong(nextSong);
             playerControl.playSong();
             // Change the button text
-            playerView.setPlayBtnText("Pause");
+            playerView.setPlayBtnText("=");
         }
     }
 

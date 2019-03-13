@@ -4,6 +4,7 @@ import model.Song;
 import model.SongLibrary;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
@@ -19,6 +20,9 @@ public class MusicPlayerGUI extends JFrame {
     private JPanel mainPanel;
     private JScrollPane tableScrollPane;
     private JPanel bottomPanel;
+    private JPanel buttonPanel;
+    private JPanel sliderPanel;
+    private JPanel stopPanel;
 
     private JMenuBar menuBar;
     private JMenu menu;
@@ -47,7 +51,6 @@ public class MusicPlayerGUI extends JFrame {
     public MusicPlayerGUI(String frameTitle) {
         super(frameTitle);
 
-
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
 
@@ -55,6 +58,13 @@ public class MusicPlayerGUI extends JFrame {
 
         mainPanel = new JPanel();
         bottomPanel = new JPanel();
+        buttonPanel = new JPanel();
+        sliderPanel = new JPanel();
+        stopPanel = new JPanel();
+        bottomPanel.setLayout(new BorderLayout());
+        //buttonPanel.setLayout(new BorderLayout());
+        sliderPanel.setLayout(new BorderLayout());
+        stopPanel.setLayout(new BorderLayout());
 
         menuBar = new JMenuBar();
         menu = new JMenu("File");
@@ -81,27 +91,34 @@ public class MusicPlayerGUI extends JFrame {
 
         tableScrollPane = new JScrollPane(songTable);
 
-        stopBtn = new JButton("Stop");
-        bottomPanel.add(stopBtn);
+        stopBtn = new JButton("[]");
+        stopPanel.add(stopBtn);
 
-        prevBtn = new JButton("<<");
-        bottomPanel.add(prevBtn);
+        prevBtn = new JButton("|<");
+        buttonPanel.add(prevBtn);
 
-        playBtn = new JButton("Play");
-        bottomPanel.add(playBtn);
+        playBtn = new JButton(">");
+        buttonPanel.add(playBtn);
 
-        nextBtn = new JButton(">>");
-        bottomPanel.add(nextBtn);
+        nextBtn = new JButton(">|");
+        buttonPanel.add(nextBtn);
 
         volumeSlider = new JSlider();
-        bottomPanel.add(volumeSlider);
+        sliderPanel.add(volumeSlider);
+
+        bottomPanel.add(buttonPanel);
+        bottomPanel.add(sliderPanel, BorderLayout.EAST);
+        bottomPanel.add(stopPanel, BorderLayout.WEST);
 
         //TODO layout bottomPanel
 
         this.setJMenuBar(menuBar);
         this.add(tableScrollPane, BorderLayout.CENTER);
         this.add(bottomPanel, BorderLayout.SOUTH);
+
         this.pack();
+
+
     }
 
     private void createMenu() {
