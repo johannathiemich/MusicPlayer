@@ -32,16 +32,22 @@ public class SongLibrary extends ArrayList<Song>{
      */
     public void addSong(Song song){
         if(song.getPath()!=null) {
-            //TODO modify comparison (compare path instead) @sellabae
-
-            //add song to the database
-            boolean addSongSucceed = dbHandler.addSong(song);
-            if (addSongSucceed) {
-                //add song to this library
-                this.add(song);
-                System.out.print("[addSong] success! ");
-            } else {
-                System.out.print("[addSong] not added to db (already exist or fail) ");
+            boolean songContained = false;
+            for (Song currSong : this) {
+                if (currSong.getPath().equals(song.getPath())) {
+                    songContained = true;
+                }
+            }
+            if (!songContained) {
+                //add song to the database
+                boolean addSongSucceed = dbHandler.addSong(song);
+                if (addSongSucceed) {
+                    //add song to this library
+                    this.add(song);
+                    System.out.print("[addSong] success! ");
+                } else {
+                    System.out.print("[addSong] not added to db (already exist or fail) ");
+                }
             }
             System.out.println(" FilePath: "+song.getPath());
         }
