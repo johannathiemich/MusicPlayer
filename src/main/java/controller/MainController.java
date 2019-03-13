@@ -3,6 +3,7 @@ package controller;
 import javazoom.jlgui.basicplayer.BasicPlayer;
 import model.Song;
 import model.SongLibrary;
+import view.ListDialog;
 import view.MusicPlayerGUI;
 
 import javax.swing.*;
@@ -341,11 +342,17 @@ public class MainController {
     }
 
     class DeleteSongMenuItemListener implements ActionListener {
-
         @Override
         public void actionPerformed(ActionEvent e) {
-            //TODO implement functionality
-        }
+            ListDialog.showDialog(playerView, playerView, "Choose the song to be deleted.",
+                    "Song Library", library.convertToString(), library.convertToString()[0],
+                    library.convertToString()[0]);
+            String selectedSong = ListDialog.getSelectedValue().split("\\[")[0].trim();
+            if (library.getSongByPath(selectedSong) != null) {
+                library.deleteSong(library.getSongByPath(selectedSong));
+                playerView.updateTableView(library);
+            }
+          }
     }
 
     public void addDeleteSongListener() {
@@ -353,6 +360,10 @@ public class MainController {
         {
             public void mousePressed(MouseEvent e)
             {
+                if (e.isPopupTrigger()) {
+                    System.out.println("right clicked");
+                }
+                //System.out.println("right clicked after");
                 if (playerView.getSongTable().rowAtPoint((e.getPoint())) == -1) {
                     playerView.getSongTable().clearSelection();
                     System.out.println("Deselected row");
