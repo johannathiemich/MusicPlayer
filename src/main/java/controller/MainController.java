@@ -14,6 +14,14 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DropTarget;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.dnd.DropTargetDropEvent;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * This controller is a Supervising Controller or messenger
  * between Model(data,entity) and View(interface,gui)
@@ -27,7 +35,6 @@ public class MainController {
     private MusicPlayerGUI playerView;
     //Models
     private SongLibrary library;
-    private DatabaseHandler db;
     //Other Controllers
     private PlayerController playerControl;
 
@@ -39,8 +46,7 @@ public class MainController {
     public MainController() {
         //assign modules
         playerView = new MusicPlayerGUI("controller.MainController Testing");
-        db = new DatabaseHandler();
-        library = new SongLibrary(db.getSongLibrary()); //should always be up to date with db
+        library = new SongLibrary(); //should always be up to date with db
         playerControl = new PlayerController();
         selectedSong = new Song();
 
@@ -55,10 +61,12 @@ public class MainController {
         playerView.addNextBtnListener(new NextBtnListener());
         playerView.addVolumeSliderListener(new VolumeSliderListener());
         playerView.addTableListener(new TableListener());
+        playerView.addSongItemListener(new AddSongListener());
+        playerView.openSongItemListener(new OpenSongListener());
+        addDragDropListener();
 
         //test();
     }
-
     //THIS IS FOR TESTING ------------------------- PLAYER WORKS GREAT!
     //PUT MP3 FILES IN YOUR LOCAL DIRECTORY TO TEST
     SongLibrary testLibrary = new SongLibrary();
@@ -169,5 +177,54 @@ public class MainController {
                 selectedSong = library.get(selectedRow);
             }
         }
+    }
+
+    class AddSongListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            System.out.println("Add song is pressed.");
+            JFileChooser chooser = new JFileChooser();
+            chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            String selectedPath = "";
+            if (chooser.showOpenDialog(playerView) == JFileChooser.APPROVE_OPTION) {
+                selectedPath = chooser.getSelectedFile().getAbsolutePath();
+                library.addSong(new Song(selectedPath));
+                playerView.updateTableView(library);
+            }
+        }
+    }
+
+    class OpenSongListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            System.out.println("Play song not in library is pressed.");
+            JFileChooser chooser = new JFileChooser();
+            chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            String selectedPath = "";
+            if (chooser.showOpenDialog(playerView) == JFileChooser.APPROVE_OPTION) {
+                selectedPath = chooser.getSelectedFile().getAbsolutePath();
+                playerControl.playSong(new Song(selectedPath));
+            }
+        }
+    }
+
+    public void addDragDropListener() {
+        playerView.getScrollPane().setDropTarget(new DropTarget() {
+            public synchronized void drop(DropTargetDropEvent evt) {
+                try {
+                    evt.acceptDrop(DnDConstants.ACTION_COPY);
+                    List<File> droppedFiles = (List<File>)
+                            evt.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
+                    for (File file : droppedFiles) {
+                        library.addSong(new Song(file.getAbsolutePath()));
+                        playerView.updateTableView(library);
+                        System.out.println("Added songs via drop");
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+
     }
 }

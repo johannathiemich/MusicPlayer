@@ -7,7 +7,13 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetDropEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.util.ArrayList;
 
 
 public class MusicPlayerGUI extends JFrame {
@@ -15,10 +21,17 @@ public class MusicPlayerGUI extends JFrame {
     private JPanel mainPanel;
     private JScrollPane tableScrollPane;
     private JPanel bottomPanel;
-    
+
+    private JMenuBar menuBar;
+    private JMenu menu;
+    private JMenuItem addSngItem;
+    private JMenuItem openSongItem;
+
     private JTable songTable;
     private DefaultTableModel tableModel;
     private String[] columnHeader;
+
+    //private JPanel dragDropPanel;
 
     private JButton playBtn;
     private JButton nextBtn;
@@ -36,6 +49,12 @@ public class MusicPlayerGUI extends JFrame {
         mainPanel = new JPanel();
         bottomPanel = new JPanel();
 
+        menuBar = new JMenuBar();
+        menu = new JMenu("File");
+        addSngItem = new JMenuItem("Add File to Library");
+        openSongItem = new JMenuItem("Open");
+        initializeMenu();
+
         //create table and setup
         songTable = new JTable(){
             @Override   //block table contents editing
@@ -46,6 +65,8 @@ public class MusicPlayerGUI extends JFrame {
         initializeTable();
 
         tableScrollPane = new JScrollPane(songTable);
+       // dragDropPanel = new JPanel();
+      //  dragDropPanel.add(tableScrollPane);
 
         stopBtn = new JButton("Stop");
         bottomPanel.add(stopBtn);
@@ -64,17 +85,24 @@ public class MusicPlayerGUI extends JFrame {
 
         //TODO layout bottomPanel
 
-        //TODO standard menu
-
+        //this.add(topPanel, BorderLayout.NORTH);
+        this.setJMenuBar(menuBar);
         this.add(tableScrollPane, BorderLayout.CENTER);
         this.add(bottomPanel, BorderLayout.SOUTH);
         this.pack();
     }
 
-    public void initializeTable() {
+    private void initializeTable() {
         tableModel = new DefaultTableModel(columnHeader,0);
         songTable.setModel(tableModel);
 
+    }
+
+    private void initializeMenu() {
+        this.menu.setPreferredSize(new Dimension(50, this.menu.getPreferredSize().height));
+        this.menu.add(addSngItem);
+        this.menu.add(openSongItem);
+        this.menuBar.add(menu);
     }
 
     //Useful when table view needs to change after 'Add Song To Library' action
@@ -93,6 +121,8 @@ public class MusicPlayerGUI extends JFrame {
         return songTable;
     }
 
+    public JScrollPane getScrollPane() { return this.tableScrollPane; }
+
     //For 'Play'<->'Pause' text change
     public String getPlayBtnText() { return playBtn.getText(); }
     public void setPlayBtnText(String text){
@@ -100,6 +130,9 @@ public class MusicPlayerGUI extends JFrame {
     }
 
     //Add listeners to components
+    public void addDragDropListener(DropTarget target) {tableScrollPane.setDropTarget(target);}
+    public void openSongItemListener(ActionListener listener) { openSongItem.addActionListener(listener);}
+    public void addSongItemListener(ActionListener listener) { addSngItem.addActionListener(listener);}
     public void addPlayBtnListener(ActionListener listener){
         playBtn.addActionListener(listener);
     }
