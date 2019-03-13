@@ -89,6 +89,14 @@ public class MusicPlayerGUI extends JFrame {
         }
     }
 
+    /**
+     * Changes the row selection of the table view.
+     * @param rowIndex row to be selected.
+     */
+    public void changeTableRowSelection(int rowIndex){
+        songTable.changeSelection(rowIndex,0,false,false);
+    }
+
     public JTable getSongTable(){
         return songTable;
     }

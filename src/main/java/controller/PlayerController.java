@@ -16,12 +16,6 @@ public class PlayerController {
     private Song currentSong;       //different from selectedSong
     private SongLibrary library;    //for skipping to prev/next song
 
-    public PlayerController(){
-        player = new BasicPlayer();
-        currentSong = new Song();
-
-    }
-
     public PlayerController(SongLibrary library){
         player = new BasicPlayer();
         this.library = library;
@@ -91,8 +85,10 @@ public class PlayerController {
         }
     }
 
+    //we may not need this...?
     public void playPrevSong(){
         //TODO set prev song as currentSong and play
+        //Song prevSong = library.get(current-1);
         //change currentSong
         //playSong(currentSong);
     }
