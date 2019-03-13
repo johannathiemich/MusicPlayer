@@ -1,5 +1,6 @@
 package view;
 
+import model.Song;
 import model.SongLibrary;
 
 import javax.swing.*;
@@ -7,8 +8,8 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.dnd.DropTarget;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
 
 
 public class MusicPlayerGUI extends JFrame {
@@ -19,8 +20,8 @@ public class MusicPlayerGUI extends JFrame {
 
     private JMenuBar menuBar;
     private JMenu menu;
-    private JMenuItem addSngItem;
-    private JMenuItem openSongItem;
+    private JMenuItem addSongMenuItem;
+    private JMenuItem openSongMenuItem;
 
     private JTable songTable;
     private DefaultTableModel tableModel;
@@ -34,6 +35,9 @@ public class MusicPlayerGUI extends JFrame {
     private JButton stopBtn;
     private JSlider volumeSlider;
 
+    private JPopupMenu popUpMenu;
+    private JMenuItem deletePopUpItem;
+
 
     public MusicPlayerGUI(String frameTitle) {
         super(frameTitle);
@@ -46,9 +50,9 @@ public class MusicPlayerGUI extends JFrame {
 
         menuBar = new JMenuBar();
         menu = new JMenu("File");
-        addSngItem = new JMenuItem("Add File to Library");
-        openSongItem = new JMenuItem("Open");
-        initializeMenu();
+        addSongMenuItem = new JMenuItem("Add File to Library");
+        openSongMenuItem = new JMenuItem("Open");
+        createMenu();
 
         //create table and setup
         songTable = new JTable(){
@@ -58,6 +62,10 @@ public class MusicPlayerGUI extends JFrame {
         songTable.setFillsViewportHeight(true);
         songTable.setShowHorizontalLines(true);
         initializeTable();
+
+        popUpMenu = new JPopupMenu();
+        deletePopUpItem = new JMenuItem("Delete Song");
+        popUpMenu.add(deletePopUpItem);
 
         tableScrollPane = new JScrollPane(songTable);
        // dragDropPanel = new JPanel();
@@ -87,29 +95,29 @@ public class MusicPlayerGUI extends JFrame {
         this.pack();
     }
 
-    private void initializeTable() {
-        tableModel = new DefaultTableModel(columnHeader,0);
-        songTable.setModel(tableModel);
-
-    }
-
-    private void initializeMenu() {
+    private void createMenu() {
         this.menu.setPreferredSize(new Dimension(50, this.menu.getPreferredSize().height));
-        this.menu.add(addSngItem);
-        this.menu.add(openSongItem);
+        this.menu.add(addSongMenuItem);
+        this.menu.add(openSongMenuItem);
         this.menuBar.add(menu);
     }
 
-    //Useful when table view needs to change after 'Add Song To Library' action
+    private void initializeTable() {
+        tableModel = new DefaultTableModel(columnHeader,0);
+        songTable.setModel(tableModel);
+    }
+
+    //When table view needs to change after 'Add Song To Library' action
     public void addRowToTableView(String[] row){ 
         tableModel.addRow(row);
     }
 
     public void updateTableView(SongLibrary library) {
         initializeTable();
-        for(int i=0; i<library.size(); i++){
-            tableModel.addRow(library.get(i).toArray());
+        for (Song song : library) {
+            tableModel.addRow(song.toArray());
         }
+        tableModel.fireTableDataChanged();
     }
 
     /**
@@ -120,22 +128,36 @@ public class MusicPlayerGUI extends JFrame {
         songTable.changeSelection(rowIndex,0,false,false);
     }
 
-    public JTable getSongTable(){
-        return songTable;
-    }
-
+    //getters and setters
+    public JTable getSongTable(){ return songTable; }
+    public JPopupMenu getPopUpMenu() { return popUpMenu; }
     public JScrollPane getScrollPane() { return this.tableScrollPane; }
 
     //For 'Play'<->'Pause' text change
     public String getPlayBtnText() { return playBtn.getText(); }
-    public void setPlayBtnText(String text){
-        playBtn.setText(text);
+    public void setPlayBtnText(String text){ playBtn.setText(text); }
+
+
+    //Error message Dialog
+    public void displayErrorMessage(String errorMessage){
+        JOptionPane.showMessageDialog(this, errorMessage);
     }
 
-    //Add listeners to components
-    public void addDragDropListener(DropTarget target) {tableScrollPane.setDropTarget(target);}
-    public void openSongItemListener(ActionListener listener) { openSongItem.addActionListener(listener);}
-    public void addSongItemListener(ActionListener listener) { addSngItem.addActionListener(listener);}
+
+// Adding listeners ---------------------------------------------
+
+    //Add listeners to standard menu
+    public void addOpenSongMenuItemListener(ActionListener listener) {
+        openSongMenuItem.addActionListener(listener);
+    }
+    public void addAddSongMenuItemListener(ActionListener listener) {
+        addSongMenuItem.addActionListener(listener);
+    }
+    //Add listener to popup menu
+    public void addDeleteSongListener(ActionListener listener) {
+        deletePopUpItem.addActionListener(listener);
+    }
+    //Add listeners to buttons
     public void addPlayBtnListener(ActionListener listener){
         playBtn.addActionListener(listener);
     }
@@ -148,14 +170,16 @@ public class MusicPlayerGUI extends JFrame {
     public void addNextBtnListener(ActionListener listener){
         nextBtn.addActionListener(listener);
     }
+    //Add listener to slider
     public void addVolumeSliderListener(ChangeListener listener){
         volumeSlider.addChangeListener(listener);
     }
+    //Add listener to table
     public void addTableListener(ListSelectionListener listener){
         songTable.getSelectionModel().addListSelectionListener(listener);
     }
-
-    public void displayErrorMessage(String errorMessage){
-        JOptionPane.showMessageDialog(this, errorMessage);
+    public void addMouseAdapterToTable(MouseAdapter adapter){
+        songTable.addMouseListener(adapter);
     }
+
 }

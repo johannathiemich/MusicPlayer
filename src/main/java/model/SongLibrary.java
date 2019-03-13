@@ -17,7 +17,7 @@ public class SongLibrary extends ArrayList<Song>{
 
     /**
      * Construct a library from an array of songs
-     * @param songArray
+     * @param songArray array of Songs to add to the library
      */
     public SongLibrary(ArrayList<Song> songArray){
         this.addAll(songArray);
@@ -31,6 +31,7 @@ public class SongLibrary extends ArrayList<Song>{
     public void addSong(Song song){
         if(song.getPath()!=null) {
             System.out.print("Song '" + song.getTitle() + "'");
+            //TODO modify comparison (compare path instead) @sellabae
             if (this.contains(song)) {
                 System.out.println(" already exists in library");
             } else {

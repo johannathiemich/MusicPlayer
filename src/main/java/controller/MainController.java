@@ -10,12 +10,15 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetDropEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.List;
 
@@ -55,16 +58,21 @@ public class MainController {
         playerView.updateTableView(library);
         playerView.setVisible(true);
 
-        //add listeners
+        //add listeners for user action
         playerView.addPlayBtnListener(new PlayBtnListener());
         playerView.addStopBtnListener(new StopBtnListener());
         playerView.addPrevBtnListener(new PrevBtnListener());
         playerView.addNextBtnListener(new NextBtnListener());
+
         playerView.addVolumeSliderListener(new VolumeSliderListener());
+
+        playerView.addAddSongMenuItemListener(new AddSongMenuItemListener());
+        playerView.addOpenSongMenuItemListener(new OpenSongMenuItemListener());
+
+        playerView.addDeleteSongListener(new DeleteSongMenuItemListener());
         playerView.addTableListener(new TableListener());
-        playerView.addSongItemListener(new AddSongListener());
-        playerView.openSongItemListener(new OpenSongListener());
-        addDragDropListener();
+        playerView.addMouseAdapterToTable(new TableMouseAdapter());
+        addDragDropToScrollPane();
 
     }
 
@@ -89,7 +97,7 @@ public class MainController {
         public void actionPerformed(ActionEvent e) {
             int playerStatus = playerControl.getPlayerStatus();
             String btnText = playerView.getPlayBtnText();
-            System.out.println(btnText+" button is pressed.");
+            System.out.println("[BUTTON] "+btnText+" button is pressed.");
 
             switch (playerStatus) {
                 //Pause Action
@@ -118,7 +126,7 @@ public class MainController {
     class StopBtnListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            System.out.println("STOP button is pressed.");
+            System.out.println("[BUTTON] STOP button is pressed.");
             playerView.setPlayBtnText("Play");
             playerControl.stopSong();
         }
@@ -127,7 +135,7 @@ public class MainController {
     class PrevBtnListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            System.out.println("PREV button is pressed.");
+            System.out.println("[BUTTON] PREV button is pressed.");
             //TODO Better call playerControl.playPrevSong() and let it do all the jobs below.
 
             int prevRow;
@@ -188,15 +196,11 @@ public class MainController {
         @Override
         public void stateChanged(ChangeEvent e) {
             JSlider source = (JSlider) e.getSource();
-            int volume = source.getValue();
-            System.out.println("Slider tick: " + volume);
-            //TODO Adjust the volume of the player
+            int sliderVal = source.getValue();
+            System.out.println("VolumeSlider tick: " + sliderVal);
 
-            /*
-            if (!source.getValueIsAdjusting()) {
-                System.out.println("Volume: " + volume);
-            }
-            */
+            //TODO Adjust the volume of the player
+            //something = sliderVal;
 
         }
     }
@@ -209,21 +213,22 @@ public class MainController {
         public void valueChanged(ListSelectionEvent e) {
             if (!e.getValueIsAdjusting()) {
                 int selectedRow = table.getSelectedRow();
-                System.out.print("Row "+selectedRow+" is selected. ");
-                try {
-                    String title = table.getValueAt(selectedRow, 1).toString();
-                    String artist = table.getValueAt(selectedRow, 2).toString();
-                    System.out.print(title + " - " + artist);
-                } finally {
-                    System.out.println();
+                System.out.print("[Table] selectedRow: "+selectedRow);
+                if (selectedRow >= 0 && selectedRow < library.size()) {
+                    try {
+                        String title = table.getValueAt(selectedRow, 1).toString();
+                        String artist = table.getValueAt(selectedRow, 2).toString();
+                        System.out.print(", [" + title + " - " + artist + "]");
+                        selectedSong = library.get(selectedRow);
+                    } finally {
+                        System.out.println();
+                    }
                 }
-
-                selectedSong = library.get(selectedRow);
             }
         }
     }
 
-    class AddSongListener implements ActionListener {
+    class AddSongMenuItemListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             System.out.println("Add song is pressed.");
@@ -238,7 +243,7 @@ public class MainController {
         }
     }
 
-    class OpenSongListener implements ActionListener {
+    class OpenSongMenuItemListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             System.out.println("Play song not in library is pressed.");
@@ -252,7 +257,47 @@ public class MainController {
         }
     }
 
-    public void addDragDropListener() {
+    class DeleteSongMenuItemListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Component c = (Component)e.getSource();
+            JPopupMenu popup = (JPopupMenu)c.getParent();
+            JTable table = (JTable)popup.getInvoker();
+            System.out.println("selected row: " + table.getSelectedRow());
+            System.out.println("selected song: " + library.get(table.getSelectedRow()).getPath());
+            if (table.getSelectedRow() >= 0 && table.getSelectedRow() < library.size()) {
+                library.deleteSong(library.get(table.getSelectedRow()));
+                playerView.updateTableView(library);
+            }
+        }
+    }
+
+    class TableMouseAdapter extends MouseAdapter {
+        JTable source = null;
+        int row = 0, col = 0;
+        int rowCount = 0;
+        @Override
+        public void mousePressed(MouseEvent e) {
+            source = (JTable)e.getSource();
+            row = source.rowAtPoint( e.getPoint() );
+            col = source.columnAtPoint( e.getPoint() );
+            rowCount = source.getRowCount();
+
+            System.out.println("[Table] mouse pressed.");
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            if (e.isPopupTrigger()) {
+                if ( !source.isRowSelected(row) && (row >= 0) && (row < rowCount) ) {
+                    source.changeSelection(row, col, false, false);
+                    playerView.getPopUpMenu().show(e.getComponent(), e.getX(), e.getY());
+                }
+            }
+        }
+    }
+
+    public void addDragDropToScrollPane() {
         playerView.getScrollPane().setDropTarget(new DropTarget() {
             public synchronized void drop(DropTargetDropEvent evt) {
                 try {

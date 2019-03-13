@@ -50,7 +50,7 @@ public class PlayerController {
             } catch(BasicPlayerException e) {
                 e.printStackTrace();
             }
-            System.out.println("Play Song: "+currentSong.getTitleAndArtist());
+            System.out.println("[PlayerControl] Play Song: "+currentSong.getTitleAndArtist());
         }
     }
 
@@ -60,7 +60,7 @@ public class PlayerController {
         } catch (BasicPlayerException e) {
             e.printStackTrace();
         }
-        System.out.println("Stop Song");
+        System.out.println("[PlayerControl] Stop Song");
     }
 
     public void pauseSong(){
@@ -70,7 +70,7 @@ public class PlayerController {
             } catch (BasicPlayerException e) {
                 e.printStackTrace();
             }
-            System.out.println("Pause Song");
+            System.out.println("[PlayerControl] Pause Song");
         }
     }
 
@@ -81,7 +81,7 @@ public class PlayerController {
             } catch (BasicPlayerException e) {
                 e.printStackTrace();
             }
-            System.out.println("Resume Song: "+currentSong.getTitleAndArtist());
+            System.out.println("[PlayerControl] Resume Song: "+currentSong.getTitleAndArtist());
         }
     }
 
