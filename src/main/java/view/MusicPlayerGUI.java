@@ -4,12 +4,15 @@ import model.Song;
 import model.SongLibrary;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
+import java.awt.Dimension;
+import javax.swing.JFrame;
 
 
 public class MusicPlayerGUI extends JFrame {
@@ -17,6 +20,9 @@ public class MusicPlayerGUI extends JFrame {
     private JPanel mainPanel;
     private JScrollPane tableScrollPane;
     private JPanel bottomPanel;
+    private JPanel buttonPanel;
+    private JPanel sliderPanel;
+    private JPanel stopPanel;
 
     private JMenuBar menuBar;
     private JMenu menu;
@@ -40,21 +46,32 @@ public class MusicPlayerGUI extends JFrame {
     private JMenuItem addSongMenuItemPopup;
 
 
+
+
     public MusicPlayerGUI(String frameTitle) {
         super(frameTitle);
+
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+
 
         columnHeader = new String[]{"Path", "Title", "Artist", "Album", "Year", "Comment", "Genre"};
 
         mainPanel = new JPanel();
         bottomPanel = new JPanel();
+        buttonPanel = new JPanel();
+        sliderPanel = new JPanel();
+        stopPanel = new JPanel();
+        bottomPanel.setLayout(new BorderLayout());
+        //buttonPanel.setLayout(new BorderLayout());
+        sliderPanel.setLayout(new BorderLayout());
+        stopPanel.setLayout(new BorderLayout());
 
         menuBar = new JMenuBar();
         menu = new JMenu("File");
-        addSongMenuItem = new JMenuItem("Add File to Library");
         openSongMenuItem = new JMenuItem("Open");
-        exitApplicationMenuItem = new JMenuItem("Exit Application");
+        addSongMenuItem = new JMenuItem("Add File to Library");
         deleteSongMenuItem = new JMenuItem("Delete Song from Library");
+        exitApplicationMenuItem = new JMenuItem("Exit Application");
         createMenu();
 
         //create table and setup
@@ -74,35 +91,42 @@ public class MusicPlayerGUI extends JFrame {
 
         tableScrollPane = new JScrollPane(songTable);
 
-        stopBtn = new JButton("Stop");
-        bottomPanel.add(stopBtn);
+        stopBtn = new JButton("[]");
+        stopPanel.add(stopBtn);
 
-        prevBtn = new JButton("<<");
-        bottomPanel.add(prevBtn);
+        prevBtn = new JButton("|<");
+        buttonPanel.add(prevBtn);
 
-        playBtn = new JButton("Play");
-        bottomPanel.add(playBtn);
+        playBtn = new JButton(">");
+        buttonPanel.add(playBtn);
 
-        nextBtn = new JButton(">>");
-        bottomPanel.add(nextBtn);
+        nextBtn = new JButton(">|");
+        buttonPanel.add(nextBtn);
 
         volumeSlider = new JSlider();
-        bottomPanel.add(volumeSlider);
+        sliderPanel.add(volumeSlider);
+
+        bottomPanel.add(buttonPanel);
+        bottomPanel.add(sliderPanel, BorderLayout.EAST);
+        bottomPanel.add(stopPanel, BorderLayout.WEST);
 
         //TODO layout bottomPanel
 
         this.setJMenuBar(menuBar);
         this.add(tableScrollPane, BorderLayout.CENTER);
         this.add(bottomPanel, BorderLayout.SOUTH);
+
         this.pack();
+
+
     }
 
     private void createMenu() {
         this.menu.setPreferredSize(new Dimension(50, this.menu.getPreferredSize().height));
-        this.menu.add(addSongMenuItem);
         this.menu.add(openSongMenuItem);
-        this.menu.add(exitApplicationMenuItem);
+        this.menu.add(addSongMenuItem);
         this.menu.add(deleteSongMenuItem);
+        this.menu.add(exitApplicationMenuItem);
         this.menuBar.add(menu);
     }
 
