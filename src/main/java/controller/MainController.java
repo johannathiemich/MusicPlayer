@@ -11,6 +11,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -18,6 +19,8 @@ import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.dnd.DropTargetDropEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,6 +66,8 @@ public class MainController {
         playerView.addTableListener(new TableListener());
         playerView.addSongItemListener(new AddSongListener());
         playerView.openSongItemListener(new OpenSongListener());
+        this.addDeleteSongListener();
+        playerView.addDeleteSongListener(new DeleteSongListener());
         addDragDropListener();
 
         //test();
@@ -166,15 +171,16 @@ public class MainController {
             if (!e.getValueIsAdjusting()) {
                 int selectedRow = table.getSelectedRow();
                 System.out.print("Row "+selectedRow+" is selected. ");
-                try {
-                    String title = table.getValueAt(selectedRow, 1).toString();
-                    String artist = table.getValueAt(selectedRow, 2).toString();
-                    System.out.print(title + " - " + artist);
-                } finally {
-                    System.out.println();
+                if (selectedRow >= 0 && selectedRow < library.size()) {
+                    try {
+                        String title = table.getValueAt(selectedRow, 1).toString();
+                        String artist = table.getValueAt(selectedRow, 2).toString();
+                        System.out.print(title + " - " + artist);
+                        selectedSong = library.get(selectedRow);
+                    } finally {
+                        System.out.println();
+                    }
                 }
-
-                selectedSong = library.get(selectedRow);
             }
         }
     }
@@ -206,6 +212,47 @@ public class MainController {
                 playerControl.playSong(new Song(selectedPath));
             }
         }
+    }
+
+    class DeleteSongListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Component c = (Component)e.getSource();
+            JPopupMenu popup = (JPopupMenu)c.getParent();
+            JTable table = (JTable)popup.getInvoker();
+            System.out.println("selected row: " + table.getSelectedRow());
+            System.out.println("selected song: " + library.get(table.getSelectedRow()).getPath());
+            if (table.getSelectedRow() >= 0 && table.getSelectedRow() < library.size()) {
+                library.deleteSong(library.get(table.getSelectedRow()));
+                playerView.updateTableView(library);
+            }
+        }
+    }
+
+    public void addDeleteSongListener() {
+        playerView.getSongTable().addMouseListener( new MouseAdapter()
+        {
+            public void mousePressed(MouseEvent e)
+            {
+                System.out.println("pressed");
+            }
+
+            public void mouseReleased(MouseEvent e)
+            {
+                if (e.isPopupTrigger())
+                {
+                    JTable source = (JTable)e.getSource();
+                    int row = source.rowAtPoint( e.getPoint() );
+                    int column = source.columnAtPoint( e.getPoint() );
+
+                    if (! source.isRowSelected(row) && row >= 0 && row < library.size()) {
+                        source.changeSelection(row, column, false, false);
+                        playerView.getPopUpMenu().show(e.getComponent(), e.getX(), e.getY());
+                    }
+
+                }
+            }
+        });
     }
 
     public void addDragDropListener() {

@@ -7,14 +7,7 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.dnd.DnDConstants;
-import java.awt.dnd.DropTarget;
-import java.awt.dnd.DropTargetDropEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.util.ArrayList;
-
 
 public class MusicPlayerGUI extends JFrame {
 
@@ -38,6 +31,9 @@ public class MusicPlayerGUI extends JFrame {
     private JButton prevBtn;
     private JButton stopBtn;
     private JSlider volumeSlider;
+
+    private JPopupMenu popUpMenu;
+    private JMenuItem deletePopUpItem;
 
 
     public MusicPlayerGUI(String frameTitle) {
@@ -63,6 +59,10 @@ public class MusicPlayerGUI extends JFrame {
         songTable.setFillsViewportHeight(true);
         songTable.setShowHorizontalLines(true);
         initializeTable();
+
+        popUpMenu = new JPopupMenu();
+        deletePopUpItem = new JMenuItem("Delete Song");
+        popUpMenu.add(deletePopUpItem);
 
         tableScrollPane = new JScrollPane(songTable);
        // dragDropPanel = new JPanel();
@@ -115,11 +115,13 @@ public class MusicPlayerGUI extends JFrame {
         for(int i=0; i<library.size(); i++){
             tableModel.addRow(library.get(i).toArray());
         }
+        tableModel.fireTableDataChanged();
     }
 
     public JTable getSongTable(){
         return songTable;
     }
+    public JPopupMenu getPopUpMenu() { return popUpMenu; }
 
     public JScrollPane getScrollPane() { return this.tableScrollPane; }
 
@@ -129,10 +131,17 @@ public class MusicPlayerGUI extends JFrame {
         playBtn.setText(text);
     }
 
+    public void addDeleteSongListener(ActionListener listener) {
+        deletePopUpItem.addActionListener(listener);
+    }
+
     //Add listeners to components
-    public void addDragDropListener(DropTarget target) {tableScrollPane.setDropTarget(target);}
-    public void openSongItemListener(ActionListener listener) { openSongItem.addActionListener(listener);}
-    public void addSongItemListener(ActionListener listener) { addSngItem.addActionListener(listener);}
+    public void openSongItemListener(ActionListener listener) {
+        openSongItem.addActionListener(listener);
+    }
+    public void addSongItemListener(ActionListener listener) {
+        addSngItem.addActionListener(listener);
+    }
     public void addPlayBtnListener(ActionListener listener){
         playBtn.addActionListener(listener);
     }
