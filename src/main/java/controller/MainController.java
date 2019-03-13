@@ -66,12 +66,14 @@ public class MainController {
 
         playerView.addVolumeSliderListener(new VolumeSliderListener());
 
+        //Add listeners for standard menu
         playerView.addAddSongMenuItemListener(new AddSongMenuItemListener());
         playerView.addOpenSongMenuItemListener(new OpenSongMenuItemListener());
         playerView.addExitApplicationMenuItemListener(new ExitApplicationMenuItemListener());
+        playerView.addDeleteSongMenuListener(new DeleteSongMenuItemListener());
 
         //Add listeners for popup menu
-        playerView.addDeleteSongListener(new DeleteSongMenuItemListener());
+        playerView.addDeleteSongPopupListener(new DeleteSongPopupItemListener());
         this.addDeleteSongListener();
         playerView.addAddSongPopupListener(new AddSongMenuItemListener());
         //playerView.addPopupTriggerListenerForTable(new PopupTriggerListenerForTable());
@@ -79,6 +81,7 @@ public class MainController {
         //Add listener for table selection
         playerView.addSelectionListenerForTable(new SelectionListenerForTable());
 
+        //Add listener for drag and drop area
         addDragDropToScrollPane();
 
     }
@@ -316,7 +319,8 @@ public class MainController {
             }
         }
 
-    class DeleteSongMenuItemListener implements ActionListener {
+
+    class DeleteSongPopupItemListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             //What is this part?
@@ -333,6 +337,14 @@ public class MainController {
             } else {
                 System.out.println("[DeleteSong] selectedRow: "+selectedRow+", nothing selected to delete.");
             }
+        }
+    }
+
+    class DeleteSongMenuItemListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            //TODO implement functionality
         }
     }
 
