@@ -26,6 +26,7 @@ public class SongLibrary extends ArrayList<Song>{
 
     /**
      * Add a Song to the library, if not present.
+     * Should use addSong(Song) instead of add(Song) which is Array's inherited method.
      * @param song to be added to the list
      */
     public void addSong(Song song){
