@@ -27,8 +27,6 @@ public class MusicPlayerGUI extends JFrame {
     private DefaultTableModel tableModel;
     private String[] columnHeader;
 
-    //private JPanel dragDropPanel;
-
     private JButton playBtn;
     private JButton nextBtn;
     private JButton prevBtn;
@@ -37,6 +35,7 @@ public class MusicPlayerGUI extends JFrame {
 
     private JPopupMenu popUpMenu;
     private JMenuItem deleteSongMenuItem;
+    private JMenuItem addSongMenuItemPopup;
 
 
     public MusicPlayerGUI(String frameTitle) {
@@ -65,11 +64,11 @@ public class MusicPlayerGUI extends JFrame {
 
         popUpMenu = new JPopupMenu();
         deleteSongMenuItem = new JMenuItem("Delete Song");
+        addSongMenuItemPopup = new JMenuItem("Add Song");
         popUpMenu.add(deleteSongMenuItem);
+        popUpMenu.add(addSongMenuItemPopup);
 
         tableScrollPane = new JScrollPane(songTable);
-       // dragDropPanel = new JPanel();
-      //  dragDropPanel.add(tableScrollPane);
 
         stopBtn = new JButton("Stop");
         bottomPanel.add(stopBtn);
@@ -88,7 +87,6 @@ public class MusicPlayerGUI extends JFrame {
 
         //TODO layout bottomPanel
 
-        //this.add(topPanel, BorderLayout.NORTH);
         this.setJMenuBar(menuBar);
         this.add(tableScrollPane, BorderLayout.CENTER);
         this.add(bottomPanel, BorderLayout.SOUTH);
@@ -125,7 +123,8 @@ public class MusicPlayerGUI extends JFrame {
      * @param rowIndex row to be selected.
      */
     public void changeTableRowSelection(int rowIndex){
-        songTable.changeSelection(rowIndex,0,false,false);
+        songTable.changeSelection(rowIndex,0,false,
+                false);
     }
 
     //getters and setters
@@ -140,7 +139,8 @@ public class MusicPlayerGUI extends JFrame {
 
     //Error message Dialog
     public void displayErrorMessage(String errorMessage){
-        JOptionPane.showMessageDialog(this, errorMessage);
+        JOptionPane.showMessageDialog(this,
+                errorMessage);
     }
 
 
@@ -157,6 +157,7 @@ public class MusicPlayerGUI extends JFrame {
     public void addDeleteSongListener(ActionListener listener) {
         deleteSongMenuItem.addActionListener(listener);
     }
+    public void addAddSongPopupListener (ActionListener listener) {addSongMenuItemPopup.addActionListener(listener);}
     //Add listeners to buttons
     public void addPlayBtnListener(ActionListener listener){
         playBtn.addActionListener(listener);

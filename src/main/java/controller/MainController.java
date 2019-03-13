@@ -69,10 +69,15 @@ public class MainController {
         playerView.addAddSongMenuItemListener(new AddSongMenuItemListener());
         playerView.addOpenSongMenuItemListener(new OpenSongMenuItemListener());
 
+        //Add listeners for popup menu
         playerView.addDeleteSongListener(new DeleteSongMenuItemListener());
         this.addDeleteSongListener();
-        playerView.addSelectionListenerForTable(new SelectionListenerForTable());
+        playerView.addAddSongPopupListener(new AddSongMenuItemListener());
         //playerView.addPopupTriggerListenerForTable(new PopupTriggerListenerForTable());
+
+        //Add listener for table selection
+        playerView.addSelectionListenerForTable(new SelectionListenerForTable());
+
         addDragDropToScrollPane();
 
     }
