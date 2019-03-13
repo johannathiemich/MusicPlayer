@@ -22,12 +22,12 @@ public class MusicPlayerGUI extends JFrame {
     private JMenu menu;
     private JMenuItem addSongMenuItem;
     private JMenuItem openSongMenuItem;
+    private JMenuItem exitApplicationMenuItem;
+    private JMenuItem deleteSongMenuItem;
 
     private JTable songTable;
     private DefaultTableModel tableModel;
     private String[] columnHeader;
-
-    //private JPanel dragDropPanel;
 
     private JButton playBtn;
     private JButton nextBtn;
@@ -36,7 +36,8 @@ public class MusicPlayerGUI extends JFrame {
     private JSlider volumeSlider;
 
     private JPopupMenu popUpMenu;
-    private JMenuItem deleteSongMenuItem;
+    private JMenuItem deleteSongMenuItemPopup;
+    private JMenuItem addSongMenuItemPopup;
 
 
     public MusicPlayerGUI(String frameTitle) {
@@ -52,6 +53,8 @@ public class MusicPlayerGUI extends JFrame {
         menu = new JMenu("File");
         addSongMenuItem = new JMenuItem("Add File to Library");
         openSongMenuItem = new JMenuItem("Open");
+        exitApplicationMenuItem = new JMenuItem("Exit Application");
+        deleteSongMenuItem = new JMenuItem("Delete Song from Library");
         createMenu();
 
         //create table and setup
@@ -64,12 +67,12 @@ public class MusicPlayerGUI extends JFrame {
         initializeTable();
 
         popUpMenu = new JPopupMenu();
-        deleteSongMenuItem = new JMenuItem("Delete Song");
-        popUpMenu.add(deleteSongMenuItem);
+        deleteSongMenuItemPopup = new JMenuItem("Delete This Song");
+        addSongMenuItemPopup = new JMenuItem("Add A Song");
+        popUpMenu.add(deleteSongMenuItemPopup);
+        popUpMenu.add(addSongMenuItemPopup);
 
         tableScrollPane = new JScrollPane(songTable);
-       // dragDropPanel = new JPanel();
-      //  dragDropPanel.add(tableScrollPane);
 
         stopBtn = new JButton("Stop");
         bottomPanel.add(stopBtn);
@@ -88,7 +91,6 @@ public class MusicPlayerGUI extends JFrame {
 
         //TODO layout bottomPanel
 
-        //this.add(topPanel, BorderLayout.NORTH);
         this.setJMenuBar(menuBar);
         this.add(tableScrollPane, BorderLayout.CENTER);
         this.add(bottomPanel, BorderLayout.SOUTH);
@@ -99,6 +101,8 @@ public class MusicPlayerGUI extends JFrame {
         this.menu.setPreferredSize(new Dimension(50, this.menu.getPreferredSize().height));
         this.menu.add(addSongMenuItem);
         this.menu.add(openSongMenuItem);
+        this.menu.add(exitApplicationMenuItem);
+        this.menu.add(deleteSongMenuItem);
         this.menuBar.add(menu);
     }
 
@@ -125,12 +129,20 @@ public class MusicPlayerGUI extends JFrame {
      * @param rowIndex row to be selected.
      */
     public void changeTableRowSelection(int rowIndex){
-        songTable.changeSelection(rowIndex,0,false,false);
+        songTable.changeSelection(rowIndex,0,false,
+                false);
     }
 
     //getters and setters
     public JTable getSongTable(){ return songTable; }
-    public JPopupMenu getPopUpMenu() { return popUpMenu; }
+    public JPopupMenu getPopUpMenu() {
+        deleteSongMenuItemPopup.setVisible(true);
+        return popUpMenu;
+    }
+    public JPopupMenu getPopUpMenuInBlankspace(){
+        deleteSongMenuItemPopup.setVisible(false);
+        return popUpMenu;
+    }
     public JScrollPane getScrollPane() { return this.tableScrollPane; }
 
     //For 'Play'<->'Pause' text change
@@ -140,7 +152,8 @@ public class MusicPlayerGUI extends JFrame {
 
     //Error message Dialog
     public void displayErrorMessage(String errorMessage){
-        JOptionPane.showMessageDialog(this, errorMessage);
+        JOptionPane.showMessageDialog(this,
+                errorMessage);
     }
 
 
@@ -153,10 +166,16 @@ public class MusicPlayerGUI extends JFrame {
     public void addAddSongMenuItemListener(ActionListener listener) {
         addSongMenuItem.addActionListener(listener);
     }
-    //Add listener to popup menu
-    public void addDeleteSongListener(ActionListener listener) {
-        deleteSongMenuItem.addActionListener(listener);
+    public void addExitApplicationMenuItemListener (ActionListener listener) {
+        exitApplicationMenuItem.addActionListener(listener);
     }
+    public void addDeleteSongMenuListener (ActionListener listener) { deleteSongMenuItem.addActionListener(listener);}
+
+    //Add listener to popup menu
+    public void addDeleteSongPopupListener(ActionListener listener) {
+        deleteSongMenuItemPopup.addActionListener(listener);
+    }
+    public void addAddSongPopupListener (ActionListener listener) {addSongMenuItemPopup.addActionListener(listener);}
     //Add listeners to buttons
     public void addPlayBtnListener(ActionListener listener){
         playBtn.addActionListener(listener);

@@ -10,6 +10,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
@@ -65,12 +66,22 @@ public class MainController {
 
         playerView.addVolumeSliderListener(new VolumeSliderListener());
 
+        //Add listeners for standard menu
         playerView.addAddSongMenuItemListener(new AddSongMenuItemListener());
         playerView.addOpenSongMenuItemListener(new OpenSongMenuItemListener());
+        playerView.addExitApplicationMenuItemListener(new ExitApplicationMenuItemListener());
+        playerView.addDeleteSongMenuListener(new DeleteSongMenuItemListener());
 
-        playerView.addDeleteSongListener(new DeleteSongMenuItemListener());
+        //Add listeners for popup menu
+        playerView.addDeleteSongPopupListener(new DeleteSongPopupItemListener());
+        this.addDeleteSongListener();
+        playerView.addAddSongPopupListener(new AddSongMenuItemListener());
+        //playerView.addPopupTriggerListenerForTable(new PopupTriggerListenerForTable());
+
+        //Add listener for table selection
         playerView.addSelectionListenerForTable(new SelectionListenerForTable());
-        playerView.addPopupTriggerListenerForTable(new PopupTriggerListenerForTable());
+
+        //Add listener for drag and drop area
         addDragDropToScrollPane();
 
     }
@@ -227,7 +238,7 @@ public class MainController {
         }
     }
 
-    class PopupTriggerListenerForTable extends MouseAdapter {
+    /*class PopupTriggerListenerForTable extends MouseAdapter {
         JTable source = null;
         int row = 0, col = 0, rowCount = 0;
         boolean isPopupOK = false;
@@ -268,9 +279,9 @@ public class MainController {
                 playerView.getPopUpMenu().show(e.getComponent(), e.getX(), e.getY());
             }
             isPopupOK = false;
-            */
+
         }
-    }
+    }*/
 
     class AddSongMenuItemListener implements ActionListener {
         @Override
@@ -301,13 +312,21 @@ public class MainController {
         }
     }
 
-    class DeleteSongMenuItemListener implements ActionListener {
+    class ExitApplicationMenuItemListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            System.exit(0);
+            }
+        }
+
+
+    class DeleteSongPopupItemListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             //What is this part?
-//            Component c = (Component)e.getSource();
-//            JPopupMenu popup = (JPopupMenu)c.getParent();
-//            JTable table = (JTable)popup.getInvoker();
+            Component c = (Component)e.getSource();
+            JPopupMenu popup = (JPopupMenu)c.getParent();
+            JTable table = (JTable)popup.getInvoker();
             int selectedRow = playerView.getSongTable().getSelectedRow();
 
             if ( (selectedRow >= 0) && (selectedRow < library.size()) ) {
@@ -319,6 +338,55 @@ public class MainController {
                 System.out.println("[DeleteSong] selectedRow: "+selectedRow+", nothing selected to delete.");
             }
         }
+    }
+
+    class DeleteSongMenuItemListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            //TODO implement functionality
+        }
+    }
+
+    public void addDeleteSongListener() {
+        playerView.getSongTable().addMouseListener( new MouseAdapter()
+        {
+            JTable source;
+            int row = 0, col = 0, rowCount = 0;
+            boolean isRowInbound;
+
+            public void mousePressed(MouseEvent e) {
+                // Get the mouse position in the table
+                source = (JTable)e.getSource();
+                rowCount = source.getRowCount();
+                row = source.rowAtPoint( e.getPoint() );
+                col = source.columnAtPoint( e.getPoint() );
+                isRowInbound = (row >= 0) && (row < rowCount);
+
+                //Deselect Row when selected out out table
+                if ( ! isRowInbound ) {
+                    playerView.getSongTable().clearSelection();
+                    System.out.println("Deselected row");
+                }
+
+            }
+
+            public void mouseReleased(MouseEvent e)
+            {
+                //Right-click Popup Trigger for Windows
+                if (e.isPopupTrigger())
+                {
+                    if ( isRowInbound ) {   //right click in table
+                        System.out.println("right clicked inside of the table");
+                        source.changeSelection(row, col, false, false);
+                        playerView.getPopUpMenu().show(e.getComponent(), e.getX(), e.getY());
+                    } else {                //right click out of table
+                        System.out.println("right clicked outside of the table");
+                        playerView.getPopUpMenuInBlankspace().show(e.getComponent(), e.getX(), e.getY());
+                    }
+                }
+            }
+        });
     }
 
 
