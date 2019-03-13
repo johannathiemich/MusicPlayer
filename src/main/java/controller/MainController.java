@@ -57,6 +57,7 @@ public class MainController {
 
         //setup presentation
         playerView.updateTableView(library);
+        playerView.setSize(1000, 1000);
         playerView.setVisible(true);
 
         //add listeners for user action
@@ -114,19 +115,19 @@ public class MainController {
                 //Pause Action
                 case BasicPlayer.PLAYING :
                     playerControl.pauseSong();
-                    btnText = "Resume";
+                    btnText = ">";
                     break;
                 //Resume Action
                 case BasicPlayer.PAUSED :
                     playerControl.resumeSong();
-                    btnText = "Pause";
+                    btnText = "=";
                     break;
                 //Play Action
                 case BasicPlayer.STOPPED :
                 default:
                     playerControl.setCurrentSong(selectedSong);
                     playerControl.playSong();
-                    btnText = "Pause";
+                    btnText = "=";
                     System.out.println("playerStatus: "+playerStatus);
                     break;
             }
@@ -138,7 +139,7 @@ public class MainController {
         @Override
         public void actionPerformed(ActionEvent e) {
             System.out.println("[BUTTON] STOP button is pressed.");
-            playerView.setPlayBtnText("Play");
+            playerView.setPlayBtnText(">");
             playerControl.stopSong();
         }
     }
@@ -169,7 +170,7 @@ public class MainController {
             playerControl.setCurrentSong(prevSong);
             playerControl.playSong();
             // Change the button text
-            playerView.setPlayBtnText("Pause");
+            playerView.setPlayBtnText("=");
         }
     }
 
@@ -199,7 +200,7 @@ public class MainController {
             playerControl.setCurrentSong(nextSong);
             playerControl.playSong();
             // Change the button text
-            playerView.setPlayBtnText("Pause");
+            playerView.setPlayBtnText("=");
         }
     }
 
@@ -358,35 +359,52 @@ public class MainController {
     public void addDeleteSongListener() {
         playerView.getSongTable().addMouseListener( new MouseAdapter()
         {
-            public void mousePressed(MouseEvent e)
-            {
-                if (e.isPopupTrigger()) {
-                    System.out.println("right clicked");
+            JTable source;
+            int row = 0, col = 0, rowCount = 0;
+            boolean isRowInbound;
+
+            public void mousePressed(MouseEvent e) {
+                // Get the mouse position in the table
+                source = (JTable)e.getSource();
+                rowCount = source.getRowCount();
+                row = source.rowAtPoint( e.getPoint() );
+                col = source.columnAtPoint( e.getPoint() );
+                isRowInbound = (row >= 0) && (row < rowCount);
+
+                //Right-click Popup Trigger for MacOS
+                if (e.isPopupTrigger())
+                {
+                    if ( isRowInbound ) {   //right click in table
+                        System.out.println("right clicked inside of the table");
+                        source.changeSelection(row, col, false, false);
+                        playerView.getPopUpMenu().show(e.getComponent(), e.getX(), e.getY());
+                    } else {                //right click out of table
+                        System.out.println("right clicked outside of the table");
+                        playerView.getPopUpMenuInBlankspace().show(e.getComponent(), e.getX(), e.getY());
+                    }
                 }
-                //System.out.println("right clicked after");
-                if (playerView.getSongTable().rowAtPoint((e.getPoint())) == -1) {
+
+                //Deselect Row when selected out out table
+                if ( ! isRowInbound ) {
                     playerView.getSongTable().clearSelection();
                     System.out.println("Deselected row");
                 }
+
             }
 
             public void mouseReleased(MouseEvent e)
             {
+                //Right-click Popup Trigger for Windows
                 if (e.isPopupTrigger())
                 {
-                    JTable source = (JTable)e.getSource();
-                    int row = source.rowAtPoint( e.getPoint() );
-                    int column = source.columnAtPoint( e.getPoint() );
-
-                    if (! source.isRowSelected(row) && row >= 0 && row < library.size()) {
-                        source.changeSelection(row, column, false, false);
+                    if ( isRowInbound ) {   //right click in table
+                        System.out.println("right clicked inside of the table");
+                        source.changeSelection(row, col, false, false);
                         playerView.getPopUpMenu().show(e.getComponent(), e.getX(), e.getY());
-                    } else if (source.isRowSelected(row) && row >= 0 && row < library.size()) {
-                        playerView.getPopUpMenu().show(e.getComponent(), e.getX(), e.getY());
-                    } else if (row < 0 || row >= library.size()) {
-                        source.clearSelection();
+                    } else {                //right click out of table
+                        System.out.println("right clicked outside of the table");
+                        playerView.getPopUpMenuInBlankspace().show(e.getComponent(), e.getX(), e.getY());
                     }
-
                 }
             }
         });
