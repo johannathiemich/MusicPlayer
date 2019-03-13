@@ -68,10 +68,10 @@ public class MusicPlayerGUI extends JFrame {
 
         menuBar = new JMenuBar();
         menu = new JMenu("File");
-        addSongMenuItem = new JMenuItem("Add File to Library");
         openSongMenuItem = new JMenuItem("Open");
-        exitApplicationMenuItem = new JMenuItem("Exit Application");
+        addSongMenuItem = new JMenuItem("Add File to Library");
         deleteSongMenuItem = new JMenuItem("Delete Song from Library");
+        exitApplicationMenuItem = new JMenuItem("Exit Application");
         createMenu();
 
         //create table and setup
@@ -123,10 +123,10 @@ public class MusicPlayerGUI extends JFrame {
 
     private void createMenu() {
         this.menu.setPreferredSize(new Dimension(50, this.menu.getPreferredSize().height));
-        this.menu.add(addSongMenuItem);
         this.menu.add(openSongMenuItem);
-        this.menu.add(exitApplicationMenuItem);
+        this.menu.add(addSongMenuItem);
         this.menu.add(deleteSongMenuItem);
+        this.menu.add(exitApplicationMenuItem);
         this.menuBar.add(menu);
     }
 
