@@ -10,6 +10,8 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
+import java.awt.Dimension;
+import javax.swing.JFrame;
 
 
 public class MusicPlayerGUI extends JFrame {
@@ -40,9 +42,14 @@ public class MusicPlayerGUI extends JFrame {
     private JMenuItem addSongMenuItemPopup;
 
 
+
+
     public MusicPlayerGUI(String frameTitle) {
         super(frameTitle);
+
+
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+
 
         columnHeader = new String[]{"Path", "Title", "Artist", "Album", "Year", "Comment", "Genre"};
 

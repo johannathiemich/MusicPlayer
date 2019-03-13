@@ -56,6 +56,7 @@ public class MainController {
 
         //setup presentation
         playerView.updateTableView(library);
+        playerView.setSize(1000, 1000);
         playerView.setVisible(true);
 
         //add listeners for user action
