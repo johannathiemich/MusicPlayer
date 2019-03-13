@@ -6,14 +6,20 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class DatabaseHandler {
+
+    // Create a named constant for the URL.
+    // NOTE: This value is specific for Java DB.
     private final String createDatabaseURL = "jdbc:derby:SongsDB;create=true";
     private final String databaseURL = "jdbc:derby:SongsDB;create=false";
     private final String shutdownURL = "jdbc:derby:;shutdown=true";
     private final String tableName = "SONGS";
 
     public DatabaseHandler() {
-        // Create a named constant for the URL.
-        // NOTE: This value is specific for Java DB.
+        //dropAllTables();
+        createSongTable();
+    }
+
+    public void createSongTable(){
         Connection conn = null;
         Statement statement = null;
         String sql = "CREATE TABLE SONGS (SONG_PATH VARCHAR(512) PRIMARY KEY, TITLE VARCHAR(256), ARTIST VARCHAR(256), " +
@@ -51,18 +57,18 @@ public class DatabaseHandler {
         try {
             conn = DriverManager.getConnection(createDatabaseURL);
             statement = conn.createStatement();
-            statement.execute(sql);
+            statement.executeUpdate(sql);
             conn.close();
             System.out.println("Added song successfully.");
-            return true;
+            success = true;
         } catch (SQLException e) {
+            success = false;
             if (e.getSQLState().equals("23505")) {
                 System.out.println("Song is already saved in the database.");
             } else if (e.getSQLState().equals("XJ015")) {
                 System.out.println("Derby shutdown normally.");
             } else {
                 e.printStackTrace();
-                success = false;
             }
         }
         return success;
@@ -128,6 +134,28 @@ public class DatabaseHandler {
         }
         return library;
     }
+
+    public void dropAllTables(){
+        try {
+            // Get a Statement object.
+            Connection conn = DriverManager.getConnection(createDatabaseURL);
+            Statement stmt = conn.createStatement();
+
+            try {
+                // Drop the UnpaidOrder table.
+                stmt.execute("DROP TABLE "+tableName);
+                System.out.println(tableName+" table dropped.");
+            } catch (SQLException ex) {
+                // No need to report an error.
+                // The table simply did not exist.
+            }
+        } catch (SQLException ex) {
+            System.out.println("ERROR: " + ex.getMessage());
+            ex.printStackTrace();
+        }
+    }
+
+
 }
 
 

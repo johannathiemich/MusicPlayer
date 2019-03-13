@@ -4,6 +4,7 @@ import database.DatabaseHandler;
 
 import java.util.ArrayList;
 
+//same with SongDAO(Data Access Object). same concept same work.
 public class SongLibrary extends ArrayList<Song>{
 
     private DatabaseHandler dbHandler;
@@ -17,11 +18,11 @@ public class SongLibrary extends ArrayList<Song>{
 
     /**
      * Construct a library from an array of songs
-     * @param songArray array of Songs to add to the library
+     * This might be removed later...
      */
     public SongLibrary(ArrayList<Song> songArray){
-        this.addAll(songArray);
         this.dbHandler = new DatabaseHandler();
+        this.addAll(songArray);
     }
 
     /**
@@ -31,15 +32,18 @@ public class SongLibrary extends ArrayList<Song>{
      */
     public void addSong(Song song){
         if(song.getPath()!=null) {
-            System.out.print("Song '" + song.getTitle() + "'");
             //TODO modify comparison (compare path instead) @sellabae
-            if (this.contains(song)) {
-                System.out.println(" already exists in library");
-            } else {
+
+            //add song to the database
+            boolean addSongSucceed = dbHandler.addSong(song);
+            if (addSongSucceed) {
+                //add song to this library
                 this.add(song);
-                this.dbHandler.addSong(song);
-                System.out.println(" is added to library");
+                System.out.print("[addSong] success! ");
+            } else {
+                System.out.print("[addSong] not added to db (already exist or fail) ");
             }
+            System.out.println(" FilePath: "+song.getPath());
         }
     }
 
