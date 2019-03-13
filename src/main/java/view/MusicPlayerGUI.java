@@ -68,7 +68,7 @@ public class MusicPlayerGUI extends JFrame {
 
         menuBar = new JMenuBar();
         menu = new JMenu("File");
-        openSongMenuItem = new JMenuItem("Open");
+        openSongMenuItem = new JMenuItem("Play External Song");
         addSongMenuItem = new JMenuItem("Add File to Library");
         deleteSongMenuItem = new JMenuItem("Delete Song from Library");
         exitApplicationMenuItem = new JMenuItem("Exit Application");

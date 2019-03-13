@@ -56,7 +56,7 @@ public class MainController {
 
         //setup presentation
         playerView.updateTableView(library);
-        playerView.setSize(1000, 1000);
+        playerView.setSize(800, 800);
         playerView.setVisible(true);
 
         //add listeners for user action
@@ -119,14 +119,14 @@ public class MainController {
                 //Resume Action
                 case BasicPlayer.PAUSED :
                     playerControl.resumeSong();
-                    btnText = "=";
+                    btnText = "||";
                     break;
                 //Play Action
                 case BasicPlayer.STOPPED :
                 default:
                     playerControl.setCurrentSong(selectedSong);
                     playerControl.playSong();
-                    btnText = "=";
+                    btnText = "||";
                     System.out.println("playerStatus: "+playerStatus);
                     break;
             }
@@ -169,7 +169,7 @@ public class MainController {
             playerControl.setCurrentSong(prevSong);
             playerControl.playSong();
             // Change the button text
-            playerView.setPlayBtnText("=");
+            playerView.setPlayBtnText("||");
         }
     }
 
@@ -199,7 +199,7 @@ public class MainController {
             playerControl.setCurrentSong(nextSong);
             playerControl.playSong();
             // Change the button text
-            playerView.setPlayBtnText("=");
+            playerView.setPlayBtnText("||");
         }
     }
 
