@@ -1,10 +1,8 @@
 package controller;
 
 import javazoom.jlgui.basicplayer.BasicPlayer;
-import model.Song;
-import model.SongLibrary;
-import view.ListDialog;
-import view.MusicPlayerGUI;
+import model.*;
+import view.*;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -46,61 +44,40 @@ public class MainController {
      */
     public MainController() {
         //assign modules
-        playerView = new MusicPlayerGUI("controller.MainController Testing");
-        library = new SongLibrary(); //should always be up to date with db
-
-        // [TEST1]
-        //TESTAddSongToLibrary();
+        playerView = new MusicPlayerGUI("MyTunes1.0");
+        library = new SongLibrary(); //should always be up-to-date with db
 
         playerControl = new PlayerController(library);
         selectedSong = new Song();
 
         //setup presentation
         playerView.updateTableView(library);
-        playerView.setSize(800, 800);
         playerView.setVisible(true);
 
-        //add listeners for user action
+        //add listeners for buttons and slider
         playerView.addPlayBtnListener(new PlayBtnListener());
         playerView.addStopBtnListener(new StopBtnListener());
         playerView.addPrevBtnListener(new PrevBtnListener());
         playerView.addNextBtnListener(new NextBtnListener());
-
         playerView.addVolumeSliderListener(new VolumeSliderListener());
 
         //Add listeners for standard menu
         playerView.addAddSongMenuItemListener(new AddSongMenuItemListener());
         playerView.addOpenSongMenuItemListener(new OpenSongMenuItemListener());
-        playerView.addExitApplicationMenuItemListener(new ExitApplicationMenuItemListener());
+        playerView.addExitMenuItemListener(new ExitMenuItemListener());
         playerView.addDeleteSongMenuListener(new DeleteSongMenuItemListener());
 
         //Add listeners for popup menu
         playerView.addDeleteSongPopupListener(new DeleteSongPopupItemListener());
-        this.addDeleteSongListener();
         playerView.addAddSongPopupListener(new AddSongMenuItemListener());
-        //playerView.addPopupTriggerListenerForTable(new PopupTriggerListenerForTable());
 
-        //Add listener for table selection
+        //Add listener for table
         playerView.addSelectionListenerForTable(new SelectionListenerForTable());
+        playerView.addMouseListenerForTable(new MouseListenerForTable());
 
         //Add listener for drag and drop area
         addDragDropToScrollPane();
 
-    }
-
-    // [TEST1] THIS IS TO TEST PLAYER CONTROL ACTIONS --------------------
-    // PUT MP3 FILES IN YOUR LOCAL DIRECTORY TO TEST
-    public void TESTAddSongToLibrary(){
-        SongLibrary testLibrary = new SongLibrary();
-        System.out.println("========= TESTING! MP3files in local directory");
-        testLibrary.addSong(new Song("/Users/sella/downloads/mp3/cinemaparadiso.mp3"));
-        testLibrary.addSong(new Song("/Users/sella/downloads/mp3/Jamaica Farewell by Harry Belafonte.mp3"));
-        testLibrary.addSong(new Song("invalid file Path"));
-        testLibrary.addSong(new Song("/Users/sella/downloads/mp3/HONOLULU CITY LIGHTS KAPONO.mp3"));
-        testLibrary.addSong(new Song("/Users/sella/downloads/mp3/03 Cotton Fields.mp3"));
-        playerControl = new PlayerController(testLibrary);
-        playerView.updateTableView(testLibrary);
-        library = testLibrary;
     }
 
     //Listeners
@@ -128,7 +105,6 @@ public class MainController {
                     playerControl.setCurrentSong(selectedSong);
                     playerControl.playSong();
                     btnText = "||";
-                    System.out.println("playerStatus: "+playerStatus);
                     break;
             }
             playerView.setPlayBtnText(btnText);
@@ -214,74 +190,6 @@ public class MainController {
         }
     }
 
-    class SelectionListenerForTable implements ListSelectionListener {
-        final JTable table = playerView.getSongTable();
-
-        //Table row selected
-        @Override
-        public void valueChanged(ListSelectionEvent e) {
-            if (!e.getValueIsAdjusting()) {
-                int selectedRow = table.getSelectedRow();
-                System.out.print("[Table] selectedRow:"+selectedRow);
-                if (selectedRow >= 0 && selectedRow < library.size()) {
-                    try {
-                        String title = table.getValueAt(selectedRow, 1).toString();
-                        String artist = table.getValueAt(selectedRow, 2).toString();
-                        System.out.print(", [" + title + " - " + artist + "]");
-                        selectedSong = library.get(selectedRow);
-                    } finally {
-                        System.out.println();
-                    }
-                }
-            }
-        }
-    }
-
-    /*class PopupTriggerListenerForTable extends MouseAdapter {
-        JTable source = null;
-        int row = 0, col = 0, rowCount = 0;
-        boolean isPopupOK = false;
-
-        @Override
-        public void mousePressed(MouseEvent e) {
-            source = (JTable) e.getSource();
-            row = source.rowAtPoint(e.getPoint());
-            col = source.columnAtPoint(e.getPoint());
-            rowCount = source.getRowCount();
-
-            //Popup Trigger
-            if (e.isPopupTrigger()) {
-                System.out.println("[Table] mouse right-click(row:" + row + ",col:" + col + "), ");
-                source.changeSelection(row, col, false, false);
-
-                if ((row >= 0) && (row < rowCount)) {
-                    isPopupOK = true;
-                    //Show popup menu
-                    playerView.getPopUpMenu().show(e.getComponent(), e.getX(), e.getY());
-                } else {
-                    isPopupOK = false;
-                    source.clearSelection();
-                }
-                System.out.println("isPopupOK? " + isPopupOK);
-            }
-
-            //Deselect all when the row is out of bound
-            if ( ! ((row >= 0) && (row < rowCount)) ) {
-                source.clearSelection();
-            }
-        }
-
-        @Override
-        public void mouseReleased(MouseEvent e) {
-            /*
-            if (isPopupOK) {
-                playerView.getPopUpMenu().show(e.getComponent(), e.getX(), e.getY());
-            }
-            isPopupOK = false;
-
-        }
-    }*/
-
     class AddSongMenuItemListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -307,17 +215,17 @@ public class MainController {
             if (chooser.showOpenDialog(playerView) == JFileChooser.APPROVE_OPTION) {
                 selectedPath = chooser.getSelectedFile().getAbsolutePath();
                 playerControl.playSong(new Song(selectedPath));
+                playerView.setPlayBtnText("||");
             }
         }
     }
 
-    class ExitApplicationMenuItemListener implements ActionListener {
+    class ExitMenuItemListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             System.exit(0);
-            }
         }
-
+    }
 
     class DeleteSongPopupItemListener implements ActionListener {
         @Override
@@ -343,7 +251,7 @@ public class MainController {
         @Override
         public void actionPerformed(ActionEvent e) {
             ListDialog.showDialog(playerView, playerView, "Choose the song to be deleted.",
-                    "Song Library", library.convertToString(), library.convertToString()[0],
+                    "Delete Song from Library", library.convertToString(), library.convertToString()[0],
                     library.convertToString()[0]);
             String selectedSong = ListDialog.getSelectedValue().split("\\[")[0].trim();
             if (library.getSongByPath(selectedSong) != null) {
@@ -353,58 +261,102 @@ public class MainController {
           }
     }
 
-    public void addDeleteSongListener() {
-        playerView.getSongTable().addMouseListener( new MouseAdapter()
-        {
-            JTable source;
-            int row = 0, col = 0, rowCount = 0;
-            boolean isRowInbound;
+    /**
+     * SelectionListenerForTable detects
+     * any row selection change of the table
+     * either by mouse or keyboard arrows
+     */
+    class SelectionListenerForTable implements ListSelectionListener {
+        final JTable table = playerView.getSongTable();
+        int row;
+        boolean isRowInbound;
 
-            public void mousePressed(MouseEvent e) {
-                // Get the mouse position in the table
-                source = (JTable)e.getSource();
-                rowCount = source.getRowCount();
-                row = source.rowAtPoint( e.getPoint() );
-                col = source.columnAtPoint( e.getPoint() );
-                isRowInbound = (row >= 0) && (row < rowCount);
+        //Table row selected
+        @Override
+        public void valueChanged(ListSelectionEvent e) {
+            if (!e.getValueIsAdjusting()) {
+                row = table.getSelectedRow();
+                isRowInbound = row >= 0 && row < table.getRowCount();
 
-                //Right-click Popup Trigger for MacOS
-                if (e.isPopupTrigger())
-                {
-                    if ( isRowInbound ) {   //right click in table
-                        System.out.println("right clicked inside of the table");
-                        source.changeSelection(row, col, false, false);
-                        playerView.getPopUpMenu().show(e.getComponent(), e.getX(), e.getY());
-                    } else {                //right click out of table
-                        System.out.println("right clicked outside of the table");
-                        playerView.getPopUpMenuInBlankspace().show(e.getComponent(), e.getX(), e.getY());
-                    }
+                if (isRowInbound) {
+                    selectedSong = library.get(row);
+                    System.out.print("[Table] selectedRow:"+row);
+                    System.out.println(", [" + selectedSong.getTitleAndArtist() + "]");
                 }
-
-                //Deselect Row when selected out out table
-                if ( ! isRowInbound ) {
-                    playerView.getSongTable().clearSelection();
-                    System.out.println("Deselected row");
-                }
-
             }
+        }
+    }
 
-            public void mouseReleased(MouseEvent e)
+    /**
+     * MouseListenerForTable covers:
+     * 1. popup trigger for right-click inside of table
+     * 2. popup trigger for right-click outside of table
+     * 3. clear selections for left-click outside of table
+     * 4. double-click to play the song
+     */
+    class MouseListenerForTable extends MouseAdapter {
+        JTable source;
+        int row = 0, col = 0, rowCount = 0;
+        boolean isRowInbound;
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            // Get the mouse position in the table
+            source = (JTable)e.getSource();
+            rowCount = source.getRowCount();
+            row = source.rowAtPoint( e.getPoint() );
+            col = source.columnAtPoint( e.getPoint() );
+            isRowInbound = (row >= 0) && (row < rowCount);
+
+            // Right-click Popup Trigger for MacOS
+            if (e.isPopupTrigger())
             {
-                //Right-click Popup Trigger for Windows
-                if (e.isPopupTrigger())
-                {
-                    if ( isRowInbound ) {   //right click in table
-                        System.out.println("right clicked inside of the table");
-                        source.changeSelection(row, col, false, false);
-                        playerView.getPopUpMenu().show(e.getComponent(), e.getX(), e.getY());
-                    } else {                //right click out of table
-                        System.out.println("right clicked outside of the table");
-                        playerView.getPopUpMenuInBlankspace().show(e.getComponent(), e.getX(), e.getY());
-                    }
+                if ( isRowInbound ) {   //right click in table
+                    System.out.println("right clicked inside of the table");
+                    source.changeSelection(row, col, false, false);
+                    playerView.getPopUpMenu().show(e.getComponent(), e.getX(), e.getY());
+                } else {                //right click out of table
+                    System.out.println("right clicked outside of the table");
+                    playerView.getPopUpMenuInBlankspace().show(e.getComponent(), e.getX(), e.getY());
                 }
             }
-        });
+
+            // Click outside of Table to clear selection
+            if ( ! isRowInbound ) {
+                playerView.getSongTable().clearSelection();
+                System.out.println("Deselected row");
+            }
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e)
+        {
+            // Right-click Popup Trigger for Windows
+            if (e.isPopupTrigger())
+            {
+                if ( isRowInbound ) {   //right click in table
+                    System.out.println("right clicked inside of the table");
+                    source.changeSelection(row, col, false, false);
+                    playerView.getPopUpMenu().show(e.getComponent(), e.getX(), e.getY());
+                } else {                //right click out of table
+                    System.out.println("right clicked outside of the table");
+                    playerView.getPopUpMenuInBlankspace().show(e.getComponent(), e.getX(), e.getY());
+                }
+            }
+        }
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            // Double-click on a song to play
+            if ( isRowInbound ) {
+                if (e.getClickCount() == 2 && !e.isConsumed()) {
+                    System.out.println("double clicked");
+                    Song selectedSong = library.get(row);
+                    playerControl.playSong(selectedSong);
+                    playerView.setPlayBtnText("||");
+                }
+            }
+        }
     }
 
 

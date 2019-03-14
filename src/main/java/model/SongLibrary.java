@@ -2,7 +2,6 @@ package model;
 
 import database.DatabaseHandler;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 //same with SongDAO(Data Access Object). same concept same work.
@@ -30,7 +29,7 @@ public class SongLibrary extends ArrayList<Song>{
         String[] resultString = new String[this.size()];
 
         for (int i = 0; i < this.size(); i++) {
-            resultString[i] = this.get(i).getPath() + "     [" + this.get(i).getTitle()+ "]     [" +
+            resultString[i] = this.get(i).getPath() + "     [" + this.get(i).getTitle()+ " - " +
                     this.get(i).getArtist() + "]";
         }
         return resultString;

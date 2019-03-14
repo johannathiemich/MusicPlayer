@@ -1,8 +1,4 @@
 import controller.MainController;
-import view.ListDialog;
-import view.MusicPlayerGUI;
-
-import java.util.List;
 
 public class Main {
 
