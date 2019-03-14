@@ -1,5 +1,8 @@
 package controller;
 
+import com.mpatric.mp3agic.InvalidDataException;
+import com.mpatric.mp3agic.Mp3File;
+import com.mpatric.mp3agic.UnsupportedTagException;
 import javazoom.jlgui.basicplayer.BasicPlayer;
 import model.*;
 import view.*;
@@ -19,6 +22,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -173,9 +177,18 @@ public class MainController {
             String selectedPath = "";
             if (chooser.showOpenDialog(playerView) == JFileChooser.APPROVE_OPTION) {
                 selectedPath = chooser.getSelectedFile().getAbsolutePath();
-                library.addSong(new Song(selectedPath));
-                playerView.updateTableView(library);
-                playerControl.updateLibrary(library);
+                try {
+                    Mp3File mp3file = new Mp3File(selectedPath);
+                    library.addSong(new Song(selectedPath));
+                    playerView.updateTableView(library);
+                    playerControl.updateLibrary(library);
+                } catch (UnsupportedTagException e1) {
+                    e1.printStackTrace();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                } catch (InvalidDataException e1) {
+                    JOptionPane.showMessageDialog(null, "This file is not a valid mp3 file.");
+                }
             }
         }
     }
@@ -192,9 +205,17 @@ public class MainController {
             String selectedPath = "";
             if (chooser.showOpenDialog(playerView) == JFileChooser.APPROVE_OPTION) {
                 selectedPath = chooser.getSelectedFile().getAbsolutePath();
-                playerControl.playSong(new Song(selectedPath));
-                playerView.setPlayBtnText("||");
-                playerControl.updateLibrary(library);
+                try {
+                    Mp3File mp3file = new Mp3File(selectedPath);
+                    playerControl.playSong(new Song(selectedPath));
+                    playerView.setPlayBtnText("||");
+                } catch (UnsupportedTagException e1) {
+                    e1.printStackTrace();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                } catch (InvalidDataException e1) {
+                    JOptionPane.showMessageDialog(null, "This file is not a valid mp3 file.");
+                }
             }
         }
     }
@@ -239,14 +260,19 @@ public class MainController {
     class DeleteSongMenuItemListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            ListDialog.showDialog(playerView, playerView, "Choose the song to be deleted.",
-                    "Delete Song from Library", library.convertToString(), library.convertToString()[0],
-                    library.convertToString()[0]);
-            String selectedSong = ListDialog.getSelectedValue().split("\\[")[0].trim();
-            if (library.getSongByPath(selectedSong) != null) {
-                library.deleteSong(library.getSongByPath(selectedSong));
-                playerView.updateTableView(library);
-                playerControl.updateLibrary(library);
+            if (library.size() > 0 ) {
+                ListDialog.showDialog(playerView, playerView, "Choose the song to be deleted.",
+                        "Delete Song from Library", library.convertToString(), library.convertToString()[0],
+                        library.convertToString()[0]);
+                String selectedSong = ListDialog.getSelectedValue().split("\\[")[0].trim();
+                if (library.getSongByPath(selectedSong) != null) {
+                    library.deleteSong(library.getSongByPath(selectedSong));
+                    playerView.updateTableView(library);
+                    playerControl.updateLibrary(library);
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "There is no song in the " +
+                        "library to be deleted.");
             }
           }
     }
@@ -299,7 +325,7 @@ public class MainController {
             isRowInbound = (row >= 0) && (row < rowCount);
 
             // Right-click Popup Trigger for MacOS
-            if (e.isPopupTrigger())
+            if (e.isPopupTrigger() && library.size() > 0)
             {
                 if ( isRowInbound ) {   //right click in table
                     System.out.println("right clicked inside of the table");
@@ -353,15 +379,29 @@ public class MainController {
     public void addDragDropToScrollPane() {
         playerView.getScrollPane().setDropTarget(new DropTarget() {
             public synchronized void drop(DropTargetDropEvent evt) {
+                boolean invalidFilesFound = false;
                 try {
                     evt.acceptDrop(DnDConstants.ACTION_COPY);
                     List<File> droppedFiles = (List<File>)
                             evt.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
                     for (File file : droppedFiles) {
-                        library.addSong(new Song(file.getAbsolutePath()));
-                        playerView.updateTableView(library);
-                        playerControl.updateLibrary(library);
-                        System.out.println("Added songs via drop");
+                        try {
+                            Mp3File mp3file = new Mp3File(file.getAbsolutePath());
+                            library.addSong(new Song(file.getAbsolutePath()));
+                            playerView.updateTableView(library);
+                            playerControl.updateLibrary(library);
+                            System.out.println("Added songs via drop");
+                        } catch (UnsupportedTagException e1) {
+                            invalidFilesFound = true;
+                        } catch (IOException e1) {
+                            invalidFilesFound = true;
+                        } catch (InvalidDataException e1) {
+                            invalidFilesFound = true;
+                        }
+                    }
+                    if (invalidFilesFound) {
+                        JOptionPane.showMessageDialog(null, "Some files have not been added " +
+                                "since they are not valid mp3 files.");
                     }
                 } catch (Exception ex) {
                     ex.printStackTrace();
