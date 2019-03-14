@@ -36,6 +36,11 @@ public class SongLibrary extends ArrayList<Song>{
         return resultString;
     }
 
+    /**
+     *
+     * @param path this
+     * @return
+     */
     public Song getSongByPath(String path) {
         for (int i = 0; i < this.size(); i++) {
             if (this.get(i).getPath().equals(path)) {

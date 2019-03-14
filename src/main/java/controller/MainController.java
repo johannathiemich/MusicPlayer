@@ -208,12 +208,9 @@ public class MainController {
         @Override
         public void stateChanged(ChangeEvent e) {
             JSlider source = (JSlider) e.getSource();
-            int sliderVal = source.getValue();
-            System.out.println("VolumeSlider tick: " + sliderVal);
-
-            //TODO Adjust the volume of the player
-            //something = sliderVal;
-
+            double sliderVal = source.getValue();
+            sliderVal = playerControl.convertVolume(sliderVal);
+            playerControl.setVolume(sliderVal);
         }
     }
 
