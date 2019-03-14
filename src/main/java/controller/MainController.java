@@ -47,7 +47,7 @@ public class MainController {
         playerView = new MusicPlayerGUI("MyTunes1.0");
         library = new SongLibrary(); //should always be up-to-date with db
 
-        playerControl = new PlayerController(library);
+        playerControl = new PlayerController(library, playerView);
         selectedSong = new Song();
 
         //setup presentation
@@ -81,6 +81,10 @@ public class MainController {
     }
 
     //Listeners
+
+    /**
+     *
+     */
     class PlayBtnListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -111,6 +115,9 @@ public class MainController {
         }
     }
 
+    /**
+     * TODO
+     */
     class StopBtnListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -120,76 +127,43 @@ public class MainController {
         }
     }
 
+    /**
+     * Todo
+     */
     class PrevBtnListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             System.out.println("[BUTTON] PREV button is pressed.");
-            //TODO Better call playerControl.playPrevSong() and let it do all the jobs below.
-
-            int prevRow;
-            int selectedRow = playerView.getSongTable().getSelectedRow();
-            int lastRow = playerView.getSongTable().getRowCount() - 1;
-
-            if(selectedRow == 0) {
-                prevRow = lastRow;
-            } else {
-                prevRow = selectedRow - 1;
-            }
-
-            // Update row selection on the view
-            playerView.changeTableRowSelection(prevRow);
-            // Get the previous song from the library
-            Song prevSong = library.get(prevRow);
-            selectedSong = prevSong;
-
-            // Set prevSong as a current one and play it
-            playerControl.setCurrentSong(prevSong);
-            playerControl.playSong();
-            // Change the button text
-            playerView.setPlayBtnText("||");
+            playerControl.playPrevSong();
         }
     }
 
+    /**
+     * TODO
+     */
     class NextBtnListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             System.out.println("NEXT button is pressed.");
-            //TODO Better call playerControl.playNextSong() and let it do all the jobs below.
-
-            int nextRow;
-            int selectedRow = playerView.getSongTable().getSelectedRow();
-            int lastRow = playerView.getSongTable().getRowCount() - 1;
-
-            if(selectedRow == lastRow) {
-                nextRow = 0;    //nextRow goes to the top
-            } else {
-                nextRow = selectedRow + 1;
-            }
-
-            // Update row selection on the view
-            playerView.changeTableRowSelection(nextRow);
-            // Get the previous song from the library
-            Song nextSong = library.get(nextRow);
-            selectedSong = nextSong;
-
-            // Set prevSong as a current one and play it
-            playerControl.setCurrentSong(nextSong);
-            playerControl.playSong();
-            // Change the button text
-            playerView.setPlayBtnText("||");
+            playerControl.playNextSong();
         }
     }
 
+    /**
+     * TODO
+     */
     class VolumeSliderListener implements ChangeListener {
         @Override
         public void stateChanged(ChangeEvent e) {
             JSlider source = (JSlider) e.getSource();
             double sliderVal = source.getValue();
-            sliderVal = playerControl.convertVolume(sliderVal);
             playerControl.setVolume(sliderVal);
         }
     }
 
+    /**
+     * TODO
+     */
     class AddSongMenuItemListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -201,10 +175,14 @@ public class MainController {
                 selectedPath = chooser.getSelectedFile().getAbsolutePath();
                 library.addSong(new Song(selectedPath));
                 playerView.updateTableView(library);
+                playerControl.updateLibrary(library);
             }
         }
     }
 
+    /**
+     * TODO
+     */
     class OpenSongMenuItemListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -216,10 +194,14 @@ public class MainController {
                 selectedPath = chooser.getSelectedFile().getAbsolutePath();
                 playerControl.playSong(new Song(selectedPath));
                 playerView.setPlayBtnText("||");
+                playerControl.updateLibrary(library);
             }
         }
     }
 
+    /**
+     * TODO
+     */
     class ExitMenuItemListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -227,6 +209,9 @@ public class MainController {
         }
     }
 
+    /**
+     * TODO
+     */
     class DeleteSongPopupItemListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -241,12 +226,16 @@ public class MainController {
                 System.out.println("[DeleteSong] selectedRow: "+selectedRow+" '"+selectedSong.getPath()+"'");
                 library.deleteSong(selectedSong);
                 playerView.updateTableView(library);
+                playerControl.updateLibrary(library);
             } else {
                 System.out.println("[DeleteSong] selectedRow: "+selectedRow+", nothing selected to delete.");
             }
         }
     }
 
+    /**
+     * TODO
+     */
     class DeleteSongMenuItemListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -257,6 +246,7 @@ public class MainController {
             if (library.getSongByPath(selectedSong) != null) {
                 library.deleteSong(library.getSongByPath(selectedSong));
                 playerView.updateTableView(library);
+                playerControl.updateLibrary(library);
             }
           }
     }
@@ -349,7 +339,7 @@ public class MainController {
         public void mouseClicked(MouseEvent e) {
             // Double-click on a song to play
             if ( isRowInbound ) {
-                if (e.getClickCount() == 2 && !e.isConsumed()) {
+                if (e.getClickCount() == 2 && !e.isConsumed() && !e.isPopupTrigger()) {
                     System.out.println("double clicked");
                     Song selectedSong = library.get(row);
                     playerControl.playSong(selectedSong);
@@ -370,6 +360,7 @@ public class MainController {
                     for (File file : droppedFiles) {
                         library.addSong(new Song(file.getAbsolutePath()));
                         playerView.updateTableView(library);
+                        playerControl.updateLibrary(library);
                         System.out.println("Added songs via drop");
                     }
                 } catch (Exception ex) {
