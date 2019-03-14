@@ -25,12 +25,26 @@ public class PlayerController {
     public Song getCurrentSong() {
         return currentSong;
     }
+
+    public double convertVolume(double value) {
+        return value / (this.player.getMaximumGain() - this.player.getMinimumGain());
+    }
+
     public void setCurrentSong(Song song) {
         currentSong = song;
     }
 
     public int getPlayerStatus(){
         return player.getStatus();
+    }
+
+    public void setVolume(double volume) {
+        try {
+            this.player.setGain(volume);
+            System.out.println(this.player.getGainValue());
+        } catch (BasicPlayerException e) {
+            e.printStackTrace();
+        }
     }
 
 
