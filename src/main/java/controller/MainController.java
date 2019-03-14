@@ -104,8 +104,7 @@ public class MainController {
                 default:
                     playerControl.setCurrentSong(selectedSong);
                     playerControl.playSong();
-                    btnText = "=";
-                    System.out.println("playerStatus: "+playerStatus);
+                    btnText = "||";
                     break;
             }
             playerView.setPlayBtnText(btnText);
@@ -147,7 +146,7 @@ public class MainController {
             playerControl.setCurrentSong(prevSong);
             playerControl.playSong();
             // Change the button text
-            playerView.setPlayBtnText("=");
+            playerView.setPlayBtnText("||");
         }
     }
 
