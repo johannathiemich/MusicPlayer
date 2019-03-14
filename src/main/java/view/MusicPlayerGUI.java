@@ -188,7 +188,7 @@ public class MusicPlayerGUI extends JFrame {
     public void addAddSongMenuItemListener(ActionListener listener) {
         addSongMenuItem.addActionListener(listener);
     }
-    public void addExitApplicationMenuItemListener (ActionListener listener) {
+    public void addExitMenuItemListener (ActionListener listener) {
         exitApplicationMenuItem.addActionListener(listener);
     }
     public void addDeleteSongMenuListener (ActionListener listener) {
