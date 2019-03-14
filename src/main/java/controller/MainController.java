@@ -263,13 +263,16 @@ public class MainController {
         public void actionPerformed(ActionEvent e) {
             if (library.size() > 0 ) {
                 ListDialog.showDialog(playerView, playerView, "Choose the song to be deleted.",
-                        "Delete Song from Library", library.convertToString(), library.convertToString()[0],
+                        "Delete Song from Library", library.convertToString(), null,
                         library.convertToString()[0]);
-                String selectedSong = ListDialog.getSelectedValue().split("\\[")[0].trim();
-                if (library.getSongByPath(selectedSong) != null) {
-                    library.deleteSong(library.getSongByPath(selectedSong));
-                    playerView.updateTableView(library);
-                    playerControl.updateLibrary(library);
+                String selectedSong = "";
+                if (ListDialog.getSelectedValue() != null) {
+                    selectedSong = ListDialog.getSelectedValue().split("\\[")[0].trim();
+                    if (library.getSongByPath(selectedSong) != null) {
+                        library.deleteSong(library.getSongByPath(selectedSong));
+                        playerView.updateTableView(library);
+                        playerControl.updateLibrary(library);
+                    }
                 }
             } else {
                 JOptionPane.showMessageDialog(null, "There is no song in the " +

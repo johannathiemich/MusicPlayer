@@ -102,7 +102,7 @@ public class ListDialog extends JDialog implements ActionListener {
         cancelButton.addActionListener(this);
         //
         final JButton setButton = new JButton("Delete");
-        setButton.setActionCommand("Set");
+        setButton.setActionCommand("Delete");
         setButton.addActionListener(this);
         getRootPane().setDefaultButton(setButton);
 
@@ -191,8 +191,10 @@ public class ListDialog extends JDialog implements ActionListener {
 
     //Handle clicks on the Set sand Cancel buttons.
     public void actionPerformed(ActionEvent e) {
-        if ("Set".equals(e.getActionCommand())) {
+        if ("Delete".equals(e.getActionCommand())) {
             ListDialog.value = (String)(list.getSelectedValue());
+        } else {
+            ListDialog.value = null;
         }
         ListDialog.dialog.setVisible(false);
     }
