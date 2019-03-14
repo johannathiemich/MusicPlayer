@@ -103,10 +103,10 @@ public class MusicPlayerGUI extends JFrame {
         popUpMenu.add(addSongMenuItemPopup);
 
         //initializing all buttons and placing them on panel
-        stopBtn = new JButton("◼︎");
+        stopBtn = new JButton("◼");
         stopPanel.add(stopBtn);
 
-        prevBtn = new JButton("︎⦉⦉");
+        prevBtn = new JButton("⦉⦉");
         buttonPanel.add(prevBtn);
 
         playBtn = new JButton("▶");
