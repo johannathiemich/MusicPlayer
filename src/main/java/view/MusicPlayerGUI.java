@@ -41,10 +41,11 @@ public class MusicPlayerGUI extends JFrame {
     //top bar containing standard menu and components for its entries
     private JMenuBar menuBar;
     private JMenu menu;
-    private JMenuItem addSongMenuItem;
     private JMenuItem openSongMenuItem;
-    private JMenuItem exitApplicationMenuItem;
+    private JMenuItem addSongMenuItem;
     private JMenuItem deleteSongMenuItem;
+    private JMenuItem aboutMenuItem;
+    private JMenuItem exitMenuItem;
 
     //all components for popup menu (left click)
     private JPopupMenu popUpMenu;
@@ -77,7 +78,8 @@ public class MusicPlayerGUI extends JFrame {
         openSongMenuItem = new JMenuItem("Open Song");
         addSongMenuItem = new JMenuItem("Add Song to Library");
         deleteSongMenuItem = new JMenuItem("Delete Song from Library");
-        exitApplicationMenuItem = new JMenuItem("Exit Application");
+        aboutMenuItem = new JMenuItem("About");
+        exitMenuItem = new JMenuItem("Exit");
         createMenu();
 
         // Table setup
@@ -135,12 +137,13 @@ public class MusicPlayerGUI extends JFrame {
      * This method creates the standard menu and adds the menu item entries
      */
     private void createMenu() {
-        this.menu.setPreferredSize(new Dimension(50, this.menu.getPreferredSize().height));
-        this.menu.add(openSongMenuItem);
-        this.menu.add(addSongMenuItem);
-        this.menu.add(deleteSongMenuItem);
-        this.menu.add(exitApplicationMenuItem);
-        this.menuBar.add(menu);
+        menu.setPreferredSize(new Dimension(50, menu.getPreferredSize().height));
+        menu.add(openSongMenuItem);
+        menu.add(addSongMenuItem);
+        menu.add(deleteSongMenuItem);
+        menu.add(aboutMenuItem);
+        menu.add(exitMenuItem);
+        menuBar.add(menu);
     }
 
     /**
@@ -248,19 +251,27 @@ public class MusicPlayerGUI extends JFrame {
     }
 
     /**
-     *This method adds an ActionListener to the 'Exit Application' standard menu item.
-     * @param listener the listener to be added to the menu item
-     */
-    public void addExitMenuItemListener (ActionListener listener) {
-        exitApplicationMenuItem.addActionListener(listener);
-    }
-
-    /**
      *This method adds an ActionListener to the 'Delete Song' standard menu item.
      * @param listener the listener to be added to the menu item
      */
     public void addDeleteSongMenuListener (ActionListener listener) {
         deleteSongMenuItem.addActionListener(listener);
+    }
+
+    /**
+     * Add an ActionListener to 'About' standard menu item.
+     * @param listener the listener to be added to the menu item
+     */
+    public void addAboutMenuItemListener (ActionListener listener) {
+        aboutMenuItem.addActionListener(listener);
+    }
+
+    /**
+     *This method adds an ActionListener to the 'Exit' standard menu item.
+     * @param listener the listener to be added to the menu item
+     */
+    public void addExitMenuItemListener (ActionListener listener) {
+        exitMenuItem.addActionListener(listener);
     }
 
     //Add listeners to popup menu
