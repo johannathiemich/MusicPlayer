@@ -64,7 +64,7 @@ public class MainController {
         //Add listeners for standard menu
         playerView.addAddSongMenuItemListener(new AddSongMenuItemListener());
         playerView.addOpenSongMenuItemListener(new OpenSongMenuItemListener());
-        playerView.addExitApplicationMenuItemListener(new ExitApplicationMenuItemListener());
+        playerView.addExitMenuItemListener(new ExitMenuItemListener());
         playerView.addDeleteSongMenuListener(new DeleteSongMenuItemListener());
 
         //Add listeners for popup menu
@@ -206,27 +206,6 @@ public class MainController {
         }
     }
 
-    class SelectionListenerForTable implements ListSelectionListener {
-        final JTable table = playerView.getSongTable();
-        int row;
-        boolean isRowInbound;
-
-        //Table row selected
-        @Override
-        public void valueChanged(ListSelectionEvent e) {
-            if (!e.getValueIsAdjusting()) {
-                row = table.getSelectedRow();
-                isRowInbound = row >= 0 && row < table.getRowCount();
-
-                if (isRowInbound) {
-                    selectedSong = library.get(row);
-                    System.out.print("[Table] selectedRow:"+row);
-                    System.out.println(", [" + selectedSong.getTitleAndArtist() + "]");
-                }
-            }
-        }
-    }
-
     class AddSongMenuItemListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -257,7 +236,7 @@ public class MainController {
         }
     }
 
-    class ExitApplicationMenuItemListener implements ActionListener {
+    class ExitMenuItemListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             System.exit(0);
@@ -298,6 +277,39 @@ public class MainController {
           }
     }
 
+    /**
+     * SelectionListenerForTable detects
+     * any row selection change of the table
+     * either by mouse or keyboard arrows
+     */
+    class SelectionListenerForTable implements ListSelectionListener {
+        final JTable table = playerView.getSongTable();
+        int row;
+        boolean isRowInbound;
+
+        //Table row selected
+        @Override
+        public void valueChanged(ListSelectionEvent e) {
+            if (!e.getValueIsAdjusting()) {
+                row = table.getSelectedRow();
+                isRowInbound = row >= 0 && row < table.getRowCount();
+
+                if (isRowInbound) {
+                    selectedSong = library.get(row);
+                    System.out.print("[Table] selectedRow:"+row);
+                    System.out.println(", [" + selectedSong.getTitleAndArtist() + "]");
+                }
+            }
+        }
+    }
+
+    /**
+     * MouseListenerForTable covers:
+     * 1. popup trigger for right-click inside of table
+     * 2. popup trigger for right-click outside of table
+     * 3. clear selections for left-click outside of table
+     * 4. double-click to play the song
+     */
     class MouseListenerForTable extends MouseAdapter {
         JTable source;
         int row = 0, col = 0, rowCount = 0;
