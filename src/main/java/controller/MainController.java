@@ -88,6 +88,7 @@ public class MainController {
     //Listeners
 
     /**
+     * This method changes the symbol for the play button while it playing, paused, or stopped.
      *
      */
     class PlayBtnListener implements ActionListener {
@@ -125,7 +126,7 @@ public class MainController {
     }
 
     /**
-     * TODO
+     * Song os stopped and the song has the option to be played.
      */
     class StopBtnListener implements ActionListener {
         @Override
@@ -137,7 +138,7 @@ public class MainController {
     }
 
     /**
-     * Todo
+     * Current song is set to previous song in the library.
      */
     class PrevBtnListener implements ActionListener {
         @Override
@@ -148,7 +149,7 @@ public class MainController {
     }
 
     /**
-     * TODO
+     * Current song is set to next song in the library.
      */
     class NextBtnListener implements ActionListener {
         @Override
@@ -159,7 +160,7 @@ public class MainController {
     }
 
     /**
-     * TODO
+     * Slider value increases when slid to the right, decreases when slid to the left.
      */
     class VolumeSliderListener implements ChangeListener {
         @Override
@@ -171,7 +172,9 @@ public class MainController {
     }
 
     /**
-     * TODO
+     * User chooses in the menu item to add a song.
+     * Directory pops up and user can find a song to add to the library.
+     * If the file is not a valid mp3 file, an error message will appear.
      */
     class AddSongMenuItemListener implements ActionListener {
         @Override
@@ -199,7 +202,9 @@ public class MainController {
     }
 
     /**
-     * TODO
+     * User chooses in the menu item to play a song that is not in the library.
+     * Directory pops up and user can find a song to play.
+     * If the file is not a valid mp3 file, an error message will appear.
      */
     class OpenSongMenuItemListener implements ActionListener {
         @Override
@@ -226,7 +231,7 @@ public class MainController {
     }
 
     /**
-     * TODO
+     * User chooses the menu item to exit the program.
      */
     class ExitMenuItemListener implements ActionListener {
         @Override
@@ -236,7 +241,7 @@ public class MainController {
     }
 
     /**
-     * TODO
+     * User right clicks on a song and has the option to delete the song they clicked on.
      */
     class DeleteSongPopupItemListener implements ActionListener {
         @Override
@@ -260,20 +265,25 @@ public class MainController {
     }
 
     /**
-     * TODO
+     * User chooses the menu item to delete a song.
+     * The library list will appear and the user will choose which song they would
+     * like to delete from the library.
      */
     class DeleteSongMenuItemListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (library.size() > 0 ) {
                 ListDialog.showDialog(playerView, playerView, "Choose the song to be deleted.",
-                        "Delete Song from Library", library.convertToString(), library.convertToString()[0],
+                        "Delete Song from Library", library.convertToString(), null,
                         library.convertToString()[0]);
-                String selectedSong = ListDialog.getSelectedValue().split("\\[")[0].trim();
-                if (library.getSongByPath(selectedSong) != null) {
-                    library.deleteSong(library.getSongByPath(selectedSong));
-                    playerView.updateTableView(library);
-                    playerControl.updateLibrary(library);
+                String selectedSong = "";
+                if (ListDialog.getSelectedValue() != null) {
+                    selectedSong = ListDialog.getSelectedValue().split("\\[")[0].trim();
+                    if (library.getSongByPath(selectedSong) != null) {
+                        library.deleteSong(library.getSongByPath(selectedSong));
+                        playerView.updateTableView(library);
+                        playerControl.updateLibrary(library);
+                    }
                 }
             } else {
                 JOptionPane.showMessageDialog(null, "There is no song in the " +
@@ -349,6 +359,7 @@ public class MainController {
             }
         }
 
+
         @Override
         public void mouseReleased(MouseEvent e)
         {
@@ -380,7 +391,9 @@ public class MainController {
         }
     }
 
-
+    /**
+     * User can drag and drop mp3 files from their directory into the library.
+     */
     public void addDragDropToScrollPane() {
         playerView.getScrollPane().setDropTarget(new DropTarget() {
             public synchronized void drop(DropTargetDropEvent evt) {

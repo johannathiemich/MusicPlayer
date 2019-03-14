@@ -40,7 +40,7 @@ public class PlayerController {
     }
 
     /**
-     *
+     * This method updates the library
      * @param library
      */
     public void updateLibrary(SongLibrary library) {
@@ -74,7 +74,7 @@ public class PlayerController {
     }
 
     /**
-     *
+     * This method plays the currently selected song
      * @param song
      */
     public void playSong(Song song){
