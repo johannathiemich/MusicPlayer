@@ -309,6 +309,7 @@ public class MainController {
             if (chooser.showOpenDialog(playerView) == JFileChooser.APPROVE_OPTION) {
                 selectedPath = chooser.getSelectedFile().getAbsolutePath();
                 playerControl.playSong(new Song(selectedPath));
+                playerView.setPlayBtnText("=");
             }
         }
     }

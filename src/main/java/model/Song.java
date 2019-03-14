@@ -103,9 +103,9 @@ public class Song {
     public void setProperties(String pPath, String pTitle, String pArtist, String pAlbum, String pYear, String pComment,
                               String pGenre){
         this.path = pPath;
-        this.title = (pTitle==null) ? "unknown" : pTitle;
-        this.artist = (pArtist==null) ? "unknown" : pArtist;
-        this.album = (pAlbum==null) ? "unknown" : pAlbum;
+        this.title = (pTitle==null || pTitle=="") ? "unknown" : pTitle;
+        this.artist = (pArtist==null || pTitle=="") ? "unknown" : pArtist;
+        this.album = (pAlbum==null || pTitle=="") ? "unknown" : pAlbum;
         this.year = (pYear==null) ? "" : pYear;
         this.comment = (pComment==null) ? "" : pComment;
         this.genre = (pGenre==null) ? "" : pGenre;

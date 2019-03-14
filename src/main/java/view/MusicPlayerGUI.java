@@ -4,15 +4,12 @@ import model.Song;
 import model.SongLibrary;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
-import java.awt.Dimension;
-import javax.swing.JFrame;
 
 
 public class MusicPlayerGUI extends JFrame {
@@ -135,15 +132,15 @@ public class MusicPlayerGUI extends JFrame {
         songTable.setModel(tableModel);
     }
 
-    //When table view needs to change after 'Add Song To Library' action
-    public void addRowToTableView(String[] row){ 
-        tableModel.addRow(row);
-    }
-
+    /**
+     * Updates the table view.
+     * @param library SongLibrary reflected to table view.
+     */
     public void updateTableView(SongLibrary library) {
         initializeTable();
         for (Song song : library) {
             tableModel.addRow(song.toArray());
+
         }
         tableModel.fireTableDataChanged();
     }
