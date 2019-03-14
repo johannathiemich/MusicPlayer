@@ -7,6 +7,8 @@ import javazoom.jlgui.basicplayer.BasicPlayerException;
 
 import java.io.File;
 
+import static java.lang.Math.abs;
+
 /**
  * This Controller has reusable player control functions:
  * Play, Stop, Pause, Resume, Previous, Next.
@@ -27,7 +29,7 @@ public class PlayerController {
     }
 
     public double convertVolume(double value) {
-        return value / (this.player.getMaximumGain() - this.player.getMinimumGain());
+        return value / abs(this.player.getMaximumGain() - this.player.getMinimumGain());
     }
 
     public void setCurrentSong(Song song) {

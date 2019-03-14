@@ -350,7 +350,7 @@ public class MainController {
         public void mouseClicked(MouseEvent e) {
             // Double-click on a song to play
             if ( isRowInbound ) {
-                if (e.getClickCount() == 2 && !e.isConsumed()) {
+                if (e.getClickCount() == 2 && !e.isConsumed() && !e.isPopupTrigger()) {
                     System.out.println("double clicked");
                     Song selectedSong = library.get(row);
                     playerControl.playSong(selectedSong);
