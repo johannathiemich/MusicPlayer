@@ -67,7 +67,7 @@ public class PlayerController {
     //------------- Music player control --------------
 
     /**
-     *
+     * Play a current song set in player.
      */
     public void playSong() {
         playSong(currentSong);
@@ -75,7 +75,7 @@ public class PlayerController {
 
     /**
      * This method plays the currently selected song
-     * @param song
+     * @param song to be played
      */
     public void playSong(Song song){
         if(song!=null){
@@ -91,7 +91,8 @@ public class PlayerController {
     }
 
     /**
-     * This method stops the song currently playing (setting the current playing position to zero)
+     * Stop the song currently playing
+     * setting the current playing position to zero.
      */
     public void stopSong(){
         try {
@@ -103,8 +104,7 @@ public class PlayerController {
     }
 
     /**
-     * This method pauses the song and remembers its current real time position (so that it can be resumed from that
-     * point on later after)
+     * Pause the song currently playing.
      */
     public void pauseSong(){
         if(player.getStatus() == BasicPlayer.PLAYING){
@@ -118,7 +118,8 @@ public class PlayerController {
     }
 
     /**
-     * This method plays the song that was paused before from the position it was paused.
+     * Resume the song that was paused before
+     * from the position it was paused.
      */
     public void resumeSong(){
         if(player.getStatus() == BasicPlayer.PAUSED){
@@ -132,7 +133,7 @@ public class PlayerController {
     }
 
     /**
-     * This method plays the song that comes before the currently playing song in the song table
+     * Play the song that comes before the currently playing song in the library
      */
     public void playPrevSong(){
         int prevRow;
@@ -160,7 +161,7 @@ public class PlayerController {
     }
 
     /**
-     * This method plays the song that comes after the currently playing song in the song table
+     * Play the song that comes after the currently playing song in the library
      */
     public void playNextSong(){
 
@@ -188,8 +189,8 @@ public class PlayerController {
     }
 
     /**
-     * This method changes the volume of the basic player
-     * @param volume the new volume value to be used by the basic player
+     * Change volume of the basic player
+     * @param volume value to be set as volume
      */
     public void setVolume(double volume) {
         try {

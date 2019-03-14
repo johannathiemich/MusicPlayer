@@ -298,9 +298,9 @@ public class MainController {
      * either by mouse or keyboard arrows
      */
     class SelectionListenerForTable implements ListSelectionListener {
-        final JTable table = playerView.getSongTable();
-        int row;
-        boolean isRowInbound;
+        private JTable table = playerView.getSongTable();
+        private int row;
+        private boolean isRowInbound;
 
         //Table row selected
         @Override
@@ -326,9 +326,9 @@ public class MainController {
      * 4. double-click to play the song
      */
     class MouseListenerForTable extends MouseAdapter {
-        JTable source;
-        int row = 0, col = 0, rowCount = 0;
-        boolean isRowInbound;
+        private JTable source;
+        private int row = 0, col = 0, rowCount = 0;
+        private boolean isRowInbound;
 
         @Override
         public void mousePressed(MouseEvent e) {
@@ -432,7 +432,7 @@ public class MainController {
     /**
      * Listener for 'About' menu item
      */
-    private class AboutMenuItemListener implements ActionListener {
+    public class AboutMenuItemListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             String title = "About";
