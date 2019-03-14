@@ -1,3 +1,8 @@
+/**
+ * Class copied from here: https://docs.oracle.com/javase/tutorial/uiswing/examples/components/ListDialogRunnerProject/src/components/ListDialog.java
+ * modified according to our use case
+ */
+
 /*
  * Copyright (c) 1995, 2008, Oracle and/or its affiliates. All rights reserved.
  *
@@ -80,6 +85,7 @@ public class ListDialog extends JDialog implements ActionListener {
     private void setValue(String newValue) {
         value = newValue;
         list.setSelectedValue(value, true);
+        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     }
 
     private ListDialog(Frame frame,
