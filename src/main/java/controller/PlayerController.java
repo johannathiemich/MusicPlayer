@@ -138,7 +138,8 @@ public class PlayerController {
         int prevRow;
         int selectedRow = playerView.getSongTable().getSelectedRow();
         int lastRow = playerView.getSongTable().getRowCount() - 1;
-        
+
+        //selected row is negative if no row is selected --> play last song then
         if(selectedRow <= 0) {
             prevRow = lastRow;
         } else {
@@ -166,8 +167,8 @@ public class PlayerController {
         int nextRow;
         int selectedRow = playerView.getSongTable().getSelectedRow();
         int lastRow = playerView.getSongTable().getRowCount() - 1;
-
-        if(selectedRow == lastRow || selectedRow == -1) {
+        //selected row is -1 if no row is selected --> play the first song then
+        if(selectedRow == lastRow || selectedRow < 0) {
             nextRow = 0;    //nextRow goes to the top
         } else {
             nextRow = selectedRow + 1;
