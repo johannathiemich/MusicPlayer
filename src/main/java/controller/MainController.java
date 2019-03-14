@@ -46,7 +46,7 @@ public class MainController {
      */
     public MainController() {
         //assign modules
-        playerView = new MusicPlayerGUI("controller.MainController Testing");
+        playerView = new MusicPlayerGUI("MyTunes1.0");
         library = new SongLibrary(); //should always be up to date with db
 
         // [TEST1]
@@ -57,15 +57,14 @@ public class MainController {
 
         //setup presentation
         playerView.updateTableView(library);
-        playerView.setSize(1000, 1000);
+        playerView.setSize(800, 600);
         playerView.setVisible(true);
 
-        //add listeners for user action
+        //add listeners for buttons and slider
         playerView.addPlayBtnListener(new PlayBtnListener());
         playerView.addStopBtnListener(new StopBtnListener());
         playerView.addPrevBtnListener(new PrevBtnListener());
         playerView.addNextBtnListener(new NextBtnListener());
-
         playerView.addVolumeSliderListener(new VolumeSliderListener());
 
         //Add listeners for standard menu
@@ -76,11 +75,11 @@ public class MainController {
 
         //Add listeners for popup menu
         playerView.addDeleteSongPopupListener(new DeleteSongPopupItemListener());
-        playerView.addMouseListenerForTable(new MouseListenerForTable());
         playerView.addAddSongPopupListener(new AddSongMenuItemListener());
 
-        //Add listener for table selection
+        //Add listener for table
         playerView.addSelectionListenerForTable(new SelectionListenerForTable());
+        playerView.addMouseListenerForTable(new MouseListenerForTable());
 
         //Add listener for drag and drop area
         addDragDropToScrollPane();
