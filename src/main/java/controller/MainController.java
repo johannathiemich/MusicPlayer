@@ -97,15 +97,14 @@ public class MainController {
                 //Resume Action
                 case BasicPlayer.PAUSED :
                     playerControl.resumeSong();
-                    btnText = "=";
+                    btnText = "||";
                     break;
                 //Play Action
                 case BasicPlayer.STOPPED :
                 default:
                     playerControl.setCurrentSong(selectedSong);
                     playerControl.playSong();
-                    btnText = "=";
-                    System.out.println("playerStatus: "+playerStatus);
+                    btnText = "||";
                     break;
             }
             playerView.setPlayBtnText(btnText);
@@ -147,7 +146,7 @@ public class MainController {
             playerControl.setCurrentSong(prevSong);
             playerControl.playSong();
             // Change the button text
-            playerView.setPlayBtnText("=");
+            playerView.setPlayBtnText("||");
         }
     }
 
@@ -177,7 +176,7 @@ public class MainController {
             playerControl.setCurrentSong(nextSong);
             playerControl.playSong();
             // Change the button text
-            playerView.setPlayBtnText("=");
+            playerView.setPlayBtnText("||");
         }
     }
 
