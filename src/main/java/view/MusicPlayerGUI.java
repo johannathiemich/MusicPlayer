@@ -218,7 +218,7 @@ public class MusicPlayerGUI extends JFrame {
     public void addSelectionListenerForTable(ListSelectionListener listener){
         songTable.getSelectionModel().addListSelectionListener(listener);
     }
-    public void addPopupTriggerListenerForTable(MouseAdapter adapter){
+    public void addMouseListenerForTable(MouseAdapter adapter){
         songTable.addMouseListener(adapter);
     }
 
