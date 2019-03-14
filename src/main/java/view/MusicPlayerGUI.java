@@ -103,16 +103,16 @@ public class MusicPlayerGUI extends JFrame {
         popUpMenu.add(addSongMenuItemPopup);
 
         //initializing all buttons and placing them on panel
-        stopBtn = new JButton("[]");
+        stopBtn = new JButton("◼︎");
         stopPanel.add(stopBtn);
 
-        prevBtn = new JButton("|<");
+        prevBtn = new JButton("︎⦉⦉");
         buttonPanel.add(prevBtn);
 
-        playBtn = new JButton(">");
+        playBtn = new JButton("▶");
         buttonPanel.add(playBtn);
 
-        nextBtn = new JButton(">|");
+        nextBtn = new JButton("⦊⦊");
         buttonPanel.add(nextBtn);
 
         //initializing slider
@@ -181,6 +181,9 @@ public class MusicPlayerGUI extends JFrame {
      * @return JTable containing songs in the library
      */
     public JTable getSongTable(){ return songTable; }
+    public boolean isAnyRowSelected() {
+        return (songTable.getSelectedRow() != -1);
+    }
 
     /**
      * Returns the popup menu (right click) when clicking on the table area.
