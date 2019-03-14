@@ -112,7 +112,7 @@ public class MainController {
                 //Resume Action
                 case BasicPlayer.PAUSED :
                     playerControl.resumeSong();
-                    btnText = "=";
+                    btnText = "||";
                     break;
                 //Play Action
                 case BasicPlayer.STOPPED :
@@ -192,7 +192,7 @@ public class MainController {
             playerControl.setCurrentSong(nextSong);
             playerControl.playSong();
             // Change the button text
-            playerView.setPlayBtnText("=");
+            playerView.setPlayBtnText("||");
         }
     }
 

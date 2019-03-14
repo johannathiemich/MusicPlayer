@@ -86,10 +86,7 @@ public class DatabaseHandler {
             statement.execute(sql);
             conn.close();
         } catch (SQLException e) {
-            //TODO error code
-            if (e.getSQLState().equals("")) {
-                System.out.println("Song not found in the database.");
-            } else if (e.getSQLState().equals("XJ015")) {
+            if (e.getSQLState().equals("XJ015")) {
                 System.out.println("Derby shutdown normally.");
             } else {
                 e.printStackTrace();
