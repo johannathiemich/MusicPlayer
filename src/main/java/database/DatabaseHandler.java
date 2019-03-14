@@ -69,9 +69,11 @@ public class DatabaseHandler {
                 + song.getArtist()  + "', '"
                 + song.getAlbum()   + "', '"
                 + song.getYear()    + "', '"
-                + song.getComment() + "', '"
+                + "comment "        + "', '"
+                //+ song.getComment() + "', '"
                 + song.getGenre()   + "'"
                 + ")";
+        System.out.println("sql executed: " + sql);
         try {
             conn = DriverManager.getConnection(createDatabaseURL);
             statement = conn.createStatement();

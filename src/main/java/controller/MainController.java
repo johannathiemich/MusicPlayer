@@ -66,10 +66,11 @@ public class MainController {
         playerView.addVolumeSliderListener(new VolumeSliderListener());
 
         //Add listeners for standard menu
-        playerView.addAddSongMenuItemListener(new AddSongMenuItemListener());
         playerView.addOpenSongMenuItemListener(new OpenSongMenuItemListener());
-        playerView.addExitMenuItemListener(new ExitMenuItemListener());
+        playerView.addAddSongMenuItemListener(new AddSongMenuItemListener());
         playerView.addDeleteSongMenuListener(new DeleteSongMenuItemListener());
+        playerView.addAboutMenuItemListener(new AboutMenuItemListener());
+        playerView.addExitMenuItemListener(new ExitMenuItemListener());
 
         //Add listeners for popup menu
         playerView.addDeleteSongPopupListener(new DeleteSongPopupItemListener());
@@ -409,5 +410,20 @@ public class MainController {
             }
         });
 
+    }
+
+    /**
+     * Listener for 'About' menu item
+     */
+    private class AboutMenuItemListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String title = "About";
+            String appName = "MyTunes1.0";
+            String teamInfo = "[CECS543 Team6]\nSella Bae\nBrett Rexius\nJohanna Thiemich";
+            String date = "3/14/2019";
+            String msg = appName+"\n"+date+"\n\n"+teamInfo;
+            JOptionPane.showMessageDialog(playerView, msg, title, JOptionPane.PLAIN_MESSAGE);
+        }
     }
 }
