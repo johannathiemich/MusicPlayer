@@ -3,6 +3,7 @@ package controller;
 import javazoom.jlgui.basicplayer.BasicPlayer;
 import model.Song;
 import model.SongLibrary;
+import view.ListDialog;
 import view.MusicPlayerGUI;
 
 import javax.swing.*;
@@ -206,12 +207,9 @@ public class MainController {
         @Override
         public void stateChanged(ChangeEvent e) {
             JSlider source = (JSlider) e.getSource();
-            int sliderVal = source.getValue();
-            System.out.println("VolumeSlider tick: " + sliderVal);
-
-            //TODO Adjust the volume of the player
-            //something = sliderVal;
-
+            double sliderVal = source.getValue();
+            sliderVal = playerControl.convertVolume(sliderVal);
+            playerControl.setVolume(sliderVal);
         }
     }
 
@@ -296,11 +294,17 @@ public class MainController {
     }
 
     class DeleteSongMenuItemListener implements ActionListener {
-
         @Override
         public void actionPerformed(ActionEvent e) {
-            //TODO implement functionality
-        }
+            ListDialog.showDialog(playerView, playerView, "Choose the song to be deleted.",
+                    "Song Library", library.convertToString(), library.convertToString()[0],
+                    library.convertToString()[0]);
+            String selectedSong = ListDialog.getSelectedValue().split("\\[")[0].trim();
+            if (library.getSongByPath(selectedSong) != null) {
+                library.deleteSong(library.getSongByPath(selectedSong));
+                playerView.updateTableView(library);
+            }
+          }
     }
 
     class MouseListenerForTable extends MouseAdapter {

@@ -2,6 +2,7 @@ package model;
 
 import database.DatabaseHandler;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 //same with SongDAO(Data Access Object). same concept same work.
@@ -23,6 +24,30 @@ public class SongLibrary extends ArrayList<Song>{
     public SongLibrary(ArrayList<Song> songArray){
         this.dbHandler = new DatabaseHandler();
         this.addAll(songArray);
+    }
+
+    public String[] convertToString() {
+        String[] resultString = new String[this.size()];
+
+        for (int i = 0; i < this.size(); i++) {
+            resultString[i] = this.get(i).getPath() + "     [" + this.get(i).getTitle()+ "]     [" +
+                    this.get(i).getArtist() + "]";
+        }
+        return resultString;
+    }
+
+    /**
+     *
+     * @param path this
+     * @return
+     */
+    public Song getSongByPath(String path) {
+        for (int i = 0; i < this.size(); i++) {
+            if (this.get(i).getPath().equals(path)) {
+                return this.get(i);
+            }
+        }
+        return null;
     }
 
     /**
@@ -69,7 +94,13 @@ public class SongLibrary extends ArrayList<Song>{
      */
     public void deleteSong(Song song){
         System.out.print("The song '"+song.getTitle()+"'");
-        if(this.contains(song)) {
+        boolean songContained = false;
+        for (int i = 0; i < this.size(); i++) {
+            if (this.get(i).getPath().equals(song.getPath())) {
+                songContained = true;
+            }
+        }
+        if(songContained) {
             this.remove(song);
             this.dbHandler.deleteSong(song);
             System.out.println(" is deleted from library");

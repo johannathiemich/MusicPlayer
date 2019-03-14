@@ -1,10 +1,15 @@
 import controller.MainController;
+import view.ListDialog;
+import view.MusicPlayerGUI;
+
+import java.util.List;
 
 public class Main {
 
     public static void main(String[] args) {
 
         MainController controller = new MainController();
+
         //CreateCoffeeDB db = new CreateCoffeeDB();
 
         /*
