@@ -89,6 +89,7 @@ public class MusicPlayerGUI extends JFrame {
         songTable.setFillsViewportHeight(true);
         songTable.setShowHorizontalLines(true);
         songTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        songTable.getTableHeader().setReorderingAllowed(false);
         initializeTable();
         tableScrollPane = new JScrollPane(songTable);
 
