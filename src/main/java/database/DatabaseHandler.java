@@ -5,20 +5,33 @@ import model.Song;
 import java.sql.*;
 import java.util.ArrayList;
 
+/**
+ * This class is responsible for accessing and updating the database when songs are added / deleted, etc.
+ * It represents the model in the Model - View - Controller  Pattern. It is updated by the controller and provides
+ * the data displayed by the view.
+ */
 public class DatabaseHandler {
 
     // Create a named constant for the URL.
     // NOTE: This value is specific for Java DB.
     private final String createDatabaseURL = "jdbc:derby:SongsDB;create=true";
-    private final String databaseURL = "jdbc:derby:SongsDB;create=false";
     private final String shutdownURL = "jdbc:derby:;shutdown=true";
     private final String tableName = "SONGS";
 
+    /**
+     * Constructor for this class
+     */
     public DatabaseHandler() {
+        //we should not drop all tables every time we start the application
         //dropAllTables();
         createSongTable();
     }
 
+    /**
+     * This method creates the table that holds the songs in the database. If the table already exists, it won't
+     * create a new one. The ID for each row is just the absolute path to the mp3 file.
+     * The table contains the following columns: SONG_PATH, TITLE; ARTIST, ALBUM, YEAR_PUBLISHED, COMMENT, GENRE
+     */
     public void createSongTable(){
         Connection conn = null;
         Statement statement = null;
@@ -40,6 +53,11 @@ public class DatabaseHandler {
         }
     }
 
+    /**
+     * This method adds a row containing a song to the songs database table.
+     * @param song the song to be added, identified by its path
+     * @return true if the insert was successful; false if it was not successful
+     */
     public boolean addSong(Song song) {
         boolean success = true;
         Connection conn = null;
@@ -74,6 +92,11 @@ public class DatabaseHandler {
         return success;
     }
 
+    /**
+     * This method deletes a song from the database table.
+     * @param song the song to be deleted from the database; is identified by its absolute path
+     * @return true if the song was deleted successfully; false if not
+     */
     public boolean deleteSong(Song song) {
         boolean success = true;
         Connection conn = null;
@@ -96,6 +119,10 @@ public class DatabaseHandler {
         return success;
     }
 
+    /**
+     * This method returns all the songs saved in the database
+     * @return an ArrayList of songs
+     */
     public ArrayList<Song> getSongLibrary() {
         Connection conn = null;
         Statement statement = null;
@@ -132,6 +159,10 @@ public class DatabaseHandler {
         return library;
     }
 
+    /**
+     * This method drops all tables currently contained in the database. This method is usefule for resetting
+     * the database.
+     */
     public void dropAllTables(){
         try {
             //Get connection and statement

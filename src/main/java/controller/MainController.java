@@ -81,6 +81,10 @@ public class MainController {
     }
 
     //Listeners
+
+    /**
+     *
+     */
     class PlayBtnListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -111,6 +115,9 @@ public class MainController {
         }
     }
 
+    /**
+     * TODO
+     */
     class StopBtnListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -120,6 +127,9 @@ public class MainController {
         }
     }
 
+    /**
+     * Todo
+     */
     class PrevBtnListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -150,6 +160,9 @@ public class MainController {
         }
     }
 
+    /**
+     * TODO
+     */
     class NextBtnListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -180,16 +193,21 @@ public class MainController {
         }
     }
 
+    /**
+     * TODO
+     */
     class VolumeSliderListener implements ChangeListener {
         @Override
         public void stateChanged(ChangeEvent e) {
             JSlider source = (JSlider) e.getSource();
             double sliderVal = source.getValue();
-            sliderVal = playerControl.convertVolume(sliderVal);
             playerControl.setVolume(sliderVal);
         }
     }
 
+    /**
+     * TODO
+     */
     class AddSongMenuItemListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -205,6 +223,9 @@ public class MainController {
         }
     }
 
+    /**
+     * TODO
+     */
     class OpenSongMenuItemListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -220,6 +241,9 @@ public class MainController {
         }
     }
 
+    /**
+     * TODO
+     */
     class ExitMenuItemListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -227,6 +251,9 @@ public class MainController {
         }
     }
 
+    /**
+     * TODO
+     */
     class DeleteSongPopupItemListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -247,6 +274,9 @@ public class MainController {
         }
     }
 
+    /**
+     * TODO
+     */
     class DeleteSongMenuItemListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {

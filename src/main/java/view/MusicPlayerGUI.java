@@ -13,6 +13,8 @@ import java.awt.event.MouseAdapter;
 
 /**
  * This class represents the main frame for our application. It holds all the GUI components.
+ * In the Model - View - Controller  pattern this class represents the main view that is responsible
+ * for displaying the data from the model and delegating user interactions to the controller.
  */
 public class MusicPlayerGUI extends JFrame {
 
