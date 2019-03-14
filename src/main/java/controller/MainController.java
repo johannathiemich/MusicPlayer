@@ -296,7 +296,7 @@ public class MainController {
         @Override
         public void actionPerformed(ActionEvent e) {
             ListDialog.showDialog(playerView, playerView, "Choose the song to be deleted.",
-                    "Song Library", library.convertToString(), library.convertToString()[0],
+                    "Delete Song from Library", library.convertToString(), library.convertToString()[0],
                     library.convertToString()[0]);
             String selectedSong = ListDialog.getSelectedValue().split("\\[")[0].trim();
             if (library.getSongByPath(selectedSong) != null) {
