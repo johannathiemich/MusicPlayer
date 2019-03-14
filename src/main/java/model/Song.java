@@ -2,7 +2,6 @@ package model;
 
 import com.mpatric.mp3agic.*;
 
-import javax.swing.*;
 import java.io.IOException;
 
 public class Song {
@@ -101,6 +100,9 @@ public class Song {
     public String getTitleAndArtist() { return title + " - " + artist; }
 
 
+    /**
+     * Set properties of the song
+     */
     public void setProperties(String pPath, String pTitle, String pArtist, String pAlbum, String pYear, String pComment,
                               String pGenre){
         this.path = pPath;
