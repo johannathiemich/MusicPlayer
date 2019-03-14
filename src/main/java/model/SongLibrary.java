@@ -5,6 +5,10 @@ import database.DatabaseHandler;
 import java.util.ArrayList;
 
 //same with SongDAO(Data Access Object). same concept same work.
+
+/**
+ * Model class in the MVC pattern. For managing the list of songs that is shown in the application ("song library").
+ */
 public class SongLibrary extends ArrayList<Song>{
 
     private DatabaseHandler dbHandler;
@@ -25,6 +29,11 @@ public class SongLibrary extends ArrayList<Song>{
         this.addAll(songArray);
     }
 
+    /**
+     * This method converts the song library to a list of string with each string containing the song path, title and
+     * artist. This method is needed for the ListDialgo class in order to choose a song to be deleted.
+     * @return the song library as a list of strings
+     */
     public String[] convertToString() {
         String[] resultString = new String[this.size()];
 
@@ -36,9 +45,9 @@ public class SongLibrary extends ArrayList<Song>{
     }
 
     /**
-     *
-     * @param path this
-     * @return
+     * This method finds a song by its path
+     * @param path the path of the song to be selected
+     * @return the song at the corresponding path or null if the path is not contained in the library
      */
     public Song getSongByPath(String path) {
         for (int i = 0; i < this.size(); i++) {
