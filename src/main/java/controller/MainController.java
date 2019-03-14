@@ -80,21 +80,6 @@ public class MainController {
 
     }
 
-    // [TEST1] THIS IS TO TEST PLAYER CONTROL ACTIONS --------------------
-    // PUT MP3 FILES IN YOUR LOCAL DIRECTORY TO TEST
-    public void TESTAddSongToLibrary(){
-        SongLibrary testLibrary = new SongLibrary();
-        System.out.println("========= TESTING! MP3files in local directory");
-        testLibrary.addSong(new Song("/Users/sella/downloads/mp3/cinemaparadiso.mp3"));
-        testLibrary.addSong(new Song("/Users/sella/downloads/mp3/Jamaica Farewell by Harry Belafonte.mp3"));
-        testLibrary.addSong(new Song("invalid file Path"));
-        testLibrary.addSong(new Song("/Users/sella/downloads/mp3/HONOLULU CITY LIGHTS KAPONO.mp3"));
-        testLibrary.addSong(new Song("/Users/sella/downloads/mp3/03 Cotton Fields.mp3"));
-        playerControl = new PlayerController(testLibrary);
-        playerView.updateTableView(testLibrary);
-        library = testLibrary;
-    }
-
     //Listeners
     class PlayBtnListener implements ActionListener {
         @Override
