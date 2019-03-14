@@ -74,8 +74,8 @@ public class MusicPlayerGUI extends JFrame {
 
         // Standard Menu setup
         menuBar = new JMenuBar();
-        menu = new JMenu("File");
-        openSongMenuItem = new JMenuItem("Open");
+        menu = new JMenu("Menu");
+        openSongMenuItem = new JMenuItem("Open Song");
         addSongMenuItem = new JMenuItem("Add Song to Library");
         deleteSongMenuItem = new JMenuItem("Delete Song from Library");
         aboutMenuItem = new JMenuItem("About");
@@ -91,6 +91,7 @@ public class MusicPlayerGUI extends JFrame {
         songTable.setFillsViewportHeight(true);
         songTable.setShowHorizontalLines(true);
         songTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        songTable.getTableHeader().setReorderingAllowed(false);
         initializeTable();
         tableScrollPane = new JScrollPane(songTable);
 
