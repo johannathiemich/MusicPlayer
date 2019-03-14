@@ -40,6 +40,14 @@ public class PlayerController {
     }
 
     /**
+     *
+     * @param library
+     */
+    public void updateLibrary(SongLibrary library) {
+        this.library = library;
+    }
+
+    /**
      * This method changes the currently selected song
      * @param song the song that is supposed to be marked as selected in the table
      */
@@ -130,8 +138,8 @@ public class PlayerController {
         int prevRow;
         int selectedRow = playerView.getSongTable().getSelectedRow();
         int lastRow = playerView.getSongTable().getRowCount() - 1;
-
-        if(selectedRow == 0) {
+        
+        if(selectedRow <= 0) {
             prevRow = lastRow;
         } else {
             prevRow = selectedRow - 1;
@@ -159,7 +167,7 @@ public class PlayerController {
         int selectedRow = playerView.getSongTable().getSelectedRow();
         int lastRow = playerView.getSongTable().getRowCount() - 1;
 
-        if(selectedRow == lastRow) {
+        if(selectedRow == lastRow || selectedRow == -1) {
             nextRow = 0;    //nextRow goes to the top
         } else {
             nextRow = selectedRow + 1;

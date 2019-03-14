@@ -134,29 +134,7 @@ public class MainController {
         @Override
         public void actionPerformed(ActionEvent e) {
             System.out.println("[BUTTON] PREV button is pressed.");
-            //TODO Better call playerControl.playPrevSong() and let it do all the jobs below.
-
-            int prevRow;
-            int selectedRow = playerView.getSongTable().getSelectedRow();
-            int lastRow = playerView.getSongTable().getRowCount() - 1;
-
-            if(selectedRow == 0) {
-                prevRow = lastRow;
-            } else {
-                prevRow = selectedRow - 1;
-            }
-
-            // Update row selection on the view
-            playerView.changeTableRowSelection(prevRow);
-            // Get the previous song from the library
-            Song prevSong = library.get(prevRow);
-            selectedSong = prevSong;
-
-            // Set prevSong as a current one and play it
-            playerControl.setCurrentSong(prevSong);
-            playerControl.playSong();
-            // Change the button text
-            playerView.setPlayBtnText("||");
+            playerControl.playPrevSong();
         }
     }
 
@@ -197,6 +175,7 @@ public class MainController {
                 selectedPath = chooser.getSelectedFile().getAbsolutePath();
                 library.addSong(new Song(selectedPath));
                 playerView.updateTableView(library);
+                playerControl.updateLibrary(library);
             }
         }
     }
@@ -215,6 +194,7 @@ public class MainController {
                 selectedPath = chooser.getSelectedFile().getAbsolutePath();
                 playerControl.playSong(new Song(selectedPath));
                 playerView.setPlayBtnText("||");
+                playerControl.updateLibrary(library);
             }
         }
     }
@@ -246,6 +226,7 @@ public class MainController {
                 System.out.println("[DeleteSong] selectedRow: "+selectedRow+" '"+selectedSong.getPath()+"'");
                 library.deleteSong(selectedSong);
                 playerView.updateTableView(library);
+                playerControl.updateLibrary(library);
             } else {
                 System.out.println("[DeleteSong] selectedRow: "+selectedRow+", nothing selected to delete.");
             }
@@ -265,6 +246,7 @@ public class MainController {
             if (library.getSongByPath(selectedSong) != null) {
                 library.deleteSong(library.getSongByPath(selectedSong));
                 playerView.updateTableView(library);
+                playerControl.updateLibrary(library);
             }
           }
     }
@@ -378,6 +360,7 @@ public class MainController {
                     for (File file : droppedFiles) {
                         library.addSong(new Song(file.getAbsolutePath()));
                         playerView.updateTableView(library);
+                        playerControl.updateLibrary(library);
                         System.out.println("Added songs via drop");
                     }
                 } catch (Exception ex) {
