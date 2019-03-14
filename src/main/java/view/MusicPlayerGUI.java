@@ -73,11 +73,11 @@ public class MusicPlayerGUI extends JFrame {
 
         // Standard Menu setup
         menuBar = new JMenuBar();
-        menu = new JMenu("File");
-        openSongMenuItem = new JMenuItem("Open");
+        menu = new JMenu("Menu");
+        openSongMenuItem = new JMenuItem("Open Song");
         addSongMenuItem = new JMenuItem("Add Song to Library");
         deleteSongMenuItem = new JMenuItem("Delete Song from Library");
-        exitApplicationMenuItem = new JMenuItem("Exit");
+        exitApplicationMenuItem = new JMenuItem("Exit Application");
         createMenu();
 
         // Table setup

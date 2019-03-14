@@ -2,6 +2,7 @@ package model;
 
 import com.mpatric.mp3agic.*;
 
+import javax.swing.*;
 import java.io.IOException;
 
 public class Song {
@@ -53,7 +54,7 @@ public class Song {
         } catch (UnsupportedTagException e) {
             e.printStackTrace();
         } catch (InvalidDataException e) {
-            e.printStackTrace();
+            //JOptionPane.showMessageDialog(null, "The selected file is not a valid mp3 file.");
         }
     }
 
