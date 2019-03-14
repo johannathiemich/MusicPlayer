@@ -4,6 +4,7 @@ import model.Song;
 import model.SongLibrary;
 import javazoom.jlgui.basicplayer.BasicPlayer;
 import javazoom.jlgui.basicplayer.BasicPlayerException;
+import view.MusicPlayerGUI;
 
 import java.io.File;
 
@@ -17,15 +18,17 @@ public class PlayerController {
     private BasicPlayer player;
     private Song currentSong;       //different from selectedSong
     private SongLibrary library;    //for skipping to prev/next song
+    private MusicPlayerGUI playerView;
 
     /**
      * Constructor for this class
      * @param library a list of all songs currently contained in the library
      */
-    public PlayerController(SongLibrary library){
+    public PlayerController(SongLibrary library, MusicPlayerGUI playerView){
         player = new BasicPlayer();
         this.library = library;
         currentSong = new Song();
+        this.playerView = playerView;
     }
 
     /**
@@ -124,22 +127,55 @@ public class PlayerController {
      * This method plays the song that comes before the currently playing song in the song table
      */
     public void playPrevSong(){
-        //TODO set prev song as currentSong and play
-        //The desired action should be implemented here
-        //for additional user actions(e.g. key shortcut or standard menu)
+        int prevRow;
+        int selectedRow = playerView.getSongTable().getSelectedRow();
+        int lastRow = playerView.getSongTable().getRowCount() - 1;
 
-        //Song prevSong = library.get(current-1);
-        //change currentSong
-        //playSong(currentSong);
+        if(selectedRow == 0) {
+            prevRow = lastRow;
+        } else {
+            prevRow = selectedRow - 1;
+        }
+
+        // Update row selection on the view
+        playerView.changeTableRowSelection(prevRow);
+        // Get the previous song from the library
+        Song prevSong = library.get(prevRow);
+        currentSong = prevSong;
+
+        // Set prevSong as a current one and play it
+        this.setCurrentSong(prevSong);
+        this.playSong();
+        // Change the button text
+        playerView.setPlayBtnText("||");
     }
 
     /**
      * This method plays the song that comes after the currently playing song in the song table
      */
     public void playNextSong(){
-        //TODO set next song as currentSong and play
-        //change currentSong
-        //playSong(currentSong);
+
+        int nextRow;
+        int selectedRow = playerView.getSongTable().getSelectedRow();
+        int lastRow = playerView.getSongTable().getRowCount() - 1;
+
+        if(selectedRow == lastRow) {
+            nextRow = 0;    //nextRow goes to the top
+        } else {
+            nextRow = selectedRow + 1;
+        }
+
+        // Update row selection on the view
+        playerView.changeTableRowSelection(nextRow);
+        // Get the previous song from the library
+        Song nextSong = library.get(nextRow);
+        currentSong = nextSong;
+
+        // Set prevSong as a current one and play it
+        this.setCurrentSong(nextSong);
+        this.playSong();
+        // Change the button text
+        playerView.setPlayBtnText("||");
     }
 
     /**

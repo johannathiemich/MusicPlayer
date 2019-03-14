@@ -47,7 +47,7 @@ public class MainController {
         playerView = new MusicPlayerGUI("MyTunes1.0");
         library = new SongLibrary(); //should always be up-to-date with db
 
-        playerControl = new PlayerController(library);
+        playerControl = new PlayerController(library, playerView);
         selectedSong = new Song();
 
         //setup presentation
@@ -167,29 +167,7 @@ public class MainController {
         @Override
         public void actionPerformed(ActionEvent e) {
             System.out.println("NEXT button is pressed.");
-            //TODO Better call playerControl.playNextSong() and let it do all the jobs below.
-
-            int nextRow;
-            int selectedRow = playerView.getSongTable().getSelectedRow();
-            int lastRow = playerView.getSongTable().getRowCount() - 1;
-
-            if(selectedRow == lastRow) {
-                nextRow = 0;    //nextRow goes to the top
-            } else {
-                nextRow = selectedRow + 1;
-            }
-
-            // Update row selection on the view
-            playerView.changeTableRowSelection(nextRow);
-            // Get the previous song from the library
-            Song nextSong = library.get(nextRow);
-            selectedSong = nextSong;
-
-            // Set prevSong as a current one and play it
-            playerControl.setCurrentSong(nextSong);
-            playerControl.playSong();
-            // Change the button text
-            playerView.setPlayBtnText("||");
+            playerControl.playNextSong();
         }
     }
 
