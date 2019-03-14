@@ -48,6 +48,8 @@ public class MusicPlayerGUI extends JFrame {
     public MusicPlayerGUI(String frameTitle) {
         super(frameTitle);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        this.setSize(800,600);
+        this.setMinimumSize(new Dimension(600,300));
 
         //Panels and Layout
         mainPanel = new JPanel();

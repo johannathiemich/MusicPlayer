@@ -1,10 +1,8 @@
 package controller;
 
 import javazoom.jlgui.basicplayer.BasicPlayer;
-import model.Song;
-import model.SongLibrary;
-import view.ListDialog;
-import view.MusicPlayerGUI;
+import model.*;
+import view.*;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -47,17 +45,13 @@ public class MainController {
     public MainController() {
         //assign modules
         playerView = new MusicPlayerGUI("MyTunes1.0");
-        library = new SongLibrary(); //should always be up to date with db
-
-        // [TEST1]
-        //TESTAddSongToLibrary();
+        library = new SongLibrary(); //should always be up-to-date with db
 
         playerControl = new PlayerController(library);
         selectedSong = new Song();
 
         //setup presentation
         playerView.updateTableView(library);
-        playerView.setSize(800, 600);
         playerView.setVisible(true);
 
         //add listeners for buttons and slider
@@ -214,22 +208,20 @@ public class MainController {
 
     class SelectionListenerForTable implements ListSelectionListener {
         final JTable table = playerView.getSongTable();
+        int row;
+        boolean isRowInbound;
 
         //Table row selected
         @Override
         public void valueChanged(ListSelectionEvent e) {
             if (!e.getValueIsAdjusting()) {
-                int selectedRow = table.getSelectedRow();
-                System.out.print("[Table] selectedRow:"+selectedRow);
-                if (selectedRow >= 0 && selectedRow < library.size()) {
-                    try {
-                        String title = table.getValueAt(selectedRow, 1).toString();
-                        String artist = table.getValueAt(selectedRow, 2).toString();
-                        System.out.print(", [" + title + " - " + artist + "]");
-                        selectedSong = library.get(selectedRow);
-                    } finally {
-                        System.out.println();
-                    }
+                row = table.getSelectedRow();
+                isRowInbound = row >= 0 && row < table.getRowCount();
+
+                if (isRowInbound) {
+                    selectedSong = library.get(row);
+                    System.out.print("[Table] selectedRow:"+row);
+                    System.out.println(", [" + selectedSong.getTitleAndArtist() + "]");
                 }
             }
         }
