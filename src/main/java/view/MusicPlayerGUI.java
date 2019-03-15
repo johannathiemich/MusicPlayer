@@ -19,11 +19,12 @@ import java.awt.event.MouseAdapter;
 public class MusicPlayerGUI extends JFrame {
     // UI variables
     private Dimension frameSize = new Dimension(800,600);
-    private Dimension frameMinSize = new Dimension(600,400);
+    private Dimension frameMinSize = new Dimension(500,300);
     private Dimension buttonSize = new Dimension(60,40);
     private int bottomPanelHeight = 50;
-    private Color bgColor = Color.darkGray;
-    private Color fgColor = Color.white;
+    private Color color_bg1 = Color.darkGray;
+    private Color color_fg1 = Color.lightGray;
+    private Color color_fg2 = Color.gray;
     private Font font_songTitle = new Font("Arial", Font.PLAIN, 22);
 
     //panels to hold buttons, table, etc.
@@ -46,6 +47,7 @@ public class MusicPlayerGUI extends JFrame {
     private JLabel songDetailLbl;
     private JLabel songTimeProgressLbl;
     private JLabel songTimeRemainedLbl;
+    private JProgressBar songProgressBar;
 
     //components for player control
     private JButton playBtn;
@@ -75,8 +77,8 @@ public class MusicPlayerGUI extends JFrame {
     public MusicPlayerGUI(String frameTitle) {
         super(frameTitle);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        this.setSize(frameSize);
-        this.setMinimumSize(new Dimension(frameMinSize));
+        this.setPreferredSize(frameSize);
+        this.setMinimumSize(frameMinSize);
 
         //Panels and Layout
         mainPanel = new JPanel();
@@ -90,19 +92,12 @@ public class MusicPlayerGUI extends JFrame {
         buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER,0,0));
         sliderPanel.setLayout(new BorderLayout());
         //Panel Color
-        bottomPanel.setBackground(bgColor);
+        bottomPanel.setBackground(color_bg1);
         stopPanel.setOpaque(false);
         buttonPanel.setOpaque(false);
         sliderPanel.setOpaque(false);
 
         // Standard Menu setup
-        menuBar = new JMenuBar();
-        menu = new JMenu("Menu");
-        openSongMenuItem = new JMenuItem("Open Song");
-        addSongMenuItem = new JMenuItem("Add Song to Library");
-        deleteSongMenuItem = new JMenuItem("Delete Song from Library");
-        aboutMenuItem = new JMenuItem("About");
-        exitMenuItem = new JMenuItem("Exit");
         createMenu();
 
         // Table setup
@@ -125,7 +120,10 @@ public class MusicPlayerGUI extends JFrame {
         popUpMenu.add(deleteSongMenuItemPopup);
         popUpMenu.add(addSongMenuItemPopup);
 
-        //initializing all buttons and placing them on panel
+        //Song Info Panel
+        createSongInfoPanel();
+
+        //initializing buttons and placing on panel
         stopBtn = new JButton("◼");
         stopBtn.setPreferredSize(buttonSize);
         stopPanel.add(stopBtn);
@@ -140,10 +138,10 @@ public class MusicPlayerGUI extends JFrame {
         buttonPanel.add(playBtn);
         buttonPanel.add(nextBtn);
 
-        //initializing slider
+        //slider setup
         volumeSlider = new JSlider();
-        volumeSlider.setSize(50,volumeSlider.getHeight());
         sliderPanel.add(volumeSlider);
+        sliderPanel.setSize(50,bottomPanelHeight);
 
         //putting all buttons into bottomPanel
         bottomPanel.add(buttonPanel, BorderLayout.CENTER);
@@ -151,7 +149,6 @@ public class MusicPlayerGUI extends JFrame {
         bottomPanel.add(stopPanel, BorderLayout.WEST);
 
         //putting all panels into main frame
-        this.setJMenuBar(menuBar);
         this.add(tableScrollPane, BorderLayout.CENTER);
         this.add(bottomPanel, BorderLayout.SOUTH);
 
@@ -159,17 +156,70 @@ public class MusicPlayerGUI extends JFrame {
 
     }
 
+    private void createSongInfoPanel() {
+        songInfoPanel = new JPanel();
+        songInfoPanel.setLayout(new BorderLayout(0,0));
+        songInfoPanel.setBackground(color_bg1);
+
+        songTitleLbl = new JLabel("Title");
+        songDetailLbl = new JLabel("Artist");
+        songTimeProgressLbl = new JLabel("0:00");
+        songTimeRemainedLbl = new JLabel("3:10");
+        songTitleLbl.setHorizontalAlignment(SwingConstants.CENTER);
+        songTitleLbl.setVerticalAlignment(SwingConstants.CENTER);
+        songDetailLbl.setHorizontalAlignment(SwingConstants.CENTER);
+        songTitleLbl.setForeground(color_fg1);
+        songDetailLbl.setForeground(color_fg2);
+        songTimeProgressLbl.setForeground(color_fg2);
+        songTimeRemainedLbl.setForeground(color_fg2);
+
+        songProgressBar = new JProgressBar(0,0,190);
+        songProgressBar.setValue(100);
+
+
+        songInfoPanel.add(songTitleLbl, BorderLayout.NORTH);
+        songInfoPanel.add(songDetailLbl, BorderLayout.CENTER);
+        songInfoPanel.add(songTimeProgressLbl, BorderLayout.WEST);
+        songInfoPanel.add(songTimeRemainedLbl, BorderLayout.EAST);
+        songInfoPanel.add(songProgressBar, BorderLayout.SOUTH);
+
+        //add this song info panel to bottom panel
+        bottomPanel.add(songInfoPanel, BorderLayout.NORTH);
+    }
+
+    public void updateCurrentSongView(String title, String artist, int duration){
+        songTitleLbl.setText(title);
+        songDetailLbl.setText(artist);
+        int min = duration/60;
+        int sec = duration%60;
+        songTimeProgressLbl.setText("0:00");
+        songTimeRemainedLbl.setText(min+":"+sec);
+        songProgressBar.setMinimum(0);
+        songProgressBar.setMaximum(duration);
+    }
+
     /**
-     * This method creates the standard menu and adds the menu item entries
+     * Creates menu bar, menu, menu items.
      */
     private void createMenu() {
+        menuBar = new JMenuBar();
+        menu = new JMenu("Menu");
+        openSongMenuItem = new JMenuItem("Open Song");
+        addSongMenuItem = new JMenuItem("Add Song to Library");
+        deleteSongMenuItem = new JMenuItem("Delete Song from Library");
+        aboutMenuItem = new JMenuItem("About");
+        exitMenuItem = new JMenuItem("Exit");
+
         menu.setPreferredSize(new Dimension(50, menu.getPreferredSize().height));
+
         menu.add(openSongMenuItem);
         menu.add(addSongMenuItem);
         menu.add(deleteSongMenuItem);
         menu.add(aboutMenuItem);
         menu.add(exitMenuItem);
         menuBar.add(menu);
+
+        this.setJMenuBar(menuBar);
     }
 
     /**
