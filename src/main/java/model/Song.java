@@ -32,25 +32,25 @@ public class Song {
 
     /**
      * Construct a Song object from a valid MP3 File path
-     * @param filePath
+     * @param filePath of an MP3 file
      */
     public Song(String filePath){
         try {
             //Get MP3File
-            System.out.print("[NewSong] '"+filePath+"' ");
+            System.out.print("[Song] filePath: '"+filePath+"' ");
             Mp3File mp3file = new Mp3File(filePath);
 
             //Fetching mp3file info
             lengthInSecond = (int)mp3file.getLengthInSeconds();
             System.out.print("\tlength:"+lengthInSecond+"sec");
             if (mp3file.hasId3v1Tag()) {
-                System.out.println("\t[MP3tag]Id3v1");
+                System.out.println("\tMP3tag:Id3v1");
                 ID3v1 id3v1Tag = mp3file.getId3v1Tag();
                 setProperties(filePath,
                         id3v1Tag.getTitle(), id3v1Tag.getArtist(), id3v1Tag.getAlbum(),
                         id3v1Tag.getYear(),id3v1Tag.getComment(), id3v1Tag.getGenreDescription() );
             } else if (mp3file.hasId3v2Tag()) {
-                System.out.println("\t[MP3tag]Id3v2");
+                System.out.println("\tMP3tag:Id3v2");
                 ID3v2 id3v2Tag = mp3file.getId3v2Tag();
                 setProperties(filePath,
                         id3v2Tag.getTitle(), id3v2Tag.getArtist(), id3v2Tag.getAlbum(),
@@ -119,9 +119,9 @@ public class Song {
     public void setProperties(String pPath, String pTitle, String pArtist, String pAlbum, String pYear, String pComment,
                               String pGenre){
         this.path = pPath;
-        this.title = (pTitle==null || pTitle=="") ? "unknown" : pTitle;
-        this.artist = (pArtist==null || pTitle=="") ? "unknown" : pArtist;
-        this.album = (pAlbum==null || pTitle=="") ? "unknown" : pAlbum;
+        this.title = (pTitle==null || pTitle.equals("")) ? "unknown" : pTitle;
+        this.artist = (pArtist==null || pArtist.equals("")) ? "unknown" : pArtist;
+        this.album = (pAlbum==null || pAlbum.equals("")) ? "unknown" : pAlbum;
         this.year = (pYear==null) ? "" : pYear;
         this.comment = (pComment==null) ? "" : pComment;
         this.genre = (pGenre==null) ? "" : pGenre;
