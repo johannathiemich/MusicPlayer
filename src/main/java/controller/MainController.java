@@ -4,15 +4,16 @@ import com.mpatric.mp3agic.InvalidDataException;
 import com.mpatric.mp3agic.Mp3File;
 import com.mpatric.mp3agic.UnsupportedTagException;
 import javazoom.jlgui.basicplayer.BasicPlayer;
-import model.*;
-import view.*;
+import model.Song;
+import model.SongLibrary;
+import view.ListDialog;
+import view.MusicPlayerGUI;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
@@ -182,19 +183,22 @@ public class MainController {
             System.out.println("Add song is pressed.");
             JFileChooser chooser = new JFileChooser();
             chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-            String selectedPath = "";
+            String filePath = "";
             if (chooser.showOpenDialog(playerView) == JFileChooser.APPROVE_OPTION) {
-                selectedPath = chooser.getSelectedFile().getAbsolutePath();
+                filePath = chooser.getSelectedFile().getAbsolutePath();
                 try {
-                    Mp3File mp3file = new Mp3File(selectedPath);
-                    library.addSong(new Song(selectedPath));
+                    //TODO Make Song Constructor handle invalid mp3 files (1)
+                    Mp3File mp3file = new Mp3File(filePath);
+                    library.addSong(new Song(filePath));
                     playerView.updateTableView(library);
                     playerControl.updateLibrary(library);
+                    System.out.println("[Add Song by File Chooser] SUCCESS! '"+filePath+"'");
                 } catch (UnsupportedTagException e1) {
                     e1.printStackTrace();
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 } catch (InvalidDataException e1) {
+                    System.out.println("[Add Song by File Chooser] ERROR: invalid file '"+filePath+"'");
                     JOptionPane.showMessageDialog(null, "This file is not a valid mp3 file.");
                 }
             }
@@ -216,6 +220,7 @@ public class MainController {
             if (chooser.showOpenDialog(playerView) == JFileChooser.APPROVE_OPTION) {
                 selectedPath = chooser.getSelectedFile().getAbsolutePath();
                 try {
+                    //TODO Make Song Constructor handle invalid mp3 files (2)
                     Mp3File mp3file = new Mp3File(selectedPath);
                     playerControl.playSong(new Song(selectedPath));
                     playerView.setPlayBtnText("||");
@@ -247,19 +252,17 @@ public class MainController {
         @Override
         public void actionPerformed(ActionEvent e) {
             //What is this part?
-            Component c = (Component)e.getSource();
-            JPopupMenu popup = (JPopupMenu)c.getParent();
-            JTable table = (JTable)popup.getInvoker();
             int selectedRow = playerView.getSongTable().getSelectedRow();
+            boolean isRowInbound = (selectedRow >= 0) && (selectedRow < library.size());
 
-            if ( (selectedRow >= 0) && (selectedRow < library.size()) ) {
+            if ( isRowInbound ) {
                 Song selectedSong = library.get(selectedRow);
-                System.out.println("[DeleteSong] selectedRow: "+selectedRow+" '"+selectedSong.getPath()+"'");
+                System.out.println("row:"+selectedRow+" is selected to delete.");
                 library.deleteSong(selectedSong);
                 playerView.updateTableView(library);
                 playerControl.updateLibrary(library);
             } else {
-                System.out.println("[DeleteSong] selectedRow: "+selectedRow+", nothing selected to delete.");
+                System.out.println("row:"+selectedRow+", nothing selected to delete.");
             }
         }
     }
@@ -339,11 +342,11 @@ public class MainController {
             col = source.columnAtPoint( e.getPoint() );
             isRowInbound = (row >= 0) && (row < rowCount);
 
-            // Right-click Popup Trigger for MacOS
+            // Right-click Popup Trigger (for MacOS)
             if (e.isPopupTrigger() && library.size() > 0)
             {
                 if ( isRowInbound ) {   //right click in table
-                    System.out.println("right clicked inside of the table");
+                    System.out.println("right clicked in table. row:"+row);
                     source.changeSelection(row, col, false, false);
                     playerView.getPopUpMenu().show(e.getComponent(), e.getX(), e.getY());
                 } else {                //right click out of table
@@ -352,10 +355,10 @@ public class MainController {
                 }
             }
 
-            // Click outside of Table to clear selection
-            if ( ! isRowInbound ) {
+            // Left-click outside of table to clear selection
+            if ( ! isRowInbound && ! e.isPopupTrigger()) {
                 playerView.getSongTable().clearSelection();
-                System.out.println("Deselected row");
+                System.out.println("Cleared row selections.");
             }
         }
 
@@ -363,7 +366,7 @@ public class MainController {
         @Override
         public void mouseReleased(MouseEvent e)
         {
-            // Right-click Popup Trigger for Windows
+            // Right-click Popup Trigger (for Windows)
             if (e.isPopupTrigger())
             {
                 if ( isRowInbound ) {   //right click in table
@@ -399,16 +402,18 @@ public class MainController {
             public synchronized void drop(DropTargetDropEvent evt) {
                 boolean invalidFilesFound = false;
                 try {
+                    String filePath = "";
                     evt.acceptDrop(DnDConstants.ACTION_COPY);
                     List<File> droppedFiles = (List<File>)
                             evt.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
                     for (File file : droppedFiles) {
+                        filePath = file.getAbsolutePath();
                         try {
-                            Mp3File mp3file = new Mp3File(file.getAbsolutePath());
-                            library.addSong(new Song(file.getAbsolutePath()));
+                            //TODO Make Song Constructor handle invalid mp3 files (3)
+                            Mp3File mp3file = new Mp3File(filePath);
+                            library.addSong(new Song(filePath));
                             playerView.updateTableView(library);
                             playerControl.updateLibrary(library);
-                            System.out.println("Added songs via drop");
                         } catch (UnsupportedTagException e1) {
                             invalidFilesFound = true;
                         } catch (IOException e1) {

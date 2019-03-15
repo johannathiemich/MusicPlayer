@@ -36,6 +36,7 @@ public class Song {
     public Song(String filePath){
         try {
             Mp3File mp3file = new Mp3File(filePath);
+            //Fetching mp3file info
             if (mp3file.hasId3v1Tag()) {
                 ID3v1 id3v1Tag = mp3file.getId3v1Tag();
                 setProperties(filePath,
@@ -49,9 +50,10 @@ public class Song {
             }
         } catch (IOException e) {
             System.err.println("[ERROR] File Not Found. filePath='"+filePath+"'");
-            e.printStackTrace();
+            //e.printStackTrace();
         } catch (UnsupportedTagException e) {
-            e.printStackTrace();
+            System.out.println("[ERROR] No MP3 File Tag(Id3v1/Id3v2)");
+            //e.printStackTrace();
         } catch (InvalidDataException e) {
             //JOptionPane.showMessageDialog(null, "The selected file is not a valid mp3 file.");
         }

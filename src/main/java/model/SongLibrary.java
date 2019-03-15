@@ -64,6 +64,7 @@ public class SongLibrary extends ArrayList<Song>{
      * @param song to be added to the list
      */
     public void addSong(Song song){
+        System.out.print("[AddSongToLibrary] ");
         if(song.getPath()!=null) {
             boolean songContained = false;
             for (Song currSong : this) {
@@ -72,17 +73,17 @@ public class SongLibrary extends ArrayList<Song>{
                 }
             }
             if (!songContained) {
-                //add song to the database
+                //add song to the database and check if succeeded
                 boolean addSongSucceed = dbHandler.addSong(song);
                 if (addSongSucceed) {
                     //add song to this library
                     this.add(song);
-                    System.out.print("[addSong] success! ");
+                    System.out.print("SUCCESS! ");
                 } else {
-                    System.out.print("[addSong] not added to db (already exist or fail) ");
+                    System.out.print("Not added. Already exists. ");
                 }
             }
-            System.out.println(" FilePath: "+song.getPath());
+            System.out.println(" '"+song.getPath()+"'");
         }
     }
 
@@ -101,7 +102,7 @@ public class SongLibrary extends ArrayList<Song>{
      * @param song to be removed from the list
      */
     public void deleteSong(Song song){
-        System.out.print("The song '"+song.getTitle()+"'");
+        System.out.print("[DeleteSongFromLibrary] ");
         boolean songContained = false;
         for (int i = 0; i < this.size(); i++) {
             if (this.get(i).getPath().equals(song.getPath())) {
@@ -111,10 +112,11 @@ public class SongLibrary extends ArrayList<Song>{
         if(songContained) {
             this.remove(song);
             this.dbHandler.deleteSong(song);
-            System.out.println(" is deleted from library");
+            System.out.print("Deleted.");
         }else{
-            System.out.println(" does not exist in library");
+            System.out.print("Song does not exist in library.");
         }
+        System.out.println(" '"+song.getTitleAndArtist()+"'");
     }
 
 
