@@ -17,6 +17,14 @@ import java.awt.event.MouseAdapter;
  * for displaying the data from the model and delegating user interactions to the controller.
  */
 public class MusicPlayerGUI extends JFrame {
+    // UI variables
+    private Dimension frameSize = new Dimension(800,600);
+    private Dimension frameMinSize = new Dimension(600,400);
+    private Dimension buttonSize = new Dimension(60,40);
+    private int bottomPanelHeight = 50;
+    private Color bgColor = Color.darkGray;
+    private Color fgColor = Color.white;
+    private Font font_songTitle = new Font("Arial", Font.PLAIN, 22);
 
     //panels to hold buttons, table, etc.
     private JPanel mainPanel;
@@ -26,12 +34,20 @@ public class MusicPlayerGUI extends JFrame {
     private JPanel sliderPanel;
     private JPanel stopPanel;
 
-    //all components related to table
+    //components for table
     private JTable songTable;
     private DefaultTableModel tableModel;
     private String[] columnHeader;
 
-    //all the buttons from the bottom panel
+    //components for songInfoPanel
+    private JPanel songInfoPanel;
+    private JPanel songDurationPanel;
+    private JLabel songTitleLbl;
+    private JLabel songDetailLbl;
+    private JLabel songTimeProgressLbl;
+    private JLabel songTimeRemainedLbl;
+
+    //components for player control
     private JButton playBtn;
     private JButton nextBtn;
     private JButton prevBtn;
@@ -59,8 +75,8 @@ public class MusicPlayerGUI extends JFrame {
     public MusicPlayerGUI(String frameTitle) {
         super(frameTitle);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        this.setSize(800,600);
-        this.setMinimumSize(new Dimension(600,300));
+        this.setSize(frameSize);
+        this.setMinimumSize(new Dimension(frameMinSize));
 
         //Panels and Layout
         mainPanel = new JPanel();
@@ -68,9 +84,16 @@ public class MusicPlayerGUI extends JFrame {
         buttonPanel = new JPanel();
         sliderPanel = new JPanel();
         stopPanel = new JPanel();
-        bottomPanel.setLayout(new BorderLayout());
-        sliderPanel.setLayout(new BorderLayout());
+        //Panel Layout
+        bottomPanel.setLayout(new BorderLayout(20,20));
         stopPanel.setLayout(new BorderLayout());
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER,0,0));
+        sliderPanel.setLayout(new BorderLayout());
+        //Panel Color
+        bottomPanel.setBackground(bgColor);
+        stopPanel.setOpaque(false);
+        buttonPanel.setOpaque(false);
+        sliderPanel.setOpaque(false);
 
         // Standard Menu setup
         menuBar = new JMenuBar();
@@ -88,14 +111,14 @@ public class MusicPlayerGUI extends JFrame {
             @Override   //block table contents editing
             public boolean isCellEditable(int row, int column) { return false; }
         };
+        initializeTable();
         songTable.setFillsViewportHeight(true);
         songTable.setShowHorizontalLines(true);
         songTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         songTable.getTableHeader().setReorderingAllowed(false);
-        initializeTable();
         tableScrollPane = new JScrollPane(songTable);
 
-        // PopUp Menu
+        // PopUp Menu setup
         popUpMenu = new JPopupMenu();
         deleteSongMenuItemPopup = new JMenuItem("Delete This Song");
         addSongMenuItemPopup = new JMenuItem("Add A Song");
@@ -104,23 +127,26 @@ public class MusicPlayerGUI extends JFrame {
 
         //initializing all buttons and placing them on panel
         stopBtn = new JButton("◼");
+        stopBtn.setPreferredSize(buttonSize);
         stopPanel.add(stopBtn);
 
         prevBtn = new JButton("⦉⦉");
-        buttonPanel.add(prevBtn);
-
         playBtn = new JButton("▶");
-        buttonPanel.add(playBtn);
-
         nextBtn = new JButton("⦊⦊");
+        prevBtn.setPreferredSize(buttonSize);
+        playBtn.setPreferredSize(buttonSize);
+        nextBtn.setPreferredSize(buttonSize);
+        buttonPanel.add(prevBtn);
+        buttonPanel.add(playBtn);
         buttonPanel.add(nextBtn);
 
         //initializing slider
         volumeSlider = new JSlider();
+        volumeSlider.setSize(50,volumeSlider.getHeight());
         sliderPanel.add(volumeSlider);
 
         //putting all buttons into bottomPanel
-        bottomPanel.add(buttonPanel);
+        bottomPanel.add(buttonPanel, BorderLayout.CENTER);
         bottomPanel.add(sliderPanel, BorderLayout.EAST);
         bottomPanel.add(stopPanel, BorderLayout.WEST);
 
@@ -168,6 +194,14 @@ public class MusicPlayerGUI extends JFrame {
     }
 
     /**
+     * Check if any row is selected in the song table
+     * @return whether or not any row is selected.
+     */
+    public boolean isAnyRowSelected() {
+        return (songTable.getSelectedRow() != -1);
+    }
+
+    /**
      * Changes the row selection of the table view.
      * @param rowIndex row to be selected.
      */
@@ -181,9 +215,6 @@ public class MusicPlayerGUI extends JFrame {
      * @return JTable containing songs in the library
      */
     public JTable getSongTable(){ return songTable; }
-    public boolean isAnyRowSelected() {
-        return (songTable.getSelectedRow() != -1);
-    }
 
     /**
      * Returns the popup menu (right click) when clicking on the table area.
