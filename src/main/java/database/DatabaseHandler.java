@@ -59,7 +59,7 @@ public class DatabaseHandler {
      * @return true if the insert was successful; false if it was not successful
      */
     public boolean addSong(Song song) {
-        boolean success = true;
+        boolean success = false;
         Connection conn = null;
         Statement statement = null;
         String sql = "INSERT INTO SONGS " +
@@ -69,24 +69,24 @@ public class DatabaseHandler {
                 + song.getArtist()  + "', '"
                 + song.getAlbum()   + "', '"
                 + song.getYear()    + "', '"
-                + "comment "        + "', '"
-                //+ song.getComment() + "', '"
+                //+ "comment "        + "', '"
+                + song.getComment() + "', '"
                 + song.getGenre()   + "'"
                 + ")";
-        System.out.println("sql executed: " + sql);
+        System.out.println("[Database] sql executed: " + sql);
         try {
             conn = DriverManager.getConnection(createDatabaseURL);
             statement = conn.createStatement();
             statement.executeUpdate(sql);
             conn.close();
-            System.out.println("Added song successfully.");
+            System.out.println("[Database] Added song successfully.");
             success = true;
         } catch (SQLException e) {
             success = false;
             if (e.getSQLState().equals("23505")) {
-                System.out.println("Song is already saved in the database.");
+                System.out.println("[Database] Song is already saved in the database.");
             } else if (e.getSQLState().equals("XJ015")) {
-                System.out.println("Derby shutdown normally.");
+                System.out.println("[Database] Derby shutdown normally.");
             } else {
                 e.printStackTrace();
             }
@@ -110,9 +110,10 @@ public class DatabaseHandler {
             statement = conn.createStatement();
             statement.execute(sql);
             conn.close();
+            System.out.println("[Database] Deleted song.");
         } catch (SQLException e) {
             if (e.getSQLState().equals("XJ015")) {
-                System.out.println("Derby shutdown normally.");
+                System.out.println("[Database] Derby shutdown normally.");
             } else {
                 e.printStackTrace();
                 success = false;
@@ -129,7 +130,7 @@ public class DatabaseHandler {
         Connection conn = null;
         Statement statement = null;
         ResultSet rs = null;
-        ArrayList<Song> library = new ArrayList<Song>();
+        ArrayList<Song> list = new ArrayList<Song>();
         String sql = "SELECT * FROM " + tableName;
         try {
             conn = DriverManager.getConnection(createDatabaseURL);
@@ -146,7 +147,7 @@ public class DatabaseHandler {
                 String comment = results.getString(6);
                 String genre = results.getString(7);
                 Song song = new Song(file_path, title, artist, album, year, comment, genre);
-                library.add(song);
+                list.add(song);
             }
             results.close();
             conn.close();
@@ -158,7 +159,7 @@ public class DatabaseHandler {
                 e.printStackTrace();
             }
         }
-        return library;
+        return list;
     }
 
     /**

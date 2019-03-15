@@ -42,15 +42,15 @@ public class Song {
 
             //Fetching mp3file info
             lengthInSecond = (int)mp3file.getLengthInSeconds();
-            System.out.print("\tlength: "+lengthInSecond+"sec ");
+            System.out.print("\tlength:"+lengthInSecond+"sec");
             if (mp3file.hasId3v1Tag()) {
-                System.out.println("[MP3tag]Id3v1");
+                System.out.println("\t[MP3tag]Id3v1");
                 ID3v1 id3v1Tag = mp3file.getId3v1Tag();
                 setProperties(filePath,
                         id3v1Tag.getTitle(), id3v1Tag.getArtist(), id3v1Tag.getAlbum(),
                         id3v1Tag.getYear(),id3v1Tag.getComment(), id3v1Tag.getGenreDescription() );
             } else if (mp3file.hasId3v2Tag()) {
-                System.out.println("[MP3tag]Id3v2");
+                System.out.println("\t[MP3tag]Id3v2");
                 ID3v2 id3v2Tag = mp3file.getId3v2Tag();
                 setProperties(filePath,
                         id3v2Tag.getTitle(), id3v2Tag.getArtist(), id3v2Tag.getAlbum(),
@@ -86,7 +86,7 @@ public class Song {
     }
 
 
-    //getters and setters
+    // Getters
     public String getPath() {
         return path;
     }
