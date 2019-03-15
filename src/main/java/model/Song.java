@@ -13,6 +13,7 @@ public class Song {
     private String year;
     private String comment;
     private String genre;
+    private int lengthInSecond;
 
     /**
      * Construct an empty Song object
@@ -35,14 +36,21 @@ public class Song {
      */
     public Song(String filePath){
         try {
+            //Get MP3File
+            System.out.print("[NewSong] '"+filePath+"' ");
             Mp3File mp3file = new Mp3File(filePath);
+
             //Fetching mp3file info
+            lengthInSecond = (int)mp3file.getLengthInSeconds();
+            System.out.print("\tlength: "+lengthInSecond+"sec ");
             if (mp3file.hasId3v1Tag()) {
+                System.out.println("[MP3tag]Id3v1");
                 ID3v1 id3v1Tag = mp3file.getId3v1Tag();
                 setProperties(filePath,
                         id3v1Tag.getTitle(), id3v1Tag.getArtist(), id3v1Tag.getAlbum(),
                         id3v1Tag.getYear(),id3v1Tag.getComment(), id3v1Tag.getGenreDescription() );
             } else if (mp3file.hasId3v2Tag()) {
+                System.out.println("[MP3tag]Id3v2");
                 ID3v2 id3v2Tag = mp3file.getId3v2Tag();
                 setProperties(filePath,
                         id3v2Tag.getTitle(), id3v2Tag.getArtist(), id3v2Tag.getAlbum(),
@@ -52,9 +60,10 @@ public class Song {
             System.err.println("[ERROR] File Not Found. filePath='"+filePath+"'");
             //e.printStackTrace();
         } catch (UnsupportedTagException e) {
-            System.out.println("[ERROR] No MP3 File Tag(Id3v1/Id3v2)");
+            System.out.println("[ERROR] Unsupported Tag");
             //e.printStackTrace();
         } catch (InvalidDataException e) {
+            System.out.println("[ERROR] Invalid Data");
             //JOptionPane.showMessageDialog(null, "The selected file is not a valid mp3 file.");
         }
     }
@@ -99,11 +108,13 @@ public class Song {
     public String getGenre() {
         return genre;
     }
+    public int getLengthInSecond() { return lengthInSecond; }
     public String getTitleAndArtist() { return title + " - " + artist; }
 
 
     /**
-     * Set properties of the song
+     * Set properties of the song.
+     * Title, Artist, Album fields with null or blank String are replaced to "unknown".
      */
     public void setProperties(String pPath, String pTitle, String pArtist, String pAlbum, String pYear, String pComment,
                               String pGenre){

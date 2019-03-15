@@ -92,8 +92,7 @@ public class PlayerController {
     }
 
     /**
-     * Stop the song currently playing
-     * setting the current playing position to zero.
+     * Stop the song currently playing.
      */
     public void stopSong(){
         try {
