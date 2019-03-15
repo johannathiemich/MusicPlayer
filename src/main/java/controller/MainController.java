@@ -103,12 +103,10 @@ public class MainController {
                 //Pause Action
                 case BasicPlayer.PLAYING :
                     playerControl.pauseSong();
-                    btnText = "▶";
                     break;
                 //Resume Action
                 case BasicPlayer.PAUSED :
                     playerControl.resumeSong();
-                    btnText = "||";
                     break;
                 //Play Action
                 case BasicPlayer.STOPPED :
@@ -116,13 +114,11 @@ public class MainController {
                     if(playerView.isAnyRowSelected()) {
                         playerControl.setCurrentSong(selectedSong);
                         playerControl.playSong();
-                        btnText = "||";
                     }else{
                         System.out.println("Nothing selected to play");
                     }
                     break;
             }
-            playerView.setPlayBtnText(btnText);
         }
     }
 
@@ -133,7 +129,6 @@ public class MainController {
         @Override
         public void actionPerformed(ActionEvent e) {
             System.out.println("[BUTTON] STOP button is pressed.");
-            playerView.setPlayBtnText("▶");
             playerControl.stopSong();
         }
     }
@@ -223,7 +218,6 @@ public class MainController {
                     //TODO Make Song Constructor handle invalid mp3 files (2)
                     Mp3File mp3file = new Mp3File(selectedPath);
                     playerControl.playSong(new Song(selectedPath));
-                    playerView.setPlayBtnText("||");
                 } catch (UnsupportedTagException e1) {
                     e1.printStackTrace();
                 } catch (IOException e1) {
@@ -388,7 +382,6 @@ public class MainController {
                     System.out.println("double clicked");
                     Song selectedSong = library.get(row);
                     playerControl.playSong(selectedSong);
-                    playerView.setPlayBtnText("||");
                 }
             }
         }

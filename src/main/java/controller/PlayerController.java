@@ -86,7 +86,8 @@ public class PlayerController {
             } catch(BasicPlayerException e) {
                 e.printStackTrace();
             }
-            System.out.println("[PlayerControl] Play Song: "+currentSong.getTitleAndArtist());
+            playerView.setPlayBtnText("||");
+            System.out.println("[PlayerControl] Play Song '"+currentSong.getTitleAndArtist()+"'");
         }
     }
 
@@ -100,6 +101,7 @@ public class PlayerController {
         } catch (BasicPlayerException e) {
             e.printStackTrace();
         }
+        playerView.setPlayBtnText("▶");
         System.out.println("[PlayerControl] Stop Song");
     }
 
@@ -113,6 +115,7 @@ public class PlayerController {
             } catch (BasicPlayerException e) {
                 e.printStackTrace();
             }
+            playerView.setPlayBtnText("▶");
             System.out.println("[PlayerControl] Pause Song");
         }
     }
@@ -128,7 +131,8 @@ public class PlayerController {
             } catch (BasicPlayerException e) {
                 e.printStackTrace();
             }
-            System.out.println("[PlayerControl] Resume Song: "+currentSong.getTitleAndArtist());
+            playerView.setPlayBtnText("||");
+            System.out.println("[PlayerControl] Resume Song '"+currentSong.getTitleAndArtist()+"'");
         }
     }
 
@@ -156,8 +160,6 @@ public class PlayerController {
         // Set prevSong as a current one and play it
         this.setCurrentSong(prevSong);
         this.playSong();
-        // Change the button text
-        playerView.setPlayBtnText("||");
     }
 
     /**
@@ -184,8 +186,6 @@ public class PlayerController {
         // Set prevSong as a current one and play it
         this.setCurrentSong(nextSong);
         this.playSong();
-        // Change the button text
-        playerView.setPlayBtnText("||");
     }
 
     /**
