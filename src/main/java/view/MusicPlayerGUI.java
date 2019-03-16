@@ -270,8 +270,13 @@ public class MusicPlayerGUI extends JFrame {
         int duration = song.getLengthInSecond();
         int min = duration/60;
         int sec = duration%60;
+        String minSec;
+        if(sec<10) { minSec = min + ":0" + sec;
+        } else {     minSec = min + ":" + sec; }
+
+        System.out.println("updateCurrentPlayingView - duration: "+duration+"sec, "+minSec);
         songTimeProgressLbl.setText("0:00");
-        songTimeRemainedLbl.setText(min+":"+sec);
+        songTimeRemainedLbl.setText(minSec);
         songProgressBar.setMinimum(0);
         songProgressBar.setMaximum(duration);
     }
