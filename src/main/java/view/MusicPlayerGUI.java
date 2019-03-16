@@ -4,6 +4,7 @@ import model.Song;
 import model.SongLibrary;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
@@ -21,11 +22,10 @@ public class MusicPlayerGUI extends JFrame {
     private Dimension frameSize = new Dimension(800,600);
     private Dimension frameMinSize = new Dimension(500,300);
     private Dimension buttonSize = new Dimension(60,40);
-    private int bottomPanelHeight = 50;
     private Color[] bgColor = {new Color(40,40,40), new Color(50,50,50)};
     private Color pointColor = new Color(0, 95, 96);
     private Color[] fgColor = {Color.white, Color.lightGray, Color.gray};
-    private Font font = new Font("Helvetica", Font.PLAIN, 22);
+    private Font font = new Font("Helvetica", Font.PLAIN, 14);
 
     //panels to hold buttons, table, etc.
     private JPanel mainPanel;
@@ -86,7 +86,7 @@ public class MusicPlayerGUI extends JFrame {
         sliderPanel = new JPanel();
         stopPanel = new JPanel();
         //Panel Layout
-        bottomPanel.setLayout(new BorderLayout(20,20));
+        bottomPanel.setLayout(new BorderLayout(0,0));
         stopPanel.setLayout(new BorderLayout());
         buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER,0,0));
         sliderPanel.setLayout(new BorderLayout());
@@ -114,25 +114,28 @@ public class MusicPlayerGUI extends JFrame {
         popUpMenu.add(deleteSongMenuItemPopup);
         popUpMenu.add(addSongMenuItemPopup);
 
-        //initializing buttons and placing on panel
+        //initializing buttons and slider
         stopBtn = new JButton("◼");
-        stopBtn.setPreferredSize(buttonSize);
-        stopPanel.add(stopBtn);
-
         prevBtn = new JButton("⦉⦉");
         playBtn = new JButton("▶");
         nextBtn = new JButton("⦊⦊");
-        prevBtn.setPreferredSize(buttonSize);
-        playBtn.setPreferredSize(buttonSize);
-        nextBtn.setPreferredSize(buttonSize);
+        volumeSlider = new JSlider();
+
+        //Song Info Panel @sellabae
+        createSongInfoPanel();
+        //Set a new look of the view @sellabae
+        setTheme();
+        //showLayoutBorders(true);
+
+        //Add components in place-----------------
+        stopPanel.add(stopBtn);
+
         buttonPanel.add(prevBtn);
         buttonPanel.add(playBtn);
         buttonPanel.add(nextBtn);
 
         //slider setup
-        volumeSlider = new JSlider();
         sliderPanel.add(volumeSlider);
-        sliderPanel.setSize(50,bottomPanelHeight);
 
         //putting all buttons into bottomPanel
         bottomPanel.add(buttonPanel, BorderLayout.CENTER);
@@ -144,11 +147,6 @@ public class MusicPlayerGUI extends JFrame {
         this.add(bottomPanel, BorderLayout.SOUTH);
 
         this.pack();
-
-        //Song Info Panel @sellabae
-        createSongInfoPanel();
-        //Set a new look of the view @sellabae
-        setTheme();
     }
 
     /**
@@ -158,7 +156,13 @@ public class MusicPlayerGUI extends JFrame {
         //frame
         this.setBackground(bgColor[0]);
 
+        //menu bar
+//        menuBar.setBackground(bgColor[1]);
+//        menu.setBackground(bgColor[1]);
+//        menu.setForeground(fgColor[1]);
+
         //table view
+        tableScrollPane.setBorder(BorderFactory.createEmptyBorder());
         songTable.setRowHeight(20);
         songTable.setShowGrid(false);
         songTable.setBackground(bgColor[0]);
@@ -168,8 +172,8 @@ public class MusicPlayerGUI extends JFrame {
         //songTable.getTableHeader().setUI(new TableHeaderUI() { ... });    //UI object?
 
         //table row selection
-        songTable.setSelectionBackground(pointColor);
-        songTable.setSelectionForeground(fgColor[0]);
+        songTable.setSelectionBackground(fgColor[2]);
+        songTable.setSelectionForeground(bgColor[0]);
 
         //song info panel
         songInfoPanel.setBackground(bgColor[1]);
@@ -185,7 +189,14 @@ public class MusicPlayerGUI extends JFrame {
         sliderPanel.setOpaque(false);
 
         //font
-        //this.setFont(font);
+        songTitleLbl.setFont(new Font("Helvetica", Font.PLAIN, 14));
+
+        //buttons size and color
+        stopBtn.setPreferredSize(buttonSize);
+        prevBtn.setPreferredSize(buttonSize);
+        playBtn.setPreferredSize(buttonSize);
+        nextBtn.setPreferredSize(buttonSize);
+
     }
 
     /**
@@ -196,17 +207,22 @@ public class MusicPlayerGUI extends JFrame {
         songInfoPanel = new JPanel();
         songInfoPanel.setLayout(new BorderLayout(0,0));
 
+        //song info
         songTitleLbl = new JLabel("Title");
         songDetailLbl = new JLabel("Artist");
         songTimeProgressLbl = new JLabel("0:00");
-        songTimeRemainedLbl = new JLabel("3:10");
+        songTimeRemainedLbl = new JLabel("3:33");
         songTitleLbl.setHorizontalAlignment(SwingConstants.CENTER);
-        songTitleLbl.setVerticalAlignment(SwingConstants.CENTER);
         songDetailLbl.setHorizontalAlignment(SwingConstants.CENTER);
+        songTimeProgressLbl.setHorizontalAlignment(SwingConstants.LEFT);
+        songTimeRemainedLbl.setHorizontalAlignment(SwingConstants.RIGHT);
 
+        //progress bar
         songProgressBar = new JProgressBar(0,0,190);
         songProgressBar.setValue(100);
 
+        //add all components to song info panel
+        songInfoPanel.add(Box.createHorizontalStrut(10));   //invisible space
         songInfoPanel.add(songTitleLbl, BorderLayout.NORTH);
         songInfoPanel.add(songDetailLbl, BorderLayout.CENTER);
         songInfoPanel.add(songTimeProgressLbl, BorderLayout.WEST);
@@ -215,6 +231,34 @@ public class MusicPlayerGUI extends JFrame {
 
         //add this song info panel to bottom panel
         bottomPanel.add(songInfoPanel, BorderLayout.NORTH);
+    }
+
+    /**
+     * Only for development use.
+     * Show borders of all components in the ui to check the layout.
+     * @param show true to show, false not to show borders
+     */
+    private void showLayoutBorders(boolean show){
+        LineBorder[] border = {new LineBorder(Color.red), new LineBorder(Color.green), new LineBorder(Color.blue)};
+        tableScrollPane.setBorder(border[0]);
+            songTable.setBorder(border[1]);
+        bottomPanel.setBorder(border[0]);
+            stopPanel.setBorder(border[1]);
+                stopBtn.setBorder(border[2]);
+            buttonPanel.setBorder(border[1]);
+                prevBtn.setBorder(border[2]);
+                playBtn.setBorder(border[2]);
+                nextBtn.setBorder(border[2]);
+            sliderPanel.setBorder(border[1]);
+                volumeSlider.setBorder(border[2]);
+        if(songInfoPanel != null){
+            songInfoPanel.setBorder(border[0]);
+            songTitleLbl.setBorder(border[1]);
+            songDetailLbl.setBorder(border[1]);
+            songTimeProgressLbl.setBorder(border[1]);
+            songTimeRemainedLbl.setBorder(border[1]);
+            songProgressBar.setBorder(border[1]);
+        }
     }
 
     /**
