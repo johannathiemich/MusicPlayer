@@ -122,9 +122,9 @@ public class MusicPlayerGUI extends JFrame {
         volumeSlider = new JSlider();
 
         //Song Info Panel @sellabae
-        createSongInfoPanel();
+        //createSongInfoPanel();
         //Set a new look of the view @sellabae
-        setTheme();
+        //setTheme();
         //showLayoutBorders(true);
 
         //Add components in place-----------------
