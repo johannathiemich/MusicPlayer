@@ -27,7 +27,7 @@ public class DatabaseHandler {
         //TODO [1] Enable dropAllTables();, Disable createSongTable();, and Run.
         //dropAllTables();  //this is for testing
         createSongTable();
-        //TODO [3] Disable dropAllTables();, Enable createSongTable();, and Run.
+        //TODO [2] Disable dropAllTables();, Enable createSongTable();, and Run.
     }
 
     /**
@@ -123,11 +123,11 @@ public class DatabaseHandler {
             conn.close();
             System.out.println("[Database] Deleted song.");
         } catch (SQLException e) {
+            success = false;
             if (e.getSQLState().equals("XJ015")) {
                 System.out.println("[Database] Derby shutdown normally.");
             } else {
                 e.printStackTrace();
-                success = false;
             }
         }
         return success;
@@ -140,7 +140,6 @@ public class DatabaseHandler {
     public ArrayList<Song> getSongLibrary() {
         Connection conn = null;
         Statement statement = null;
-        ResultSet rs = null;
         ArrayList<Song> list = new ArrayList<Song>();
         String sql = "SELECT * FROM " + tableName;
         try {
@@ -159,7 +158,7 @@ public class DatabaseHandler {
                 String comment = results.getString(6);
                 String genre = results.getString(7);
 
-                //TODO [2] Replace this try-catch to 'int duration = results.getInt(8);'.
+                //TODO [3] Replace this try-catch to 'int duration = results.getInt(8);'.
                 int duration;
                 try {
                     duration = results.getInt(8);
@@ -178,6 +177,7 @@ public class DatabaseHandler {
             } else {
                 e.printStackTrace();
             }
+            return null;
         }
         return list;
     }
