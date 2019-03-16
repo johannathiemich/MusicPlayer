@@ -23,7 +23,7 @@ public class MusicPlayerGUI extends JFrame {
     private Dimension buttonSize = new Dimension(60,40);
     private int bottomPanelHeight = 50;
     private Color[] bgColor = {new Color(40,40,40), new Color(50,50,50)};
-    private Color pointColor = new Color(38, 16, 52);
+    private Color pointColor = new Color(0, 95, 96);
     private Color[] fgColor = {Color.white, Color.lightGray, Color.gray};
     private Font font = new Font("Helvetica", Font.PLAIN, 22);
 
@@ -218,14 +218,14 @@ public class MusicPlayerGUI extends JFrame {
     }
 
     /**
-     * Update the view of song info panel with title, artist, duration.
-     * @param title of current song
-     * @param artist of current song
-     * @param duration of current song
+     * Update the view of song info panel
+     * with title, artist, duration of currently playing song.
+     * @param song currently playing song
      */
-    public void updateCurrentSongView(String title, String artist, int duration){
-        songTitleLbl.setText(title);
-        songDetailLbl.setText(artist);
+    public void updateCurrentPlayingView(Song song){
+        songTitleLbl.setText(song.getTitle());
+        songDetailLbl.setText(song.getArtist());
+        int duration = song.getLengthInSecond();
         int min = duration/60;
         int sec = duration%60;
         songTimeProgressLbl.setText("0:00");

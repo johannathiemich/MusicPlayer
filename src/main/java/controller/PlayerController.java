@@ -87,6 +87,7 @@ public class PlayerController {
                 e.printStackTrace();
             }
             playerView.setPlayBtnText("||");
+            playerView.updateCurrentPlayingView(currentSong);
             System.out.println("[PlayerControl] Play Song '"+currentSong.getTitleAndArtist()+"'");
         }
     }
