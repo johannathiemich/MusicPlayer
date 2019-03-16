@@ -153,6 +153,8 @@ public class MusicPlayerGUI extends JFrame {
      * Change the look of the view
      */
     private void setTheme(){
+//  private void setTheme(Color[] bgColor, Color[] fgColor, Color pointColor){  //for later
+
         //frame
         this.setBackground(bgColor[0]);
 
@@ -161,7 +163,7 @@ public class MusicPlayerGUI extends JFrame {
 //        menu.setBackground(bgColor[1]);
 //        menu.setForeground(fgColor[1]);
 
-        //table view
+        //table
         tableScrollPane.setBorder(BorderFactory.createEmptyBorder());
         songTable.setRowHeight(20);
         songTable.setShowGrid(false);
@@ -169,34 +171,30 @@ public class MusicPlayerGUI extends JFrame {
         songTable.setForeground(fgColor[1]);
         songTable.getTableHeader().setBackground(bgColor[1]);
         songTable.getTableHeader().setForeground(fgColor[2]);
-        //songTable.getTableHeader().setUI(new TableHeaderUI() { ... });    //UI object?
 
         //table row selection
         songTable.setSelectionBackground(fgColor[2]);
         songTable.setSelectionForeground(bgColor[0]);
-
-        //song info panel
-        songInfoPanel.setBackground(bgColor[1]);
-        songTitleLbl.setForeground(fgColor[1]);
-        songDetailLbl.setForeground(fgColor[2]);
-        songTimeProgressLbl.setForeground(fgColor[2]);
-        songTimeRemainedLbl.setForeground(fgColor[2]);
 
         //bottom panel
         bottomPanel.setBackground(bgColor[1]);
         stopPanel.setOpaque(false);
         buttonPanel.setOpaque(false);
         sliderPanel.setOpaque(false);
-
-        //font
-        songTitleLbl.setFont(new Font("Helvetica", Font.PLAIN, 14));
-
-        //buttons size and color
         stopBtn.setPreferredSize(buttonSize);
         prevBtn.setPreferredSize(buttonSize);
         playBtn.setPreferredSize(buttonSize);
         nextBtn.setPreferredSize(buttonSize);
 
+        //song info panel
+        if(songInfoPanel!=null) {
+            songInfoPanel.setBackground(bgColor[1]);
+            songTitleLbl.setForeground(fgColor[1]);
+            songDetailLbl.setForeground(fgColor[2]);
+            songTimeProgressLbl.setForeground(fgColor[2]);
+            songTimeRemainedLbl.setForeground(fgColor[2]);
+            songTitleLbl.setFont(new Font("Helvetica", Font.PLAIN, 14));
+        }
     }
 
     /**
