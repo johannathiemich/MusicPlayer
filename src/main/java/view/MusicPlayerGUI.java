@@ -22,10 +22,10 @@ public class MusicPlayerGUI extends JFrame {
     private Dimension frameMinSize = new Dimension(500,300);
     private Dimension buttonSize = new Dimension(60,40);
     private int bottomPanelHeight = 50;
-    private Color color_bg1 = Color.darkGray;
-    private Color color_fg1 = Color.lightGray;
-    private Color color_fg2 = Color.gray;
-    private Font font_songTitle = new Font("Arial", Font.PLAIN, 22);
+    private Color[] bgColor = {new Color(40,40,40), new Color(50,50,50)};
+    private Color pointColor = new Color(38, 16, 52);
+    private Color[] fgColor = {Color.white, Color.lightGray, Color.gray};
+    private Font font = new Font("Helvetica", Font.PLAIN, 22);
 
     //panels to hold buttons, table, etc.
     private JPanel mainPanel;
@@ -42,7 +42,6 @@ public class MusicPlayerGUI extends JFrame {
 
     //components for songInfoPanel
     private JPanel songInfoPanel;
-    private JPanel songDurationPanel;
     private JLabel songTitleLbl;
     private JLabel songDetailLbl;
     private JLabel songTimeProgressLbl;
@@ -91,11 +90,6 @@ public class MusicPlayerGUI extends JFrame {
         stopPanel.setLayout(new BorderLayout());
         buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER,0,0));
         sliderPanel.setLayout(new BorderLayout());
-        //Panel Color
-        bottomPanel.setBackground(color_bg1);
-        stopPanel.setOpaque(false);
-        buttonPanel.setOpaque(false);
-        sliderPanel.setOpaque(false);
 
         // Standard Menu setup
         createMenu();
@@ -108,7 +102,7 @@ public class MusicPlayerGUI extends JFrame {
         };
         initializeTable();
         songTable.setFillsViewportHeight(true);
-        songTable.setShowHorizontalLines(true);
+        songTable.setShowVerticalLines(false);
         songTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         songTable.getTableHeader().setReorderingAllowed(false);
         tableScrollPane = new JScrollPane(songTable);
@@ -119,9 +113,6 @@ public class MusicPlayerGUI extends JFrame {
         addSongMenuItemPopup = new JMenuItem("Add A Song");
         popUpMenu.add(deleteSongMenuItemPopup);
         popUpMenu.add(addSongMenuItemPopup);
-
-        //Song Info Panel
-        createSongInfoPanel();
 
         //initializing buttons and placing on panel
         stopBtn = new JButton("◼");
@@ -154,12 +145,56 @@ public class MusicPlayerGUI extends JFrame {
 
         this.pack();
 
+        //Song Info Panel @sellabae
+        createSongInfoPanel();
+        //Set a new look of the view @sellabae
+        setTheme();
     }
 
+    /**
+     * Change the look of the view
+     */
+    private void setTheme(){
+        //frame
+        this.setBackground(bgColor[0]);
+
+        //table view
+        songTable.setRowHeight(20);
+        songTable.setShowGrid(false);
+        songTable.setBackground(bgColor[0]);
+        songTable.setForeground(fgColor[1]);
+        songTable.getTableHeader().setBackground(bgColor[1]);
+        songTable.getTableHeader().setForeground(fgColor[2]);
+        //songTable.getTableHeader().setUI(new TableHeaderUI() { ... });    //UI object?
+
+        //table row selection
+        songTable.setSelectionBackground(pointColor);
+        songTable.setSelectionForeground(fgColor[0]);
+
+        //song info panel
+        songInfoPanel.setBackground(bgColor[1]);
+        songTitleLbl.setForeground(fgColor[1]);
+        songDetailLbl.setForeground(fgColor[2]);
+        songTimeProgressLbl.setForeground(fgColor[2]);
+        songTimeRemainedLbl.setForeground(fgColor[2]);
+
+        //bottom panel
+        bottomPanel.setBackground(bgColor[1]);
+        stopPanel.setOpaque(false);
+        buttonPanel.setOpaque(false);
+        sliderPanel.setOpaque(false);
+
+        //font
+        //this.setFont(font);
+    }
+
+    /**
+     * Create all components for song info panel
+     * which contains song title, artist, progressbar, duration.
+     */
     private void createSongInfoPanel() {
         songInfoPanel = new JPanel();
         songInfoPanel.setLayout(new BorderLayout(0,0));
-        songInfoPanel.setBackground(color_bg1);
 
         songTitleLbl = new JLabel("Title");
         songDetailLbl = new JLabel("Artist");
@@ -168,14 +203,9 @@ public class MusicPlayerGUI extends JFrame {
         songTitleLbl.setHorizontalAlignment(SwingConstants.CENTER);
         songTitleLbl.setVerticalAlignment(SwingConstants.CENTER);
         songDetailLbl.setHorizontalAlignment(SwingConstants.CENTER);
-        songTitleLbl.setForeground(color_fg1);
-        songDetailLbl.setForeground(color_fg2);
-        songTimeProgressLbl.setForeground(color_fg2);
-        songTimeRemainedLbl.setForeground(color_fg2);
 
         songProgressBar = new JProgressBar(0,0,190);
         songProgressBar.setValue(100);
-
 
         songInfoPanel.add(songTitleLbl, BorderLayout.NORTH);
         songInfoPanel.add(songDetailLbl, BorderLayout.CENTER);
@@ -187,6 +217,12 @@ public class MusicPlayerGUI extends JFrame {
         bottomPanel.add(songInfoPanel, BorderLayout.NORTH);
     }
 
+    /**
+     * Update the view of song info panel with title, artist, duration.
+     * @param title of current song
+     * @param artist of current song
+     * @param duration of current song
+     */
     public void updateCurrentSongView(String title, String artist, int duration){
         songTitleLbl.setText(title);
         songDetailLbl.setText(artist);
