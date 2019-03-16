@@ -22,9 +22,12 @@ public class DatabaseHandler {
      * Constructor for this class
      */
     public DatabaseHandler() {
-        //we should not drop all tables every time we start the application
-        //dropAllTables();
+        //TODO [0] @brett, @johannathiemich
+        // To Safely migrate to table with new DURATION field,
+        //TODO [1] Enable dropAllTables();, Disable createSongTable();, and Run.
+        //dropAllTables();  //this is for testing
         createSongTable();
+        //TODO [3] Disable dropAllTables();, Enable createSongTable();, and Run.
     }
 
     /**
@@ -35,8 +38,16 @@ public class DatabaseHandler {
     public void createSongTable(){
         Connection conn = null;
         Statement statement = null;
-        String sql = "CREATE TABLE SONGS (SONG_PATH VARCHAR(512) PRIMARY KEY, TITLE VARCHAR(256), ARTIST VARCHAR(256), " +
-                "ALBUM VARCHAR(256), YEAR_PUBLISHED VARCHAR(256), COMMENT VARCHAR(256), GENRE VARCHAR(256))";
+        String sql = "CREATE TABLE "+tableName + "( " +
+                "FILEPATH VARCHAR(512) PRIMARY KEY," +
+                "TITLE VARCHAR(256), " +
+                "ARTIST VARCHAR(256), " +
+                "ALBUM VARCHAR(256), " +
+                "YEAR_PUBLISHED VARCHAR(256), " +
+                "COMMENT VARCHAR(256), " +
+                "GENRE VARCHAR(256), " +
+                "DURATION INTEGER" +
+                " )";
         try {
             conn = DriverManager.getConnection(createDatabaseURL);
             statement = conn.createStatement();
@@ -44,7 +55,7 @@ public class DatabaseHandler {
             DriverManager.getConnection(shutdownURL);
         } catch (SQLException e) {
             if (e.getSQLState().equals("X0Y32")) {
-                System.out.println("Table already exists, won't create a new one.");
+                System.out.println(tableName+" table already exists, won't create a new one.");
             } else if (e.getSQLState().equals("XJ015")) {
                 System.out.println("Derby shutdown normally.");
             } else {
@@ -62,16 +73,16 @@ public class DatabaseHandler {
         boolean success = false;
         Connection conn = null;
         Statement statement = null;
-        String sql = "INSERT INTO SONGS " +
+        String sql = "INSERT INTO "+tableName +
                 "      VALUES ('"
                 + song.getPath()    + "', '"
                 + song.getTitle()   + "', '"
                 + song.getArtist()  + "', '"
                 + song.getAlbum()   + "', '"
                 + song.getYear()    + "', '"
-                //+ "comment "        + "', '"
                 + song.getComment() + "', '"
-                + song.getGenre()   + "'"
+                + song.getGenre()   + "', "
+                + song.getLengthInSecond()    //this field is integer
                 + ")";
         System.out.println("[Database] sql executed: " + sql);
         try {
@@ -139,6 +150,7 @@ public class DatabaseHandler {
 
             while(results.next())
             {
+                //TODO better to use findColumn("column_name") to get columnIndex.
                 String file_path = results.getString(1);
                 String title = results.getString(2);
                 String artist = results.getString(3);
@@ -146,7 +158,15 @@ public class DatabaseHandler {
                 String year = results.getString(5);
                 String comment = results.getString(6);
                 String genre = results.getString(7);
-                Song song = new Song(file_path, title, artist, album, year, comment, genre);
+
+                //TODO [2] Replace this try-catch to 'int duration = results.getInt(8);'.
+                int duration;
+                try {
+                    duration = results.getInt(8);
+                }catch(SQLException ex){
+                    duration = 0;
+                }
+                Song song = new Song(file_path, title, artist, album, year, comment, genre, duration);
                 list.add(song);
             }
             results.close();

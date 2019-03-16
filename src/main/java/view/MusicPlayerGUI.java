@@ -217,7 +217,7 @@ public class MusicPlayerGUI extends JFrame {
 
         //progress bar
         songProgressBar = new JProgressBar(0,0,190);
-        songProgressBar.setValue(100);
+        songProgressBar.setValue(60);
 
         //add all components to song info panel
         songInfoPanel.add(Box.createHorizontalStrut(10));   //invisible space
@@ -265,20 +265,15 @@ public class MusicPlayerGUI extends JFrame {
      * @param song currently playing song
      */
     public void updateCurrentPlayingView(Song song){
-        songTitleLbl.setText(song.getTitle());
-        songDetailLbl.setText(song.getArtist());
-        int duration = song.getLengthInSecond();
-        int min = duration/60;
-        int sec = duration%60;
-        String minSec;
-        if(sec<10) { minSec = min + ":0" + sec;
-        } else {     minSec = min + ":" + sec; }
-
-        System.out.println("updateCurrentPlayingView - duration: "+duration+"sec, "+minSec);
-        songTimeProgressLbl.setText("0:00");
-        songTimeRemainedLbl.setText(minSec);
-        songProgressBar.setMinimum(0);
-        songProgressBar.setMaximum(duration);
+        if(songInfoPanel != null) {
+            songTitleLbl.setText(song.getTitle());
+            songDetailLbl.setText(song.getArtist());
+            System.out.println("updateCurrentPlayingView - duration: " + song.getLengthInSecond() + "sec, " + song.getDuration());
+            songTimeProgressLbl.setText("0:00");
+            songTimeRemainedLbl.setText(song.getDuration());
+            songProgressBar.setMinimum(0);
+            songProgressBar.setMaximum(song.getLengthInSecond());
+        }
     }
 
     /**
