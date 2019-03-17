@@ -114,12 +114,18 @@ public class MusicPlayerGUI extends JFrame {
         popUpMenu.add(deleteSongMenuItemPopup);
         popUpMenu.add(addSongMenuItemPopup);
 
-        //initializing buttons and slider
+        //Buttons and Slider setup
         stopBtn = new JButton("◼");
         prevBtn = new JButton("⦉⦉");
         playBtn = new JButton("▶");
         nextBtn = new JButton("⦊⦊");
         volumeSlider = new JSlider();
+        //setting name(key) of button components
+        stopBtn.setName("stop");
+        playBtn.setName("play");
+        prevBtn.setName("prev");
+        nextBtn.setName("next");
+
 
         //Song Info Panel @sellabae
         createSongInfoPanel();
@@ -268,7 +274,6 @@ public class MusicPlayerGUI extends JFrame {
         if(songInfoPanel != null) {
             songTitleLbl.setText(song.getTitle());
             songDetailLbl.setText(song.getArtist());
-            System.out.println("updateCurrentPlayingView - duration: " + song.getLengthInSecond() + "sec, " + song.getDuration());
             songTimeProgressLbl.setText("0:00");
             songTimeRemainedLbl.setText(song.getDuration());
             songProgressBar.setMinimum(0);
@@ -454,52 +459,16 @@ public class MusicPlayerGUI extends JFrame {
     }
 
     //Add listeners to buttons
-
     /**
-     * Attach a listener to all buttons
+     * Attach a listener to all player control buttons Play/Stop/Prev/Next
      * @param listener ActionListener with button actions
      */
-    public void addButtonListener(ActionListener listener) {
+    public void addPlayerControlButtonListener(ActionListener listener) {
         playBtn.addActionListener(listener);
         stopBtn.addActionListener(listener);
         prevBtn.addActionListener(listener);
         nextBtn.addActionListener(listener);
     }
-
-
-    /**
-     *This method adds an ActionListener to the play button.
-     * @param listener the listener to be added to the play button
-     */
-    public void addPlayBtnListener(ActionListener listener){
-        playBtn.addActionListener(listener);
-    }
-
-    /**
-     *This method adds an ActionListener to the stop button.
-     *@param listener the listener to be added to the stop button
-     */
-    public void addStopBtnListener(ActionListener listener){
-        stopBtn.addActionListener(listener);
-    }
-
-    /**
-     *This method adds an ActionListener to the 'previous song' button.
-     *@param listener the listener to be added to the 'previous song' button
-     */
-    public void addPrevBtnListener(ActionListener listener){
-        prevBtn.addActionListener(listener);
-    }
-
-    /**
-     *This method adds an ActionListener to the 'next song' button.
-     *@param listener the listener to be added to the 'next song' button
-     */
-    public void addNextBtnListener(ActionListener listener){
-        nextBtn.addActionListener(listener);
-    }
-
-
 
     //Add listener to volume slider
     /**

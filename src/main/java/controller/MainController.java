@@ -60,10 +60,7 @@ public class MainController {
         playerView.setVisible(true);
 
         //add listeners for buttons and slider
-        playerView.addPlayBtnListener(new PlayBtnListener());
-        playerView.addStopBtnListener(new StopBtnListener());
-        playerView.addPrevBtnListener(new PrevBtnListener());
-        playerView.addNextBtnListener(new NextBtnListener());
+        playerView.addPlayerControlButtonListener(new PlayerControlButtonListener());
         playerView.addVolumeSliderListener(new VolumeSliderListener());
 
         //Add listeners for standard menu
@@ -90,100 +87,59 @@ public class MainController {
 
     /**
      * PlayerControlButtonListener class implements
-     * the actions of play/stop/prev/next buttons
+     * the actions of Play/Stop/Prev/Next buttons
      */
     class PlayerControlButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
+            // Get the name of event source component
             String btnName = ((JButton)e.getSource()).getName();
+
             int playerStatus = playerControl.getPlayerStatus();
 
-            if (btnName.equals("play"))
-            {
-                //play button actions
+            if (btnName.equals("play")) {
+                //PLAY button actions
+                System.out.println("[BUTTON] Play/Pause/Resume button is pressed.");
+
+                switch (playerStatus) {
+                    //Pause Action
+                    case BasicPlayer.PLAYING :
+                        playerControl.pauseSong();
+                        break;
+                    //Resume Action
+                    case BasicPlayer.PAUSED :
+                        playerControl.resumeSong();
+                        break;
+                    //Play Action
+                    case BasicPlayer.STOPPED :
+                    default:
+                        if(playerView.isAnyRowSelected()) {
+                            playerControl.setCurrentSong(selectedSong);
+                            playerControl.playSong();
+                        }else{
+                            System.out.println("nothing selected, playing the first song in the library..");
+                            playerControl.playSong(library.get(0));
+                        }
+                        break;
+                }
+            } else if (btnName.equals("stop")) {
+                //STOP button action
+                System.out.println("[BUTTON] STOP button is pressed.");
+                playerControl.stopSong();
             }
-            else if (btnName.equals("stop"))
-            {
-                //stop button action
+            else if (btnName.equals("prev")) {
+                //PREV button action
+                System.out.println("[BUTTON] PREV button is pressed.");
+                playerControl.playPrevSong();
             }
-            else if (btnName.equals("prev"))
-            {
-                //prev button action
-            }
-            else if (btnName.equals("next"))
-            {
-                //next button action
+            else if (btnName.equals("next")) {
+                //NEXT button action
+                System.out.println("[BUTTON] NEXT button is pressed.");
+                playerControl.playNextSong();
             }
             else {
                 System.out.println("none of play/stop/prev/next buttons");
             }
-        }
-    }
-
-    /**
-     * This method changes the symbol for the play button while it playing, paused, or stopped.
-     *
-     */
-    class PlayBtnListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            int playerStatus = playerControl.getPlayerStatus();
-            String btnText = playerView.getPlayBtnText();
-            System.out.println("[BUTTON] "+btnText+" button is pressed.");
-
-            switch (playerStatus) {
-                //Pause Action
-                case BasicPlayer.PLAYING :
-                    playerControl.pauseSong();
-                    break;
-                //Resume Action
-                case BasicPlayer.PAUSED :
-                    playerControl.resumeSong();
-                    break;
-                //Play Action
-                case BasicPlayer.STOPPED :
-                default:
-                    if(playerView.isAnyRowSelected()) {
-                        playerControl.setCurrentSong(selectedSong);
-                        playerControl.playSong();
-                    }else{
-                        System.out.println("Nothing selected to play");
-                    }
-                    break;
-            }
-        }
-    }
-
-    /**
-     * Song os stopped and the song has the option to be played.
-     */
-    class StopBtnListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            System.out.println("[BUTTON] STOP button is pressed.");
-            playerControl.stopSong();
-        }
-    }
-
-    /**
-     * Current song is set to previous song in the library.
-     */
-    class PrevBtnListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            System.out.println("[BUTTON] PREV button is pressed.");
-            playerControl.playPrevSong();
-        }
-    }
-
-    /**
-     * Current song is set to next song in the library.
-     */
-    class NextBtnListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            System.out.println("NEXT button is pressed.");
-            playerControl.playNextSong();
         }
     }
 
