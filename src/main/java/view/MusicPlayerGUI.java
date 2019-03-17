@@ -122,9 +122,9 @@ public class MusicPlayerGUI extends JFrame {
         volumeSlider = new JSlider();
 
         //Song Info Panel @sellabae
-        //createSongInfoPanel();
+        createSongInfoPanel();
         //Set a new look of the view @sellabae
-        //setTheme();
+        setTheme();
         //showLayoutBorders(true);
 
         //Add components in place-----------------
@@ -454,6 +454,19 @@ public class MusicPlayerGUI extends JFrame {
     }
 
     //Add listeners to buttons
+
+    /**
+     * Attach a listener to all buttons
+     * @param listener ActionListener with button actions
+     */
+    public void addButtonListener(ActionListener listener) {
+        playBtn.addActionListener(listener);
+        stopBtn.addActionListener(listener);
+        prevBtn.addActionListener(listener);
+        nextBtn.addActionListener(listener);
+    }
+
+
     /**
      *This method adds an ActionListener to the play button.
      * @param listener the listener to be added to the play button
@@ -485,6 +498,8 @@ public class MusicPlayerGUI extends JFrame {
     public void addNextBtnListener(ActionListener listener){
         nextBtn.addActionListener(listener);
     }
+
+
 
     //Add listener to volume slider
     /**
