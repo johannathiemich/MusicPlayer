@@ -331,28 +331,34 @@ public class MainController {
             boolean invalidFilesFound = false;
             String filePath;
             int successCount = 0;
+            int draggedCount = 0;
             try {
                 evt.acceptDrop(DnDConstants.ACTION_COPY);
                 List<File> droppedFiles = (List<File>)evt.getTransferable()
                         .getTransferData(DataFlavor.javaFileListFlavor);
+                draggedCount = droppedFiles.size();
                 for (File file : droppedFiles) {
                     filePath = file.getAbsolutePath();
                     Song newSong = new Song(filePath);
-                    if (newSong == null || filePath == null) {
+                    if (newSong.getPath() == null) {
                         System.out.println("[DragDrop] Not a valid file. '"+filePath+"'\n");
                         invalidFilesFound = true;
                     } else {
-                        successCount++;
-                        library.addSong(newSong);
-                        playerView.updateTableView(library);
-                        playerControl.updateLibrary(library);
+                        //if library successfully adds the song
+                        //which is valid mp3 and not present in library..
+                        if( library.addSong(newSong) ) {
+                            successCount++;
+                            playerView.updateTableView(library);
+                            playerControl.updateLibrary(library);
+                        }
                     }
                 }
                 if (invalidFilesFound) {
-                    JOptionPane.showMessageDialog(null, "Some files have not been added " +
-                            "since they are not valid mp3 files.");
+                    System.out.println("[DragDrop] Added "+successCount+" songs out of "+draggedCount+" files.\n");
+                    JOptionPane.showMessageDialog(playerView,
+                            "Some files have not been added\n" +
+                                    "since they are not valid mp3 files.");
                 }
-                System.out.println("[DragDrop] Added "+successCount+" songs out of "+droppedFiles.size()+" files.\n");
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

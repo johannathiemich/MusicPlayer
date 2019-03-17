@@ -51,9 +51,9 @@ public class SongLibrary extends ArrayList<Song>{
      * @return the song at the corresponding path or null if the path is not contained in the library
      */
     public Song getSongByPath(String path) {
-        for (int i = 0; i < this.size(); i++) {
-            if (this.get(i).getPath().equals(path)) {
-                return this.get(i);
+        for (Song song : this) {
+            if (song.getPath().equals(path)) {
+                return song;
             }
         }
         return null;
@@ -79,22 +79,28 @@ public class SongLibrary extends ArrayList<Song>{
      * Add a Song to the library, if not present.
      * Should use addSong(Song) instead of add(Song) which is Array's inherited method.
      * @param song to be added to the list
+     * @return whether adding Song to library succeeds.
      */
-    public void addSong(Song song){
+    public boolean addSong(Song song){
+        boolean success = false;
         if(song.getPath() == null) {
-            System.out.println("[Library_ERROR] Not added. filePath=null");
+            System.out.println("[Library_ERROR] Not added. filePath: null\n");
+            success = false;
         } else {
             // Check if the song already exists in the library
             if ( exists(song) ) {
                 System.out.print("[Library] Not added. Already in the library.\t");
+                success = false;
             }else{
                 //add song to the database
                 dbHandler.addSong(song);
                 this.add(song);
                 System.out.print("[Library] Added a new song.\t");
+                success = true;
             }
             System.out.println("'"+song.getTitleAndArtist()+"'\n");
         }
+        return success;
     }
 
     /**
