@@ -9,7 +9,7 @@ Github repository for class CECS543 Spring 2019 at CSULB
   * [mp3agic](https://github.com/mpatric/mp3agic)
 
 
-### Iteration 1
+## Iteration #1
 3/14/2019  
 Screenshot:
 ![iteration1 screenshot](documentation/iteration1/screenshot_MyTunes1.0_1.png)
