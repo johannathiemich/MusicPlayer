@@ -9,6 +9,7 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.dnd.DropTarget;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 
@@ -421,7 +422,6 @@ public class MusicPlayerGUI extends JFrame {
         deleteSongMenuItemPopup.addActionListener(listener);
     }
 
-    //Add listeners to buttons
     /**
      * Attach a listener to all player control buttons Play/Stop/Prev/Next
      * @param listener ActionListener with button actions
@@ -433,7 +433,6 @@ public class MusicPlayerGUI extends JFrame {
         nextBtn.addActionListener(listener);
     }
 
-    //Add listener to volume slider
     /**
      *This method adds a ChangeListener to the volume slider.
      * @param listener the listener to be added to the volume slider
@@ -442,7 +441,6 @@ public class MusicPlayerGUI extends JFrame {
         volumeSlider.addChangeListener(listener);
     }
 
-    //Add listener to table
     /**
      * This method adds a ListSelectionListener to the song table.
      * @param listener the listener to be added to the song table
@@ -457,6 +455,14 @@ public class MusicPlayerGUI extends JFrame {
      */
     public void addMouseListenerForTable(MouseAdapter adapter){
         songTable.addMouseListener(adapter);
+    }
+
+    /**
+     * Set drop target to table scroll pane for drag&drop action
+     * @param dropTarget the drop target to be added to the scroll panel
+     */
+    public void addDragDropToScrollPane(DropTarget dropTarget){
+        tableScrollPane.setDropTarget(dropTarget);
     }
 
 }

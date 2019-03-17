@@ -1,8 +1,5 @@
 package controller;
 
-import com.mpatric.mp3agic.InvalidDataException;
-import com.mpatric.mp3agic.Mp3File;
-import com.mpatric.mp3agic.UnsupportedTagException;
 import javazoom.jlgui.basicplayer.BasicPlayer;
 import model.Song;
 import model.SongLibrary;
@@ -22,7 +19,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -69,8 +65,8 @@ public class MainController {
         playerView.addSelectionListenerForTable(new SelectionListenerForTable());
         playerView.addMouseListenerForTable(new MouseListenerForTable());
 
-        //Add listener to drag and drop area
-        addDragDropToScrollPane();
+        //Add drop target to scroll pane
+        playerView.addDragDropToScrollPane(new DragDropToScrollPane());
 
     }
 
@@ -158,7 +154,7 @@ public class MainController {
      * "about"  About
      * "exit"   Exit
      */
-    private class MenuItemListener implements ActionListener {
+    class MenuItemListener implements ActionListener {
         String menuName;
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -330,40 +326,37 @@ public class MainController {
     /**
      * User can drag and drop mp3 files from their directory into the library.
      */
-    public void addDragDropToScrollPane() {
-        playerView.getScrollPane().setDropTarget(new DropTarget() {
-            public synchronized void drop(DropTargetDropEvent evt) {
-                boolean invalidFilesFound = false;
-                try {
-                    String filePath = "";
-                    evt.acceptDrop(DnDConstants.ACTION_COPY);
-                    List<File> droppedFiles = (List<File>)
-                            evt.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
-                    for (File file : droppedFiles) {
-                        filePath = file.getAbsolutePath();
-                        try {
-                            //TODO Make Song Constructor handle invalid mp3 files (3)
-                            Mp3File mp3file = new Mp3File(filePath);
-                            library.addSong(new Song(filePath));
-                            playerView.updateTableView(library);
-                            playerControl.updateLibrary(library);
-                        } catch (UnsupportedTagException e1) {
-                            invalidFilesFound = true;
-                        } catch (IOException e1) {
-                            invalidFilesFound = true;
-                        } catch (InvalidDataException e1) {
-                            invalidFilesFound = true;
-                        }
+    class DragDropToScrollPane extends DropTarget {
+        public synchronized void drop(DropTargetDropEvent evt) {
+            boolean invalidFilesFound = false;
+            String filePath;
+            int successCount = 0;
+            try {
+                evt.acceptDrop(DnDConstants.ACTION_COPY);
+                List<File> droppedFiles = (List<File>)evt.getTransferable()
+                        .getTransferData(DataFlavor.javaFileListFlavor);
+                for (File file : droppedFiles) {
+                    filePath = file.getAbsolutePath();
+                    Song newSong = new Song(filePath);
+                    if (newSong == null || filePath == null) {
+                        System.out.println("[DragDrop] Not a valid file. '"+filePath+"'\n");
+                        invalidFilesFound = true;
+                    } else {
+                        successCount++;
+                        library.addSong(newSong);
+                        playerView.updateTableView(library);
+                        playerControl.updateLibrary(library);
                     }
-                    if (invalidFilesFound) {
-                        JOptionPane.showMessageDialog(null, "Some files have not been added " +
-                                "since they are not valid mp3 files.");
-                    }
-                } catch (Exception ex) {
-                    ex.printStackTrace();
                 }
+                if (invalidFilesFound) {
+                    JOptionPane.showMessageDialog(null, "Some files have not been added " +
+                            "since they are not valid mp3 files.");
+                }
+                System.out.println("[DragDrop] Added "+successCount+" songs out of "+droppedFiles.size()+" files.\n");
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
-        });
+        }
     }
 
 }
