@@ -64,7 +64,9 @@ public class SongLibrary extends ArrayList<Song>{
      * @param song to be added to the list
      */
     public void addSong(Song song){
-        if(song.getPath()!=null) {
+        if(song.getPath() == null) {
+            System.out.println("[Library_ERROR] Not added. filePath=null");
+        } else {
             // Check if the song already exists in the library
             if ( exists(song) ) {
                 System.out.print("[Library] Not added. Already in the library.\t");

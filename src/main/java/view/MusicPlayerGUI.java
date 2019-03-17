@@ -111,6 +111,8 @@ public class MusicPlayerGUI extends JFrame {
         popUpMenu = new JPopupMenu();
         deleteSongMenuItemPopup = new JMenuItem("Delete This Song");
         addSongMenuItemPopup = new JMenuItem("Add A Song");
+        deleteSongMenuItemPopup.setName("delete");
+        addSongMenuItemPopup.setName("add");
         popUpMenu.add(deleteSongMenuItemPopup);
         popUpMenu.add(addSongMenuItemPopup);
 
@@ -404,72 +406,19 @@ public class MusicPlayerGUI extends JFrame {
 // Adding listeners ---------------------------------------------
 
     /**
-     * Attach a listener to all menu items in menu bar
+     * Attach a listener to all menu items in menu bar and popup menu
      * @param listener ActionListener with menu actions
      */
     public void addMenuItemListener(ActionListener listener) {
+        //standard menu items in menu bar
         openSongMenuItem.addActionListener(listener);
         addSongMenuItem.addActionListener(listener);
         deleteSongMenuItem.addActionListener(listener);
         aboutMenuItem.addActionListener(listener);
         exitMenuItem.addActionListener(listener);
-    }
-
-    /**
-     *This method adds an ActionListener to the 'OpenSong' standard menu item.
-     * @param listener the listener to be added to the menu item
-     */
-    public void addOpenSongMenuItemListener(ActionListener listener) {
-        openSongMenuItem.addActionListener(listener);
-    }
-
-    /**
-     *This method adds an ActionListener to the 'Add Song' standard menu item.
-     * @param listener the listener to be added to the menu item
-     */
-    public void addAddSongMenuItemListener(ActionListener listener) {
-        addSongMenuItem.addActionListener(listener);
-    }
-
-    /**
-     *This method adds an ActionListener to the 'Delete Song' standard menu item.
-     * @param listener the listener to be added to the menu item
-     */
-    public void addDeleteSongMenuListener (ActionListener listener) {
-        deleteSongMenuItem.addActionListener(listener);
-    }
-
-    /**
-     * Add an ActionListener to 'About' standard menu item.
-     * @param listener the listener to be added to the menu item
-     */
-    public void addAboutMenuItemListener (ActionListener listener) {
-        aboutMenuItem.addActionListener(listener);
-    }
-
-    /**
-     *This method adds an ActionListener to the 'Exit' standard menu item.
-     * @param listener the listener to be added to the menu item
-     */
-    public void addExitMenuItemListener (ActionListener listener) {
-        exitMenuItem.addActionListener(listener);
-    }
-
-    //Add listeners to popup menu
-    /**
-     *This method adds an ActionListener to the 'Delete Song' popup menu item.
-     * @param listener the listener to be added to the popup menu item
-     */
-    public void addDeleteSongPopupListener(ActionListener listener) {
-        deleteSongMenuItemPopup.addActionListener(listener);
-    }
-
-    /**
-     *This method adds an ActionListener to the 'Add Song' popup menu item.
-     *@param listener the listener to be added to the popup menu item
-     */
-    public void addAddSongPopupListener (ActionListener listener) {
+        //popup menu items
         addSongMenuItemPopup.addActionListener(listener);
+        deleteSongMenuItemPopup.addActionListener(listener);
     }
 
     //Add listeners to buttons

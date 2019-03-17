@@ -27,7 +27,7 @@ public class PlayerController {
     public PlayerController(SongLibrary library, MusicPlayerGUI playerView){
         player = new BasicPlayer();
         this.library = library;
-        currentSong = new Song();
+        currentSong = library.get(0);   //first song in the library by default
         this.playerView = playerView;
     }
 
@@ -88,7 +88,7 @@ public class PlayerController {
             }
             playerView.setPlayBtnText("||");
             playerView.updateCurrentPlayingView(currentSong);
-            System.out.println("[PlayerControl] Play Song '"+currentSong.getTitleAndArtist()+"'");
+            System.out.println("[PlayerControl] Play Song '"+currentSong.getTitleAndArtist()+"'\n");
         }
     }
 
@@ -102,7 +102,7 @@ public class PlayerController {
             e.printStackTrace();
         }
         playerView.setPlayBtnText("▶");
-        System.out.println("[PlayerControl] Stop Song");
+        System.out.println("[PlayerControl] Stop Song\n");
     }
 
     /**
@@ -116,7 +116,7 @@ public class PlayerController {
                 e.printStackTrace();
             }
             playerView.setPlayBtnText("▶");
-            System.out.println("[PlayerControl] Pause Song");
+            System.out.println("[PlayerControl] Pause Song\n");
         }
     }
 
@@ -132,7 +132,7 @@ public class PlayerController {
                 e.printStackTrace();
             }
             playerView.setPlayBtnText("||");
-            System.out.println("[PlayerControl] Resume Song '"+currentSong.getTitleAndArtist()+"'");
+            System.out.println("[PlayerControl] Resume Song '"+currentSong.getTitleAndArtist()+"'\n");
         }
     }
 

@@ -6,7 +6,6 @@ import com.mpatric.mp3agic.UnsupportedTagException;
 import javazoom.jlgui.basicplayer.BasicPlayer;
 import model.Song;
 import model.SongLibrary;
-import view.ListDialog;
 import view.MusicPlayerGUI;
 
 import javax.swing.*;
@@ -59,26 +58,18 @@ public class MainController {
         playerView.updateTableView(library);
         playerView.setVisible(true);
 
-        //add listeners for buttons and slider
+        //Add listeners to buttons and slider
         playerView.addPlayerControlButtonListener(new PlayerControlButtonListener());
         playerView.addVolumeSliderListener(new VolumeSliderListener());
 
-        //Add listeners for standard menu
-        playerView.addOpenSongMenuItemListener(new OpenSongMenuItemListener());
-        playerView.addAddSongMenuItemListener(new AddSongMenuItemListener());
-        playerView.addDeleteSongMenuListener(new DeleteSongMenuItemListener());
-        playerView.addAboutMenuItemListener(new AboutMenuItemListener());
-        playerView.addExitMenuItemListener(new ExitMenuItemListener());
+        //Add listeners to standard menu bar / popup menu items
+        playerView.addMenuItemListener(new MenuItemListener());
 
-        //Add listeners for popup menu
-        playerView.addDeleteSongPopupListener(new DeleteSongPopupItemListener());
-        playerView.addAddSongPopupListener(new AddSongMenuItemListener());
-
-        //Add listener for table
+        //Add listener to table
         playerView.addSelectionListenerForTable(new SelectionListenerForTable());
         playerView.addMouseListenerForTable(new MouseListenerForTable());
 
-        //Add listener for drag and drop area
+        //Add listener to drag and drop area
         addDragDropToScrollPane();
 
     }
@@ -88,6 +79,7 @@ public class MainController {
     /**
      * PlayerControlButtonListener class implements
      * the actions of Play/Stop/Prev/Next buttons
+     * by the name of the components.
      */
     class PlayerControlButtonListener implements ActionListener {
         String btnName;
@@ -120,7 +112,7 @@ public class MainController {
                             playerControl.playSong();
                         }else{
                             System.out.println("nothing selected, playing the first song in the library..");
-                            playerControl.playSong(library.get(0));
+                            playerControl.playSong();
                         }
                         break;
                 }
@@ -157,126 +149,91 @@ public class MainController {
     }
 
     /**
-     * User chooses in the menu item to add a song.
-     * Directory pops up and user can find a song to add to the library.
-     * If the file is not a valid mp3 file, an error message will appear.
+     * MenuItemListener class implements
+     * the actions of menu items in menu bar and popup menu
+     * by the name of the components.
+     * "open"   Open/Play A Song not in the library
+     * "add"    Add Song To Library
+     * "delete" Delete Song From Library
+     * "about"  About
+     * "exit"   Exit
      */
-    class AddSongMenuItemListener implements ActionListener {
+    private class MenuItemListener implements ActionListener {
+        String menuName;
         @Override
         public void actionPerformed(ActionEvent e) {
-            System.out.println("[Menu] Add song is pressed.");
-            JFileChooser chooser = new JFileChooser();
-            chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-            String filePath = "";
-            if (chooser.showOpenDialog(playerView) == JFileChooser.APPROVE_OPTION) {
-                filePath = chooser.getSelectedFile().getAbsolutePath();
-                try {
-                    //TODO Make Song Constructor handle invalid mp3 files (1)
-                    Mp3File mp3file = new Mp3File(filePath);
-                    library.addSong(new Song(filePath));
-                    playerView.updateTableView(library);
-                    playerControl.updateLibrary(library);
-                    System.out.println("[Add Song by File Chooser] SUCCESS! '"+filePath+"'");
-                } catch (UnsupportedTagException e1) {
-                    e1.printStackTrace();
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                } catch (InvalidDataException e1) {
-                    System.out.println("[Add Song by File Chooser] ERROR: invalid file '"+filePath+"'");
-                    JOptionPane.showMessageDialog(null, "This file is not a valid mp3 file.");
+            // Get the name of event source component
+            menuName = ((JMenuItem)e.getSource()).getName();
+
+            if (menuName.equals("open")) {
+                //Open Song menu actions
+                System.out.println("[Menu] Open/Play Song not in library is pressed.");
+                JFileChooser chooser = new JFileChooser();
+                chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                if (chooser.showOpenDialog(playerView) == JFileChooser.APPROVE_OPTION) {
+                    String selectedPath = chooser.getSelectedFile().getAbsolutePath();
+                    Song newSong = new Song(selectedPath);
+                    if (newSong.getPath() == null) {
+                        System.out.println("[FileChooser] Not a valid file.\n");
+                    } else {
+                        playerControl.playSong(newSong);
+                    }
                 }
-            }
-        }
-    }
 
-    /**
-     * User chooses in the menu item to play a song that is not in the library.
-     * Directory pops up and user can find a song to play.
-     * If the file is not a valid mp3 file, an error message will appear.
-     */
-    class OpenSongMenuItemListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            System.out.println("[Menu] Open&Play a song not in library is pressed.");
-            JFileChooser chooser = new JFileChooser();
-            chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-            String selectedPath = "";
-            if (chooser.showOpenDialog(playerView) == JFileChooser.APPROVE_OPTION) {
-                selectedPath = chooser.getSelectedFile().getAbsolutePath();
-                try {
-                    //TODO Make Song Constructor handle invalid mp3 files (2)
-                    Mp3File mp3file = new Mp3File(selectedPath);
-                    playerControl.playSong(new Song(selectedPath));
-                } catch (UnsupportedTagException e1) {
-                    e1.printStackTrace();
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                } catch (InvalidDataException e1) {
-                    JOptionPane.showMessageDialog(null, "This file is not a valid mp3 file.");
-                }
-            }
-        }
-    }
-
-    /**
-     * User chooses the menu item to exit the program.
-     */
-    class ExitMenuItemListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            System.exit(0);
-        }
-    }
-
-    /**
-     * User right clicks on a song and has the option to delete the song they clicked on.
-     */
-    class DeleteSongPopupItemListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            //What is this part?
-            int selectedRow = playerView.getSongTable().getSelectedRow();
-            boolean isRowInbound = (selectedRow >= 0) && (selectedRow < library.size());
-
-            if ( isRowInbound ) {
-                Song selectedSong = library.get(selectedRow);
-                System.out.println("row:"+selectedRow+" is selected to delete.");
-                library.deleteSong(selectedSong);
-                playerView.updateTableView(library);
-                playerControl.updateLibrary(library);
-            } else {
-                System.out.println("row:"+selectedRow+", nothing selected to delete.");
-            }
-        }
-    }
-
-    /**
-     * User chooses the menu item to delete a song.
-     * The library list will appear and the user will choose which song they would
-     * like to delete from the library.
-     */
-    class DeleteSongMenuItemListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            System.out.println("[Menu] Delete song is pressed.");
-            if (library.size() > 0 ) {
-                ListDialog.showDialog(playerView, playerView, "Choose the song to be deleted.",
-                        "Delete Song from Library", library.convertToString(), null,
-                        library.convertToString()[0]);
-                String selectedSong = "";
-                if (ListDialog.getSelectedValue() != null) {
-                    selectedSong = ListDialog.getSelectedValue().split("\\[")[0].trim();
-                    if (library.getSongByPath(selectedSong) != null) {
-                        library.deleteSong(library.getSongByPath(selectedSong));
+            } else if (menuName.equals("add")) {
+                //Add A Song To Library menu actions
+                System.out.println("[Menu] Add Song is pressed.");
+                JFileChooser chooser = new JFileChooser();
+                chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                if (chooser.showOpenDialog(playerView) == JFileChooser.APPROVE_OPTION) {
+                    String selectedPath = chooser.getSelectedFile().getAbsolutePath();
+                    Song newSong = new Song(selectedPath);
+                    //Check if the chosen file is valid input
+                    if (newSong.getPath() == null) {
+                        System.out.println("[FileChooser] Not a valid file.\n");
+                    } else {
+                        library.addSong(newSong);
                         playerView.updateTableView(library);
                         playerControl.updateLibrary(library);
                     }
                 }
+
+            } else if (menuName.equals("delete")) {
+                //Delete Song From Library menu actions
+                System.out.println("[Menu] Delete Song is pressed.");
+
+                int selectedRow = playerView.getSongTable().getSelectedRow();
+                boolean isRowInbound = (selectedRow >= 0) && (selectedRow < library.size());
+
+                if ( isRowInbound ) {
+                    Song selectedSong = library.get(selectedRow);
+                    System.out.println("row:"+selectedRow+" is selected to delete.");
+                    library.deleteSong(selectedSong);
+                    playerView.updateTableView(library);
+                    playerControl.updateLibrary(library);
+                } else {
+                    System.out.println("row:"+selectedRow+", nothing selected to delete.");
+                }
+
+            } else if (menuName.equals("about")) {
+                //About menu actions
+                System.out.println("[Menu] About is pressed.");
+                String title = "About";
+                String appName = "MyTunes1.0";
+                String teamInfo = "[CECS543 Team6]\nSella Bae\nBrett Rexius\nJohanna Thiemich";
+                String date = "3/14/2019";
+                String msg = appName+"\n"+date+"\n\n"+teamInfo;
+                JOptionPane.showMessageDialog(playerView, msg, title, JOptionPane.PLAIN_MESSAGE);
+
+            } else if (menuName.equals("exit")) {
+                //Exit menu actions
+                System.exit(0);
+
             } else {
-                JOptionPane.showMessageDialog(null, "There is no song in the " +
-                        "library to be deleted.");
+                System.out.println("none of the menu item action performed.");
             }
-          }
+
+        }
     }
 
     /**
@@ -407,22 +364,6 @@ public class MainController {
                 }
             }
         });
-
     }
 
-    /**
-     * Listener for 'About' menu item
-     */
-    public class AboutMenuItemListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            System.out.println("[Menu] About is pressed.");
-            String title = "About";
-            String appName = "MyTunes1.0";
-            String teamInfo = "[CECS543 Team6]\nSella Bae\nBrett Rexius\nJohanna Thiemich";
-            String date = "3/14/2019";
-            String msg = appName+"\n"+date+"\n\n"+teamInfo;
-            JOptionPane.showMessageDialog(playerView, msg, title, JOptionPane.PLAIN_MESSAGE);
-        }
-    }
 }

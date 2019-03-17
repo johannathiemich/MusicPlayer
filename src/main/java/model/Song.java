@@ -36,23 +36,25 @@ public class Song {
      * @param filePath of an MP3 file
      */
     public Song(String filePath){
+        System.out.print("[Song] new filePath: '"+filePath+"' ");
+
         try {
             //Get MP3File
-            System.out.print("[Song] filePath: '"+filePath+"' ");
             Mp3File mp3file = new Mp3File(filePath);
 
             //Fetching mp3file info
             duration = (int)mp3file.getLengthInSeconds();
-            System.out.print("\tlength:"+duration+"sec");
+
+            //more info with ID3V1/ID3V2 tags
             if (mp3file.hasId3v1Tag()) {
-                System.out.println("\tMP3tag:Id3v1");
+                System.out.println("\tMP3tag:Id3v1 ");
                 ID3v1 id3v1Tag = mp3file.getId3v1Tag();
                 setProperties( filePath,
                         id3v1Tag.getTitle(), id3v1Tag.getArtist(), id3v1Tag.getAlbum(),
                         id3v1Tag.getYear(),id3v1Tag.getComment(), id3v1Tag.getGenreDescription(),
                         duration );
             } else if (mp3file.hasId3v2Tag()) {
-                System.out.println("\tMP3tag:Id3v2");
+                System.out.println("\tMP3tag:Id3v2 ");
                 ID3v2 id3v2Tag = mp3file.getId3v2Tag();
                 setProperties( filePath,
                         id3v2Tag.getTitle(), id3v2Tag.getArtist(), id3v2Tag.getAlbum(),
@@ -60,13 +62,11 @@ public class Song {
                         duration );
             }
         } catch (IOException e) {
-            System.err.println("[ERROR] File Not Found. filePath='"+filePath+"'");
-            //e.printStackTrace();
+            System.err.println("[Song_ERROR] File Not Found. filePath='"+filePath+"'");
         } catch (UnsupportedTagException e) {
-            System.out.println("[ERROR] Unsupported Tag");
-            //e.printStackTrace();
+            System.out.println("[Song_ERROR] Unsupported Tag");
         } catch (InvalidDataException e) {
-            System.out.println("[ERROR] Invalid Data");
+            System.out.println("[Song_ERROR] Invalid Data. Not MP3 file.");
             //JOptionPane.showMessageDialog(null, "The selected file is not a valid mp3 file.");
         }
     }
