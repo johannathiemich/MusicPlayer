@@ -45,7 +45,8 @@ public class SongLibrary extends ArrayList<Song>{
     }
 
     /**
-     * This method finds a song by its path
+     * Return Song in the library by its file path.
+     * If the song with such file path doesn't exist, returns null.
      * @param path the path of the song to be selected
      * @return the song at the corresponding path or null if the path is not contained in the library
      */
@@ -56,6 +57,22 @@ public class SongLibrary extends ArrayList<Song>{
             }
         }
         return null;
+    }
+
+    /**
+     * Return the index number of the song in the library.
+     * If the song doesn't exist, returns -1.
+     * @param song to find index number in the library
+     * @return index of the song
+     */
+    public int getIndex(Song song) {
+        for (int i = 0; i < this.size(); i++) {
+            String comparedPath = this.get(i).getPath();
+            if (comparedPath.equals(song.getPath())) {
+                return i;   //index of the song in the library
+            }
+        }
+        return -1;  //song not found in the library
     }
 
     /**
@@ -107,7 +124,7 @@ public class SongLibrary extends ArrayList<Song>{
     }
 
     /**
-     * Check the Song already exists in the library
+     * Check if the Song already exists in the library
      * by comparing the filePath of the song as a key
      * @param song to be checked.
      * @return whether the song is in the library.

@@ -82,11 +82,12 @@ public class PlayerController {
             try {
                 player.open(new File(song.getPath()));
                 player.play();
-                currentSong = song;
+                this.setCurrentSong(song);
             } catch(BasicPlayerException e) {
                 e.printStackTrace();
             }
             playerView.setPlayBtnText("||");
+            playerView.changeTableRowSelection(library.getIndex(currentSong));
             playerView.updateCurrentPlayingView(currentSong);
             System.out.println("[PlayerControl] Play Song '"+currentSong.getTitleAndArtist()+"'\n");
         }
@@ -141,25 +142,19 @@ public class PlayerController {
      */
     public void playPrevSong(){
         int prevRow;
-        int selectedRow = playerView.getSongTable().getSelectedRow();
+        int selectedRow = library.getIndex(currentSong);
         int lastRow = playerView.getSongTable().getRowCount() - 1;
 
         //selected row is negative if no row is selected --> play last song then
         if(selectedRow <= 0) {
-            prevRow = lastRow;
+            prevRow = lastRow;  //prevRow goes to the last
         } else {
             prevRow = selectedRow - 1;
         }
 
-        // Update row selection on the view
-        playerView.changeTableRowSelection(prevRow);
-        // Get the previous song from the library
+        // Get the previous song in the library and play it
         Song prevSong = library.get(prevRow);
-        currentSong = prevSong;
-
-        // Set prevSong as a current one and play it
-        this.setCurrentSong(prevSong);
-        this.playSong();
+        this.playSong(prevSong);
     }
 
     /**
@@ -168,24 +163,18 @@ public class PlayerController {
     public void playNextSong(){
 
         int nextRow;
-        int selectedRow = playerView.getSongTable().getSelectedRow();
+        int selectedRow = library.getIndex(currentSong);
         int lastRow = playerView.getSongTable().getRowCount() - 1;
-        //selected row is -1 if no row is selected --> play the first song then
-        if(selectedRow == lastRow || selectedRow < 0) {
+
+        if(selectedRow == lastRow) {
             nextRow = 0;    //nextRow goes to the top
         } else {
             nextRow = selectedRow + 1;
         }
 
-        // Update row selection on the view
-        playerView.changeTableRowSelection(nextRow);
-        // Get the previous song from the library
+        // Get the next song in the library and play it
         Song nextSong = library.get(nextRow);
-        currentSong = nextSong;
-
-        // Set prevSong as a current one and play it
-        this.setCurrentSong(nextSong);
-        this.playSong();
+        this.playSong(nextSong);
     }
 
     /**
