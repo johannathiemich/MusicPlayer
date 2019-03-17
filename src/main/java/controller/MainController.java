@@ -89,6 +89,38 @@ public class MainController {
     //Listeners
 
     /**
+     * PlayerControlButtonListener class implements
+     * the actions of play/stop/prev/next buttons
+     */
+    class PlayerControlButtonListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String btnName = ((JButton)e.getSource()).getName();
+            int playerStatus = playerControl.getPlayerStatus();
+
+            if (btnName.equals("play"))
+            {
+                //play button actions
+            }
+            else if (btnName.equals("stop"))
+            {
+                //stop button action
+            }
+            else if (btnName.equals("prev"))
+            {
+                //prev button action
+            }
+            else if (btnName.equals("next"))
+            {
+                //next button action
+            }
+            else {
+                System.out.println("none of play/stop/prev/next buttons");
+            }
+        }
+    }
+
+    /**
      * This method changes the symbol for the play button while it playing, paused, or stopped.
      *
      */
