@@ -90,12 +90,14 @@ public class MainController {
      * the actions of Play/Stop/Prev/Next buttons
      */
     class PlayerControlButtonListener implements ActionListener {
+        String btnName;
+        int playerStatus;
+
         @Override
         public void actionPerformed(ActionEvent e) {
             // Get the name of event source component
-            String btnName = ((JButton)e.getSource()).getName();
-
-            int playerStatus = playerControl.getPlayerStatus();
+            btnName = ((JButton)e.getSource()).getName();
+            playerStatus = playerControl.getPlayerStatus();
 
             if (btnName.equals("play")) {
                 //PLAY button actions
@@ -149,8 +151,7 @@ public class MainController {
     class VolumeSliderListener implements ChangeListener {
         @Override
         public void stateChanged(ChangeEvent e) {
-            JSlider source = (JSlider) e.getSource();
-            double sliderVal = source.getValue();
+            double sliderVal = ((JSlider) e.getSource()).getValue();
             playerControl.setVolume(sliderVal);
         }
     }
@@ -163,7 +164,7 @@ public class MainController {
     class AddSongMenuItemListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            System.out.println("Add song is pressed.");
+            System.out.println("[Menu] Add song is pressed.");
             JFileChooser chooser = new JFileChooser();
             chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
             String filePath = "";
@@ -196,7 +197,7 @@ public class MainController {
     class OpenSongMenuItemListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            System.out.println("Play song not in library is pressed.");
+            System.out.println("[Menu] Open&Play a song not in library is pressed.");
             JFileChooser chooser = new JFileChooser();
             chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
             String selectedPath = "";
@@ -257,6 +258,7 @@ public class MainController {
     class DeleteSongMenuItemListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
+            System.out.println("[Menu] Delete song is pressed.");
             if (library.size() > 0 ) {
                 ListDialog.showDialog(playerView, playerView, "Choose the song to be deleted.",
                         "Delete Song from Library", library.convertToString(), null,
@@ -323,10 +325,8 @@ public class MainController {
             row = source.rowAtPoint( e.getPoint() );
             col = source.columnAtPoint( e.getPoint() );
             isRowInbound = (row >= 0) && (row < rowCount);
-
             // Right-click Popup Trigger (for MacOS)
-            if (e.isPopupTrigger() && library.size() > 0)
-            {
+            if (e.isPopupTrigger() && library.size() > 0) {
                 if ( isRowInbound ) {   //right click in table
                     System.out.println("right clicked in table. row:"+row);
                     source.changeSelection(row, col, false, false);
@@ -336,21 +336,17 @@ public class MainController {
                     playerView.getPopUpMenuInBlankspace().show(e.getComponent(), e.getX(), e.getY());
                 }
             }
-
             // Left-click outside of table to clear selection
             if ( ! isRowInbound && ! e.isPopupTrigger()) {
                 playerView.getSongTable().clearSelection();
                 System.out.println("Cleared row selections.");
             }
         }
-
-
         @Override
         public void mouseReleased(MouseEvent e)
         {
             // Right-click Popup Trigger (for Windows)
-            if (e.isPopupTrigger())
-            {
+            if (e.isPopupTrigger()) {
                 if ( isRowInbound ) {   //right click in table
                     System.out.println("right clicked inside of the table");
                     source.changeSelection(row, col, false, false);
@@ -361,12 +357,11 @@ public class MainController {
                 }
             }
         }
-
         @Override
         public void mouseClicked(MouseEvent e) {
             // Double-click on a song to play
             if ( isRowInbound ) {
-                if (e.getClickCount() == 2 && !e.isConsumed() && !e.isPopupTrigger()) {
+                if ( (e.getClickCount() == 2) && !e.isConsumed() && !e.isPopupTrigger()) {
                     System.out.println("double clicked");
                     Song selectedSong = library.get(row);
                     playerControl.playSong(selectedSong);
@@ -421,6 +416,7 @@ public class MainController {
     public class AboutMenuItemListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
+            System.out.println("[Menu] About is pressed.");
             String title = "About";
             String appName = "MyTunes1.0";
             String teamInfo = "[CECS543 Team6]\nSella Bae\nBrett Rexius\nJohanna Thiemich";

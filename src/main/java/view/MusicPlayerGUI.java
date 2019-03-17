@@ -44,8 +44,8 @@ public class MusicPlayerGUI extends JFrame {
     private JPanel songInfoPanel;
     private JLabel songTitleLbl;
     private JLabel songDetailLbl;
-    private JLabel songTimeProgressLbl;
-    private JLabel songTimeRemainedLbl;
+    private JLabel songTimePlayingLbl;
+    private JLabel songTimeRemainingLbl;
     private JProgressBar songProgressBar;
 
     //components for player control
@@ -130,7 +130,7 @@ public class MusicPlayerGUI extends JFrame {
         //Song Info Panel @sellabae
         createSongInfoPanel();
         //Set a new look of the view @sellabae
-        setTheme();
+        setDarkTheme();
         //showLayoutBorders(true);
 
         //Add components in place-----------------
@@ -156,10 +156,10 @@ public class MusicPlayerGUI extends JFrame {
     }
 
     /**
-     * Change the look of the view
+     * Apply dark theme to the all components and repaint main frame view.
      */
-    private void setTheme(){
-//  private void setTheme(Color[] bgColor, Color[] fgColor, Color pointColor){  //for later
+    public void setDarkTheme(){
+//  public void setTheme(Color[] bgColor, Color[] fgColor, Color pointColor){  //for later
 
         //frame
         this.setBackground(bgColor[0]);
@@ -197,10 +197,13 @@ public class MusicPlayerGUI extends JFrame {
             songInfoPanel.setBackground(bgColor[1]);
             songTitleLbl.setForeground(fgColor[1]);
             songDetailLbl.setForeground(fgColor[2]);
-            songTimeProgressLbl.setForeground(fgColor[2]);
-            songTimeRemainedLbl.setForeground(fgColor[2]);
+            songTimePlayingLbl.setForeground(fgColor[2]);
+            songTimeRemainingLbl.setForeground(fgColor[2]);
             songTitleLbl.setFont(new Font("Helvetica", Font.PLAIN, 14));
         }
+
+        //Repaint main frame view
+        this.repaint();
     }
 
     /**
@@ -214,12 +217,12 @@ public class MusicPlayerGUI extends JFrame {
         //song info
         songTitleLbl = new JLabel("Title");
         songDetailLbl = new JLabel("Artist");
-        songTimeProgressLbl = new JLabel("0:00");
-        songTimeRemainedLbl = new JLabel("3:33");
+        songTimePlayingLbl = new JLabel("0:00");
+        songTimeRemainingLbl = new JLabel("3:33");
         songTitleLbl.setHorizontalAlignment(SwingConstants.CENTER);
         songDetailLbl.setHorizontalAlignment(SwingConstants.CENTER);
-        songTimeProgressLbl.setHorizontalAlignment(SwingConstants.LEFT);
-        songTimeRemainedLbl.setHorizontalAlignment(SwingConstants.RIGHT);
+        songTimePlayingLbl.setHorizontalAlignment(SwingConstants.LEFT);
+        songTimeRemainingLbl.setHorizontalAlignment(SwingConstants.RIGHT);
 
         //progress bar
         songProgressBar = new JProgressBar(0,0,190);
@@ -229,8 +232,8 @@ public class MusicPlayerGUI extends JFrame {
         songInfoPanel.add(Box.createHorizontalStrut(10));   //invisible space
         songInfoPanel.add(songTitleLbl, BorderLayout.NORTH);
         songInfoPanel.add(songDetailLbl, BorderLayout.CENTER);
-        songInfoPanel.add(songTimeProgressLbl, BorderLayout.WEST);
-        songInfoPanel.add(songTimeRemainedLbl, BorderLayout.EAST);
+        songInfoPanel.add(songTimePlayingLbl, BorderLayout.WEST);
+        songInfoPanel.add(songTimeRemainingLbl, BorderLayout.EAST);
         songInfoPanel.add(songProgressBar, BorderLayout.SOUTH);
 
         //add this song info panel to bottom panel
@@ -259,8 +262,8 @@ public class MusicPlayerGUI extends JFrame {
             songInfoPanel.setBorder(border[0]);
             songTitleLbl.setBorder(border[1]);
             songDetailLbl.setBorder(border[1]);
-            songTimeProgressLbl.setBorder(border[1]);
-            songTimeRemainedLbl.setBorder(border[1]);
+            songTimePlayingLbl.setBorder(border[1]);
+            songTimeRemainingLbl.setBorder(border[1]);
             songProgressBar.setBorder(border[1]);
         }
     }
@@ -274,10 +277,10 @@ public class MusicPlayerGUI extends JFrame {
         if(songInfoPanel != null) {
             songTitleLbl.setText(song.getTitle());
             songDetailLbl.setText(song.getArtist());
-            songTimeProgressLbl.setText("0:00");
-            songTimeRemainedLbl.setText(song.getDuration());
+            songTimePlayingLbl.setText("0:00");
+            songTimeRemainingLbl.setText(song.getDurationMinSec());
             songProgressBar.setMinimum(0);
-            songProgressBar.setMaximum(song.getLengthInSecond());
+            songProgressBar.setMaximum(song.getDuration());
         }
     }
 
@@ -292,6 +295,13 @@ public class MusicPlayerGUI extends JFrame {
         deleteSongMenuItem = new JMenuItem("Delete Song from Library");
         aboutMenuItem = new JMenuItem("About");
         exitMenuItem = new JMenuItem("Exit");
+
+        //setting name(key) of menu item components
+        openSongMenuItem.setName("open");
+        addSongMenuItem.setName("add");
+        deleteSongMenuItem.setName("delete");
+        aboutMenuItem.setName("about");
+        exitMenuItem.setName("exit");
 
         menu.setPreferredSize(new Dimension(50, menu.getPreferredSize().height));
 
@@ -350,8 +360,8 @@ public class MusicPlayerGUI extends JFrame {
     public JTable getSongTable(){ return songTable; }
 
     /**
-     * Returns the popup menu (right click) when clicking on the table area.
-     * (Since a song has been clicked, it can be deleted).
+     * Returns a popup menu when right-clicking on the table area
+     * with deleteSong menu item.
      * @return JPopupMenu containing menu items delete, add song
      */
     public JPopupMenu getPopUpMenu() {
@@ -360,8 +370,8 @@ public class MusicPlayerGUI extends JFrame {
     }
 
     /**
-     * Returns the popup menu (right click) when clicking outside of the table area.
-     * (Since no song has been clicked, it cannot be deleted).
+     * Returns a popup menu when right-clicking outside of the table area
+     * with deleteSong menu item removed.
      * @return JPopupMenu containing just the menu item add song.
      */
     public JPopupMenu getPopUpMenuInBlankspace(){
@@ -374,14 +384,6 @@ public class MusicPlayerGUI extends JFrame {
      * @return JScrollPane for the table.
      */
     public JScrollPane getScrollPane() { return this.tableScrollPane; }
-
-    //For 'Play'<->'Pause' text change
-
-    /**
-     * This method returns the play button text.
-     * @return String containing play button text.
-     */
-    public String getPlayBtnText() { return playBtn.getText(); }
 
     /**
      * This method sets the text for the play button in order to switch between 'Play'<->'Pause' text change.
@@ -400,6 +402,18 @@ public class MusicPlayerGUI extends JFrame {
 
 
 // Adding listeners ---------------------------------------------
+
+    /**
+     * Attach a listener to all menu items in menu bar
+     * @param listener ActionListener with menu actions
+     */
+    public void addMenuItemListener(ActionListener listener) {
+        openSongMenuItem.addActionListener(listener);
+        addSongMenuItem.addActionListener(listener);
+        deleteSongMenuItem.addActionListener(listener);
+        aboutMenuItem.addActionListener(listener);
+        exitMenuItem.addActionListener(listener);
+    }
 
     /**
      *This method adds an ActionListener to the 'OpenSong' standard menu item.

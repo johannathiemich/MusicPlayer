@@ -82,7 +82,7 @@ public class DatabaseHandler {
                 + song.getYear()    + "', '"
                 + song.getComment() + "', '"
                 + song.getGenre()   + "', "
-                + song.getLengthInSecond()    //this field is integer
+                + song.getDuration()    //this field is integer
                 + ")";
         System.out.println("[Database] sql executed: " + sql);
         try {
