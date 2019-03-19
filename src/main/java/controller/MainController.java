@@ -171,6 +171,8 @@ public class MainController {
                     Song newSong = new Song(selectedPath);
                     if (newSong.getPath() == null) {
                         System.out.println("[FileChooser] Not a valid file.\n");
+                        JOptionPane.showMessageDialog(null, "This file is not a valid " +
+                                "mp3 file.");
                     } else {
                         playerControl.playSong(newSong);
                     }
@@ -187,6 +189,8 @@ public class MainController {
                     //Check if the chosen file is valid input
                     if (newSong.getPath() == null) {
                         System.out.println("[FileChooser] Not a valid file.\n");
+                        JOptionPane.showMessageDialog(null, "This file is not a valid " +
+                                "mp3 file.");
                     } else {
                         library.addSong(newSong);
                         playerView.updateTableView(library);

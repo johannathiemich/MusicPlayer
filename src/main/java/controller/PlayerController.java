@@ -27,7 +27,9 @@ public class PlayerController {
     public PlayerController(SongLibrary library, MusicPlayerGUI playerView){
         player = new BasicPlayer();
         this.library = library;
-        currentSong = library.get(0);   //first song in the library by default
+        if (library.size() > 0) {
+            currentSong = library.get(0);   //first song in the library by default
+        }
         this.playerView = playerView;
     }
 
