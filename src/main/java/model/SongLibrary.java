@@ -2,6 +2,7 @@ package model;
 
 import database.DatabaseHandler;
 
+import javax.xml.crypto.Data;
 import java.util.ArrayList;
 
 //same with SongDAO(Data Access Object). same concept same work.
@@ -16,7 +17,7 @@ public class SongLibrary extends ArrayList<Song>{
      * Construct an empty library
      */
     public SongLibrary(){
-        this.dbHandler = new DatabaseHandler();
+        this.dbHandler = DatabaseHandler.getInstance();
         this.addAll(dbHandler.getSongLibrary());
     }
 
@@ -25,7 +26,7 @@ public class SongLibrary extends ArrayList<Song>{
      * This might be removed later...
      */
     public SongLibrary(ArrayList<Song> songArray){
-        this.dbHandler = new DatabaseHandler();
+        this.dbHandler = DatabaseHandler.getInstance();
         this.addAll(songArray);
     }
 
@@ -135,7 +136,7 @@ public class SongLibrary extends ArrayList<Song>{
      * @param song to be checked.
      * @return whether the song is in the library.
      */
-    public boolean exists(Song song){
+    private boolean exists(Song song){
         //TODO would be better to call a dbHandler method to check database by sql? and pass the result through this method.
         for (Song currSong : this) {
             if (currSong.getPath().equals(song.getPath())) {

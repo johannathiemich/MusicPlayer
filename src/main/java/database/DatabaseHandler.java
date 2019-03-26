@@ -1,5 +1,6 @@
 package database;
 
+import model.Playlist;
 import model.Song;
 
 import java.sql.*;
@@ -16,18 +17,31 @@ public class DatabaseHandler {
     // NOTE: This value is specific for Java DB.
     private final String createDatabaseURL = "jdbc:derby:SongsDB;create=true";
     private final String shutdownURL = "jdbc:derby:;shutdown=true";
-    private final String tableName = "SONGS";
+    private final String songsTableName = "SONGS";
+    private final String playlistSongsTableName = "PLAYLIST_SONGS";
+    private final String playlistTableName = "PLAYLISTS";
+    private static DatabaseHandler handler_instance = null;
 
     /**
      * Constructor for this class
      */
-    public DatabaseHandler() {
+    private DatabaseHandler() {
         //TODO [0] @brett, @johannathiemich
         // To Safely migrate to table with new DURATION field,
         //TODO [1] Enable dropAllTables();, Disable createSongTable();, and Run.
         //dropAllTables();  //this is for testing
         createSongTable();
+        createPlaylistTable();
+        createPlaylistSongsTable();
         //TODO [2] Disable dropAllTables();, Enable createSongTable();, and Run.
+    }
+
+    public static DatabaseHandler getInstance()
+    {
+        if (handler_instance == null)
+            handler_instance = new DatabaseHandler();
+
+        return handler_instance;
     }
 
     /**
@@ -38,7 +52,7 @@ public class DatabaseHandler {
     public void createSongTable(){
         Connection conn = null;
         Statement statement = null;
-        String sql = "CREATE TABLE "+tableName + "( " +
+        String sql = "CREATE TABLE "+ songsTableName + "( " +
                 "FILEPATH VARCHAR(512) PRIMARY KEY," +
                 "TITLE VARCHAR(256), " +
                 "ARTIST VARCHAR(256), " +
@@ -55,7 +69,51 @@ public class DatabaseHandler {
             DriverManager.getConnection(shutdownURL);
         } catch (SQLException e) {
             if (e.getSQLState().equals("X0Y32")) {
-                System.out.println(tableName+" table already exists, won't create a new one.");
+                System.out.println(songsTableName +" table already exists, won't create a new one.");
+            } else if (e.getSQLState().equals("XJ015")) {
+                System.out.println("Derby shutdown normally.");
+            } else {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void createPlaylistSongsTable() {
+        Connection conn = null;
+        Statement statement = null;
+        String sql = "CREATE TABLE " + playlistSongsTableName + "( " +
+                "NAME VARCHAR(512), " +
+                "FILEPATH VARCHAR(512), " +
+                "PRIMARY KEY (NAME, FILEPATH) )";
+        try {
+            conn = DriverManager.getConnection(createDatabaseURL);
+            statement = conn.createStatement();
+            statement.execute(sql);
+            DriverManager.getConnection(shutdownURL);
+        } catch (SQLException e) {
+            if (e.getSQLState().equals("X0Y32")) {
+                System.out.println(playlistSongsTableName +" table already exists, won't create a new one.");
+            } else if (e.getSQLState().equals("XJ015")) {
+                System.out.println("Derby shutdown normally.");
+            } else {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void createPlaylistTable() {
+        Connection conn = null;
+        Statement statement = null;
+        String sql = "CREATE TABLE " + playlistTableName + "( " +
+                "NAME VARCHAR(512) PRIMARY KEY )";
+        try {
+            conn = DriverManager.getConnection(createDatabaseURL);
+            statement = conn.createStatement();
+            statement.execute(sql);
+            DriverManager.getConnection(shutdownURL);
+        } catch (SQLException e) {
+            if (e.getSQLState().equals("X0Y32")) {
+                System.out.println(playlistTableName +" table already exists, won't create a new one.");
             } else if (e.getSQLState().equals("XJ015")) {
                 System.out.println("Derby shutdown normally.");
             } else {
@@ -73,7 +131,7 @@ public class DatabaseHandler {
         boolean success = false;
         Connection conn = null;
         Statement statement = null;
-        String sql = "INSERT INTO "+tableName +
+        String sql = "INSERT INTO "+ songsTableName +
                 "      VALUES ('"
                 + song.getPath()    + "', '"
                 + song.getTitle()   + "', '"
@@ -105,6 +163,64 @@ public class DatabaseHandler {
         return success;
     }
 
+    public boolean addPlaylist(Playlist playlist) {
+        boolean success = false;
+        Connection conn = null;
+        Statement statement = null;
+        String sql = "INSERT INTO "+ playlistTableName +
+                "      VALUES ('" + playlist.getName() + "')";
+        System.out.println("[Database] sql executed: " + sql);
+        try {
+            conn = DriverManager.getConnection(createDatabaseURL);
+            statement = conn.createStatement();
+            statement.executeUpdate(sql);
+            conn.close();
+            System.out.println("[Database] Added playlist successfully.");
+            success = true;
+        } catch (SQLException e) {
+            success = false;
+            if (e.getSQLState().equals("23505")) {
+                System.out.println("[Database] playlist is already saved in the database.");
+            } else if (e.getSQLState().equals("XJ015")) {
+                System.out.println("[Database] Derby shutdown normally.");
+            } else {
+                e.printStackTrace();
+            }
+        }
+        return success;
+    }
+
+    public boolean addSongToPlaylist(Playlist playlist, Song song) {
+        boolean success = false;
+        Connection conn = null;
+        Statement statement = null;
+        if (!playlistExists(playlist)) return false;
+        String sql = "INSERT INTO "+ playlistSongsTableName +
+                "      VALUES ('"
+                + playlist.getName() + "', '"
+                + song.getPath()     + "'"
+                + ")";
+        System.out.println("[Database] sql executed: " + sql);
+        try {
+            conn = DriverManager.getConnection(createDatabaseURL);
+            statement = conn.createStatement();
+            statement.executeUpdate(sql);
+            conn.close();
+            System.out.println("[Database] Added song successfully.");
+            success = true;
+        } catch (SQLException e) {
+            success = false;
+            if (e.getSQLState().equals("23505")) {
+                System.out.println("[Database] Song is already saved in the database.");
+            } else if (e.getSQLState().equals("XJ015")) {
+                System.out.println("[Database] Derby shutdown normally.");
+            } else {
+                e.printStackTrace();
+            }
+        }
+        return success;
+    }
+
     /**
      * This method deletes a song from the database table.
      * @param song the song to be deleted from the database; is identified by its absolute path
@@ -114,14 +230,37 @@ public class DatabaseHandler {
         boolean success = true;
         Connection conn = null;
         Statement statement = null;
-        String sql = "DELETE FROM " + tableName +
-                "      WHERE SONG_PATH = '" + song.getPath() + "'";
+        String sql = "DELETE FROM " + songsTableName +
+                "      WHERE FILEPATH = '" + song.getPath() + "'";
         try {
             conn = DriverManager.getConnection(createDatabaseURL);
             statement = conn.createStatement();
             statement.execute(sql);
             conn.close();
             System.out.println("[Database] Deleted song.");
+        } catch (SQLException e) {
+            success = false;
+            if (e.getSQLState().equals("XJ015")) {
+                System.out.println("[Database] Derby shutdown normally.");
+            } else {
+                e.printStackTrace();
+            }
+        }
+        return success;
+    }
+
+    public boolean deleteSongFromPlaylist(Playlist playlist, Song song) {
+        boolean success = true;
+        Connection conn = null;
+        Statement statement = null;
+        String sql = "DELETE FROM " + playlistSongsTableName +
+                "      WHERE FILEPATH = '" + song.getPath() + "' AND NAME = '" + playlist.getName() + "'";
+        try {
+            conn = DriverManager.getConnection(createDatabaseURL);
+            statement = conn.createStatement();
+            statement.execute(sql);
+            conn.close();
+            System.out.println("[Database] Deleted song from playlist.");
         } catch (SQLException e) {
             success = false;
             if (e.getSQLState().equals("XJ015")) {
@@ -141,7 +280,7 @@ public class DatabaseHandler {
         Connection conn = null;
         Statement statement = null;
         ArrayList<Song> list = new ArrayList<Song>();
-        String sql = "SELECT * FROM " + tableName;
+        String sql = "SELECT * FROM " + songsTableName;
         try {
             conn = DriverManager.getConnection(createDatabaseURL);
             statement = conn.createStatement();
@@ -182,11 +321,88 @@ public class DatabaseHandler {
         return list;
     }
 
+    public ArrayList<Song> getSongsInPlaylist(Playlist playlist) {
+        Connection conn = null;
+        Statement statement = null;
+        ArrayList<Song> list = new ArrayList<Song>();
+        String sql = "SELECT * FROM " + playlistSongsTableName + " INNER JOIN " + songsTableName + " ON " +
+                playlistSongsTableName + ".FILEPATH = " + songsTableName + ".FILEPATH WHERE " +
+                playlistSongsTableName + ".NAME = '" + playlist.getName() + "'";
+        try {
+            conn = DriverManager.getConnection(createDatabaseURL);
+            statement = conn.createStatement();
+            ResultSet results = statement.executeQuery(sql);
+
+            while(results.next())
+            {
+                String file_path = results.getString(results.findColumn("FILEPATH"));
+                String title = results.getString(results.findColumn("TITLE"));
+                String artist = results.getString(results.findColumn("ARTIST"));
+                String album = results.getString(results.findColumn("ALBUM"));
+                String year = results.getString(results.findColumn("YEAR_PUBLISHED"));
+                String comment = results.getString(results.findColumn("COMMENT"));
+                String genre = results.getString(results.findColumn("GENRE"));
+
+                //TODO [3] Replace this try-catch to 'int duration = results.getInt(8);'.
+                int duration;
+                try {
+                    duration = results.getInt(8);
+                }catch(SQLException ex){
+                    duration = 0;
+                }
+                Song song = new Song(file_path, title, artist, album, year, comment, genre, duration);
+                list.add(song);
+            }
+            results.close();
+            conn.close();
+
+        } catch (SQLException e) {
+            if (e.getSQLState().equals("XJ015")) {
+                System.out.println("Derby shutdown normally.");
+            } else {
+                e.printStackTrace();
+            }
+            return null;
+        }
+        return list;
+    }
+
+
+    private boolean playlistExists(Playlist playlist) {
+        boolean exists = false;
+        Connection conn = null;
+        Statement statement = null;
+        ArrayList<Song> list = new ArrayList<Song>();
+        String sql = "SELECT * FROM " + playlistTableName + " WHERE NAME = '" + playlist.getName() + "'";
+        try {
+            conn = DriverManager.getConnection(createDatabaseURL);
+            statement = conn.createStatement();
+            ResultSet results = statement.executeQuery(sql);
+
+            while(results.next())
+            {
+                exists = true;
+            }
+            results.close();
+            conn.close();
+
+        } catch (SQLException e) {
+            if (e.getSQLState().equals("XJ015")) {
+                System.out.println("Derby shutdown normally.");
+            } else {
+                e.printStackTrace();
+                exists = false;
+            }
+        }
+        return exists;
+    }
+
+
     /**
      * This method drops all tables currently contained in the database. This method is usefule for resetting
      * the database.
      */
-    public void dropAllTables(){
+    private void dropAllTables(){
         try {
             //Get connection and statement
             Connection conn = DriverManager.getConnection(createDatabaseURL);
@@ -194,8 +410,8 @@ public class DatabaseHandler {
 
             try {
                 // Drop the 'SONGS' table from DB
-                stmt.execute("DROP TABLE "+tableName);
-                System.out.println(tableName+" table dropped.");
+                stmt.execute("DROP TABLE "+ songsTableName);
+                System.out.println(songsTableName +" table dropped.");
             } catch (SQLException ex) {
                 // No need to report an error.
                 // The table simply did not exist.

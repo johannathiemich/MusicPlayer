@@ -19,7 +19,7 @@ public class Song {
      * Construct an empty Song object
      */
     public Song(){
-
+        this.path = "randomPath";
     }
 
     /**
