@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 public class Playlist {
 
+    //TODO list of strings (key is path)
     private ArrayList<Song> songList;
     private String name;
     private DatabaseHandler dbHandler;
@@ -32,6 +33,7 @@ public class Playlist {
     }
 
     public boolean addSong(Song song) {
+        //TODO: check song is in library
         boolean success = false;
         if(song.getPath() == null) {
             System.out.println("[Playlist_ERROR] Not added. filePath: null\n");
@@ -56,6 +58,7 @@ public class Playlist {
     public String getName() {
         return this.name;
     }
+
 
     private boolean exists(Song song){
         //TODO would be better to call a dbHandler method to check database by sql? and pass the result through this method.
