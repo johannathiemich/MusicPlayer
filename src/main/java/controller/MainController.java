@@ -48,7 +48,7 @@ public class MainController {
         library = new SongLibrary(); //should always be up-to-date with db
 
         playerControl = new PlayerController(library, playerView);
-        selectedSong = new Song();
+        selectedSong = null;
 
         //setup presentation
         playerView.updateTableView(library);

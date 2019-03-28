@@ -18,8 +18,8 @@ public class Song {
     /**
      * Construct an empty Song object
      */
-    public Song(){
-        this.path = "randomPath";
+    public Song(int number){
+        this.path = "randomPath" + number;
     }
 
     /**

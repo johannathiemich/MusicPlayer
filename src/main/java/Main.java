@@ -3,6 +3,7 @@ import database.DatabaseHandler;
 import model.Playlist;
 import model.Song;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Main {
@@ -11,16 +12,31 @@ public class Main {
 
         MainController controller = new MainController();
 
-        //DatabaseHandler handler = DatabaseHandler.getInstance();
-       /** Playlist plist1 = new Playlist("myPlaylist1");
+        DatabaseHandler handler = DatabaseHandler.getInstance();
+        handler.addSong(new Song(1));
+
+        Playlist plist1 = new Playlist("myPlaylist1");
         Playlist plist2 = new Playlist("myPlaylist2");
-        plist1.addSong(new Song());
-        plist2.addSong(new Song());
+        System.out.println(plist1.addSong(new Song(1)));
+        System.out.println(plist2.addSong(new Song(1)));
+
+        ArrayList<String> playlists = handler.getAllPlaylists();
+        for (String playlist: playlists) {
+            System.out.println(playlist);
+        }
+
+        handler.deleteSongFromPlaylist(plist1, new Song(1));
+        handler.addSongToPlaylist(new Playlist("newPlaylist"), new Song(1));
+
+        plist1.addSong(new Song(10));
+
+        System.out.println("This should be true: " + handler.playlistExists(plist1.getName()));
+        System.out.println("This should be false: "  + handler.playlistExists("randomPlaylistXYZ"));
 
         ArrayList<Song> songs = handler.getSongsInPlaylist(plist1);
         for (Song song : songs) {
             System.out.println(song.getPath());
-        } **/
+        }
         //CreateCoffeeDB db = new CreateCoffeeDB();
 
         /*

@@ -13,7 +13,7 @@ public class Playlist {
     private static ArrayList<Playlist> allPlaylists = new ArrayList<Playlist>();
 
     public Playlist(String name) {
-        if (!exists(name)) {
+        if(!playlistExists(name)) {
             this.dbHandler = DatabaseHandler.getInstance();
             this.songList = new ArrayList<Song>();
             this.name = name;
@@ -23,7 +23,7 @@ public class Playlist {
     }
 
     public Playlist(String name, ArrayList<Song> songs) {
-        if (!exists(name)) {
+        if(!playlistExists(name)) {
             this.dbHandler = DatabaseHandler.getInstance();
             this.name = name;
             this.songList = songs;
@@ -38,9 +38,9 @@ public class Playlist {
         if(song.getPath() == null) {
             System.out.println("[Playlist_ERROR] Not added. filePath: null\n");
             success = false;
-        } else {
+        } else if (songInLibrary(song)){
             // Check if the song already exists in the playlist
-            if ( exists(song) ) {
+            if ( songInPlaylist(song) ) {
                 System.out.print("[Playlist] Not added. Already in the playlist.\t");
                 success = false;
             }else{
@@ -51,6 +51,9 @@ public class Playlist {
                 success = true;
             }
             System.out.println("'"+song.getTitleAndArtist()+"'\n");
+        } else {
+            System.out.println("Song is not in library yet. Add it to the library first");
+            success = false;
         }
         return success;
     }
@@ -60,9 +63,8 @@ public class Playlist {
     }
 
 
-    private boolean exists(Song song){
-        //TODO would be better to call a dbHandler method to check database by sql? and pass the result through this method.
-        for (Song currSong : this.songList) {
+    private boolean songInLibrary(Song song){
+        for (Song currSong : dbHandler.getSongLibrary()) {
             if (currSong.getPath().equals(song.getPath())) {
                 return true;
             }
@@ -70,10 +72,20 @@ public class Playlist {
         return false;
     }
 
-    private boolean exists(String name){
-        //TODO would be better to call a dbHandler method to check database by sql? and pass the result through this method.
-        for (Playlist currPlaylist : allPlaylists) {
-            if (currPlaylist.getName().equals(name)) {
+    private boolean songInPlaylist(Song song){
+        for (Song currSong : dbHandler.getSongsInPlaylist(this)) {
+            if (currSong.getPath().equals(song.getPath())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+
+    private boolean playlistExists(String name){
+        for (String currPlaylist : dbHandler.getAllPlaylists()) {
+            if (currPlaylist.equals(name)) {
                 return true;
             }
         }

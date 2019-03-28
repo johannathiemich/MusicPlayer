@@ -181,10 +181,12 @@ public class DatabaseHandler {
             success = false;
             if (e.getSQLState().equals("23505")) {
                 System.out.println("[Database] playlist is already saved in the database.");
+                success = false;
             } else if (e.getSQLState().equals("XJ015")) {
                 System.out.println("[Database] Derby shutdown normally.");
             } else {
                 e.printStackTrace();
+                success = false;
             }
         }
         return success;
@@ -194,7 +196,10 @@ public class DatabaseHandler {
         boolean success = false;
         Connection conn = null;
         Statement statement = null;
-        if (!playlistExists(playlist)) return false;
+        if (!playlistExists(playlist.getName())) {
+            System.out.println("This playlist does not exist yet, needs to be created first.");
+            return false;
+        }
         String sql = "INSERT INTO "+ playlistSongsTableName +
                 "      VALUES ('"
                 + playlist.getName() + "', '"
@@ -211,7 +216,7 @@ public class DatabaseHandler {
         } catch (SQLException e) {
             success = false;
             if (e.getSQLState().equals("23505")) {
-                System.out.println("[Database] Song is already saved in the database.");
+                System.out.println("[Database] This song is already saved in the playlist.");
             } else if (e.getSQLState().equals("XJ015")) {
                 System.out.println("[Database] Derby shutdown normally.");
             } else {
@@ -227,6 +232,7 @@ public class DatabaseHandler {
      * @return true if the song was deleted successfully; false if not
      */
     public boolean deleteSong(Song song) {
+        //TODO should the song be removed from all playlists if it is no longer in the library?
         boolean success = true;
         Connection conn = null;
         Statement statement = null;
@@ -261,6 +267,8 @@ public class DatabaseHandler {
             statement.execute(sql);
             conn.close();
             System.out.println("[Database] Deleted song from playlist.");
+            //TODO: should playlist be removed if it does not contain any songs anymore?
+
         } catch (SQLException e) {
             success = false;
             if (e.getSQLState().equals("XJ015")) {
@@ -326,8 +334,8 @@ public class DatabaseHandler {
         Statement statement = null;
         ArrayList<Song> list = new ArrayList<Song>();
         String sql = "SELECT * FROM " + playlistSongsTableName + " INNER JOIN " + songsTableName + " ON " +
-                playlistSongsTableName + ".FILEPATH = " + songsTableName + ".FILEPATH WHERE " +
-                playlistSongsTableName + ".NAME = '" + playlist.getName() + "'";
+                playlistSongsTableName + ".FILEPATH = " + songsTableName + ".FILEPATH " +
+                "WHERE " + playlistSongsTableName + ".NAME = '" + playlist.getName() + "'";
         try {
             conn = DriverManager.getConnection(createDatabaseURL);
             statement = conn.createStatement();
@@ -362,18 +370,45 @@ public class DatabaseHandler {
             } else {
                 e.printStackTrace();
             }
+        }
+        return list;
+    }
+
+    public ArrayList<String> getAllPlaylists() {
+        Connection conn = null;
+        Statement statement = null;
+        ArrayList<String> list = new ArrayList<String>();
+        String sql = "SELECT NAME FROM " + playlistTableName;
+        try {
+            conn = DriverManager.getConnection(createDatabaseURL);
+            statement = conn.createStatement();
+            ResultSet results = statement.executeQuery(sql);
+
+            while(results.next())
+            {
+                String name = results.getString(results.findColumn("NAME"));
+                list.add(name);
+            }
+            results.close();
+            conn.close();
+
+        } catch (SQLException e) {
+            if (e.getSQLState().equals("XJ015")) {
+                System.out.println("Derby shutdown normally.");
+            } else {
+                e.printStackTrace();
+            }
             return null;
         }
         return list;
     }
 
-
-    private boolean playlistExists(Playlist playlist) {
+    public boolean playlistExists(String playlistName) {
         boolean exists = false;
         Connection conn = null;
         Statement statement = null;
         ArrayList<Song> list = new ArrayList<Song>();
-        String sql = "SELECT * FROM " + playlistTableName + " WHERE NAME = '" + playlist.getName() + "'";
+        String sql = "SELECT NAME FROM " + playlistTableName + " WHERE NAME = '" + playlistName + "'";
         try {
             conn = DriverManager.getConnection(createDatabaseURL);
             statement = conn.createStatement();
@@ -382,6 +417,7 @@ public class DatabaseHandler {
             while(results.next())
             {
                 exists = true;
+                System.out.println(results.getString(results.findColumn("NAME")));
             }
             results.close();
             conn.close();
@@ -412,6 +448,12 @@ public class DatabaseHandler {
                 // Drop the 'SONGS' table from DB
                 stmt.execute("DROP TABLE "+ songsTableName);
                 System.out.println(songsTableName +" table dropped.");
+
+                stmt.execute("DROP TABLE "+ playlistSongsTableName);
+                System.out.println(playlistSongsTableName +" table dropped.");
+
+                stmt.execute("DROP TABLE "+ playlistTableName);
+                System.out.println(playlistTableName +" table dropped.");
             } catch (SQLException ex) {
                 // No need to report an error.
                 // The table simply did not exist.
