@@ -15,8 +15,8 @@ public class Main {
         DatabaseHandler handler = DatabaseHandler.getInstance();
         handler.addSong(new Song(1));
 
-        Playlist plist1 = new Playlist("myPlaylist1");
-        Playlist plist2 = new Playlist("myPlaylist2");
+        Playlist plist1 =  Playlist.instantiatePlaylist("myPlaylist1");
+        Playlist plist2 = Playlist.instantiatePlaylist("myPlaylist2");
         System.out.println(plist1.addSong(new Song(1)));
         System.out.println(plist2.addSong(new Song(1)));
 
@@ -26,8 +26,9 @@ public class Main {
         }
 
         handler.deleteSongFromPlaylist(plist1, new Song(1));
-        handler.addSongToPlaylist(new Playlist("newPlaylist"), new Song(1));
+        handler.addSongToPlaylist(Playlist.instantiatePlaylist("newPlaylist"), new Song(1));
 
+        handler.addSong(new Song(10));
         plist1.addSong(new Song(10));
 
         System.out.println("This should be true: " + handler.playlistExists(plist1.getName()));

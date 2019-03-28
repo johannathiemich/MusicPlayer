@@ -1,6 +1,7 @@
 package controller;
 
 import javazoom.jlgui.basicplayer.BasicPlayer;
+import model.Playlist;
 import model.Song;
 import model.SongLibrary;
 import view.MusicPlayerGUI;
@@ -46,6 +47,7 @@ public class MainController {
         //assign modules
         playerView = new MusicPlayerGUI("MyTunes1.0");
         library = new SongLibrary(); //should always be up-to-date with db
+        Playlist.setLibrary(library);
 
         playerControl = new PlayerController(library, playerView);
         selectedSong = null;

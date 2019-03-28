@@ -374,6 +374,7 @@ public class DatabaseHandler {
         return list;
     }
 
+
     public ArrayList<String> getAllPlaylists() {
         Connection conn = null;
         Statement statement = null;
