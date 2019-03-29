@@ -26,14 +26,10 @@ public class DatabaseHandler {
      * Constructor for this class
      */
     private DatabaseHandler() {
-        //TODO [0] @brett, @johannathiemich
-        // To Safely migrate to table with new DURATION field,
-        //TODO [1] Enable dropAllTables();, Disable createSongTable();, and Run.
         //dropAllTables();  //this is for testing
         createSongTable();
         createPlaylistTable();
         createPlaylistSongsTable();
-        //TODO [2] Disable dropAllTables();, Enable createSongTable();, and Run.
     }
 
     public static DatabaseHandler getInstance()
@@ -232,7 +228,7 @@ public class DatabaseHandler {
      * @return true if the song was deleted successfully; false if not
      */
     public boolean deleteSong(Song song) {
-        //TODO should the song be removed from all playlists if it is no longer in the library?
+        //TODO should the song be removed from all playlists if it is no longer in the library? --> yes
         boolean success = true;
         Connection conn = null;
         Statement statement = null;
@@ -244,6 +240,37 @@ public class DatabaseHandler {
             statement.execute(sql);
             conn.close();
             System.out.println("[Database] Deleted song.");
+        } catch (SQLException e) {
+            success = false;
+            if (e.getSQLState().equals("XJ015")) {
+                System.out.println("[Database] Derby shutdown normally.");
+            } else {
+                e.printStackTrace();
+            }
+        }
+        if (success) {
+            for (Playlist playlist : this.getAllPlaylistsObjects()) {
+                this.deleteSongFromPlaylist(playlist, song);
+            }
+        }
+        return success;
+    }
+
+    public boolean deletePlaylist(Playlist playlist) {
+        boolean success = true;
+        Connection conn = null;
+        Statement statement = null;
+        String sql1 = "DELETE FROM " + playlistTableName +
+                "      WHERE NAME = '" + playlist.getName() + "'";
+        String sql2 = "DELETE FROM " + playlistSongsTableName +
+                "      WHERE NAME = '" + playlist.getName() + "'";
+        try {
+            conn = DriverManager.getConnection(createDatabaseURL);
+            statement = conn.createStatement();
+            statement.execute(sql1);
+            statement.execute(sql2);
+            conn.close();
+            System.out.println("[Database] Deleted playlist from database.");
         } catch (SQLException e) {
             success = false;
             if (e.getSQLState().equals("XJ015")) {
@@ -267,8 +294,6 @@ public class DatabaseHandler {
             statement.execute(sql);
             conn.close();
             System.out.println("[Database] Deleted song from playlist.");
-            //TODO: should playlist be removed if it does not contain any songs anymore?
-
         } catch (SQLException e) {
             success = false;
             if (e.getSQLState().equals("XJ015")) {
@@ -296,14 +321,13 @@ public class DatabaseHandler {
 
             while(results.next())
             {
-                //TODO better to use findColumn("column_name") to get columnIndex.
-                String file_path = results.getString(1);
-                String title = results.getString(2);
-                String artist = results.getString(3);
-                String album = results.getString(4);
-                String year = results.getString(5);
-                String comment = results.getString(6);
-                String genre = results.getString(7);
+                String file_path = results.getString(results.findColumn("FILEPATH"));
+                String title = results.getString(results.findColumn("TITLE"));
+                String artist = results.getString(results.findColumn("ARTIST"));
+                String album = results.getString(results.findColumn("ALBUM"));
+                String year = results.getString(results.findColumn("YEAR_PUBLISHED"));
+                String comment = results.getString(results.findColumn("COMMENT"));
+                String genre = results.getString(results.findColumn("GENRE"));
 
                 //TODO [3] Replace this try-catch to 'int duration = results.getInt(8);'.
                 int duration;
@@ -374,8 +398,87 @@ public class DatabaseHandler {
         return list;
     }
 
+    /**
+     * This overloads the other method with the same name (see parameter difference)
+     * @param playlistName
+     * @return
+     */
+    public ArrayList<Song> getSongsInPlaylist(String playlistName) {
+        Connection conn = null;
+        Statement statement = null;
+        ArrayList<Song> list = new ArrayList<Song>();
+        String sql = "SELECT * FROM " + playlistSongsTableName + " INNER JOIN " + songsTableName + " ON " +
+                playlistSongsTableName + ".FILEPATH = " + songsTableName + ".FILEPATH " +
+                "WHERE " + playlistSongsTableName + ".NAME = '" + playlistName + "'";
+        try {
+            conn = DriverManager.getConnection(createDatabaseURL);
+            statement = conn.createStatement();
+            ResultSet results = statement.executeQuery(sql);
 
-    public ArrayList<String> getAllPlaylists() {
+            while(results.next())
+            {
+                String file_path = results.getString(results.findColumn("FILEPATH"));
+                String title = results.getString(results.findColumn("TITLE"));
+                String artist = results.getString(results.findColumn("ARTIST"));
+                String album = results.getString(results.findColumn("ALBUM"));
+                String year = results.getString(results.findColumn("YEAR_PUBLISHED"));
+                String comment = results.getString(results.findColumn("COMMENT"));
+                String genre = results.getString(results.findColumn("GENRE"));
+
+                //TODO [3] Replace this try-catch to 'int duration = results.getInt(8);'.
+                int duration;
+                try {
+                    duration = results.getInt(8);
+                }catch(SQLException ex){
+                    duration = 0;
+                }
+                Song song = new Song(file_path, title, artist, album, year, comment, genre, duration);
+                list.add(song);
+            }
+            results.close();
+            conn.close();
+
+        } catch (SQLException e) {
+            if (e.getSQLState().equals("XJ015")) {
+                System.out.println("Derby shutdown normally.");
+            } else {
+                e.printStackTrace();
+            }
+        }
+        return list;
+    }
+
+    public ArrayList<Playlist> getAllPlaylistsObjects() {
+        Connection conn = null;
+        Statement statement = null;
+        ArrayList<Playlist> list = new ArrayList<Playlist>();
+        String sql = "SELECT NAME FROM " + playlistTableName;
+        try {
+            conn = DriverManager.getConnection(createDatabaseURL);
+            statement = conn.createStatement();
+            ResultSet results = statement.executeQuery(sql);
+
+            while(results.next())
+            {
+                String name = results.getString(results.findColumn("NAME"));
+                Playlist playlist = Playlist.instantiatePlaylist(name);
+                list.add(playlist);
+            }
+            results.close();
+            conn.close();
+
+        } catch (SQLException e) {
+            if (e.getSQLState().equals("XJ015")) {
+                System.out.println("Derby shutdown normally.");
+            } else {
+                e.printStackTrace();
+            }
+            return null;
+        }
+        return list;
+    }
+
+    public ArrayList<String> getAllPlaylistsStrings() {
         Connection conn = null;
         Statement statement = null;
         ArrayList<String> list = new ArrayList<String>();

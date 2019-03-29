@@ -17,6 +17,7 @@ public class Playlist {
     //private constructor since we only instantiate this class using the static factory method in order to keep track
     //of all the playlists already instantiated
     private Playlist(String name) {
+
             this.songList = new ArrayList<Song>();
             this.name = name;
             dbHandler.addPlaylist(this);
@@ -33,7 +34,7 @@ public class Playlist {
         }
     }
 
-    public boolean addSongList(ArrayList<Song> songs) {
+    public boolean addMultipleSongs(ArrayList<Song> songs) {
         boolean success = true;
         for(Song newSong: songs) {
             if (success) {
@@ -90,11 +91,11 @@ public class Playlist {
         return false;
     }
 
+    //TODO: maybe have a DB method that returns a list of Playlist objects instead of Strings
     private static HashMap<String, Playlist> getPlaylistMapFromDB() {
         if (allPlaylists == null)
             allPlaylists = new HashMap<String, Playlist>();
-        //TODO: maybe have a DB method that returns a list of Playlist objects instead of Strings
-        for (String playlistName : dbHandler.getAllPlaylists()) {
+        for (String playlistName : dbHandler.getAllPlaylistsStrings()) {
             Playlist newPlaylist = new Playlist(playlistName);
             newPlaylist.songList = dbHandler.getSongsInPlaylist(newPlaylist);
             allPlaylists.put(playlistName, newPlaylist);
