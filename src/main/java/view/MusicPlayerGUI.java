@@ -27,6 +27,7 @@ public class MusicPlayerGUI extends JFrame {
     private Color pointColor = new Color(0, 95, 96);
     private Color[] fgColor = {Color.white, Color.lightGray, Color.gray};
     private Font font = new Font("Helvetica", Font.PLAIN, 14);
+    private Dimension sidePanelSize = new Dimension(100, 500);
 
     //panels to hold buttons, table, etc.
     private JPanel mainPanel;
@@ -35,6 +36,10 @@ public class MusicPlayerGUI extends JFrame {
     private JPanel buttonPanel;
     private JPanel sliderPanel;
     private JPanel stopPanel;
+    private JPanel sidePanel;
+    private JPanel playListPanel;
+
+
 
     //components for table
     private JTable songTable;
@@ -55,6 +60,10 @@ public class MusicPlayerGUI extends JFrame {
     private JButton prevBtn;
     private JButton stopBtn;
     private JSlider volumeSlider;
+
+    //buttons for sidePanel
+    private JButton playListBtn;
+    private JButton libBtn;
 
     //top bar containing standard menu and components for its entries
     private JMenuBar menuBar;
@@ -86,11 +95,15 @@ public class MusicPlayerGUI extends JFrame {
         buttonPanel = new JPanel();
         sliderPanel = new JPanel();
         stopPanel = new JPanel();
+        sidePanel = new JPanel();
+        playListPanel = new JPanel();
         //Panel Layout
         bottomPanel.setLayout(new BorderLayout(0,0));
         stopPanel.setLayout(new BorderLayout());
         buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER,0,0));
         sliderPanel.setLayout(new BorderLayout());
+        sidePanel.setLayout(new BorderLayout());
+        playListPanel.setLayout(new BorderLayout());
 
         // Standard Menu setup
         createMenu();
@@ -123,11 +136,18 @@ public class MusicPlayerGUI extends JFrame {
         playBtn = new JButton("▶");
         nextBtn = new JButton("⦊⦊");
         volumeSlider = new JSlider();
+
+        //Side Panel Buttons
+        libBtn= new JButton("Library");
+        playListBtn = new JButton("Playlist");
+
         //setting name(key) of button components
         stopBtn.setName("stop");
         playBtn.setName("play");
         prevBtn.setName("prev");
         nextBtn.setName("next");
+        playListBtn.setName("playlist");
+        libBtn.setName("library");
 
 
         //Song Info Panel @sellabae
@@ -143,17 +163,25 @@ public class MusicPlayerGUI extends JFrame {
         buttonPanel.add(playBtn);
         buttonPanel.add(nextBtn);
 
+
         //slider setup
         sliderPanel.add(volumeSlider);
+
+        //playlist setup
+        playListPanel.add(libBtn, BorderLayout.NORTH);
+        playListPanel.add(playListBtn,BorderLayout.SOUTH);
 
         //putting all buttons into bottomPanel
         bottomPanel.add(buttonPanel, BorderLayout.CENTER);
         bottomPanel.add(sliderPanel, BorderLayout.EAST);
         bottomPanel.add(stopPanel, BorderLayout.WEST);
+        sidePanel.add(playListPanel, BorderLayout.NORTH);
+
 
         //putting all panels into main frame
         this.add(tableScrollPane, BorderLayout.CENTER);
         this.add(bottomPanel, BorderLayout.SOUTH);
+        this.add(sidePanel, BorderLayout.WEST);
 
         this.pack();
     }
@@ -194,6 +222,15 @@ public class MusicPlayerGUI extends JFrame {
         prevBtn.setPreferredSize(buttonSize);
         playBtn.setPreferredSize(buttonSize);
         nextBtn.setPreferredSize(buttonSize);
+
+        //side panel
+        sidePanel.setBackground(bgColor[1]);
+        sidePanel.setOpaque(false);
+        sidePanel.setPreferredSize(sidePanelSize);
+        libBtn.setPreferredSize(buttonSize);
+        playListBtn.setPreferredSize(buttonSize);
+
+
 
         //song info panel
         if(songInfoPanel!=null) {
