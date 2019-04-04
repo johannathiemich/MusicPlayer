@@ -38,7 +38,7 @@ public class SongListView extends JPanel {
         tableScrollPane = new JScrollPane(songTable);
         this.setLayout(new BorderLayout());
         this.add(tableScrollPane, BorderLayout.CENTER);
-        initializeTable();
+        //initializeTable();
     }
 
     /**
@@ -85,7 +85,7 @@ public class SongListView extends JPanel {
     /**
      * Set Dark theme to the table view panel.
      */
-    public void setTheme(ColorTheme colorTheme){
+    public void setColorTheme(ColorTheme colorTheme){
         Color[] bgColor = colorTheme.bgColor;
         Color[] fgColor = colorTheme.fgColor;
         Color pointColor = colorTheme.pointColor;

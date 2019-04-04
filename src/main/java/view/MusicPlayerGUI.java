@@ -23,9 +23,9 @@ public class MusicPlayerGUI extends JFrame {
     private Dimension frameMinSize = new Dimension(500,300);
     private Dimension sidePanelSize = new Dimension(100, 500);
 
-    //complete SongListView panel
+    //complete SongListView panel in the center
     private SongListView songListView;
-    //complete ControlView panel
+    //complete ControlView panel at the bottom
     private ControlView controlView;
 
     //panel for library and playlist names
@@ -107,7 +107,7 @@ public class MusicPlayerGUI extends JFrame {
      */
     public void setColorTheme(ColorTheme colorTheme){
         this.setBackground(colorTheme.bgColor[0]);
-        songListView.setTheme(colorTheme);
+        songListView.setColorTheme(colorTheme);
         controlView.setColorTheme(colorTheme);
 
         //menu bar
@@ -296,9 +296,10 @@ public class MusicPlayerGUI extends JFrame {
 
 
     private void testPlaylistActions(){
-        JMenu testMenu = new JMenu("TEST");
+        //menu items for playlist action testing
+        JMenu testMenu = new JMenu("TEST:Playlist");
         JMenuItem libraryMenuItem = new JMenuItem("Library");
-        JMenu playlistMenu = new JMenu("Playlist");
+        final JMenu playlistMenu = new JMenu("Playlist");
         JMenuItem pl1MenuItem = new JMenuItem("PL1-Main");
         JMenuItem pl2MenuItem = new JMenuItem("PL2-New");
         JMenuItem pl3MenuItem = new JMenuItem("PL3-New");
@@ -338,9 +339,12 @@ public class MusicPlayerGUI extends JFrame {
                 pl2Window.setPreferredSize(new Dimension(500,300));
                 pl2Window.setMinimumSize(new Dimension(500,300));
                 pl2Window.setLayout(new BorderLayout());
+                SongListView playlistView = new SongListView();
+                playlistView.setColorTheme(ColorTheme.dark);
                 pl2Window.add(new SongListView(), BorderLayout.CENTER);
                 ControlView controlViewForNewWindow = new ControlView();
                 controlViewForNewWindow.showSongInfoPanel(false);
+                controlViewForNewWindow.setColorTheme(ColorTheme.dark);
                 pl2Window.add(controlViewForNewWindow, BorderLayout.SOUTH);
                 pl2Window.pack();
                 pl2Window.setVisible(true);
