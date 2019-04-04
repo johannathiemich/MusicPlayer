@@ -244,7 +244,7 @@ public class MainController {
 
     /**
      * OptionalMenuItemListener class implements
-     * the action of optional menu items in menu bar
+     * the action of optional menu items(JCheckBoxMenuItem) in menu bar
      * by the name and state of the components.
      * "darkTheme"  Set or unset the dark theme to the app
      * "songInfo"   Show or hide the current song info panel at the bottom

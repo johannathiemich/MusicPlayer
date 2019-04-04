@@ -112,10 +112,13 @@ public class MusicPlayerGUI extends JFrame {
      */
     public void setColorTheme(ColorTheme colorTheme){
         this.setBackground(colorTheme.bgColor[0]);
+
+        //set theme on table view panel
         songListView.setColorTheme(colorTheme);
+        //set theme on control view panel
         controlView.setColorTheme(colorTheme);
 
-        //side panel
+        //set theme on side panel
         sidePanel.setBackground(colorTheme.bgColor[1]);
         sidePanel.setOpaque(true);
         sidePanel.setBorder(BorderFactory.createLineBorder(colorTheme.bgColor[0]));
@@ -167,7 +170,7 @@ public class MusicPlayerGUI extends JFrame {
         //extra menus
         viewMenu = new JMenu("View");
         darkThemeMenuItem = new JCheckBoxMenuItem("Dark Theme",true);
-        songInfoMenuItem = new JCheckBoxMenuItem("Current Song Info",true);
+        songInfoMenuItem = new JCheckBoxMenuItem("Current Song Info",false);
         darkThemeMenuItem.setName("darkTheme");
         songInfoMenuItem.setName("songInfo");
         viewMenu.add(darkThemeMenuItem);

@@ -72,7 +72,7 @@ public class ControlView extends JPanel {
         this.add(sliderPanel, BorderLayout.EAST);
 
         createSongInfoPanel();
-        showSongInfoPanel(true);
+        showSongInfoPanel(false);
     }
 
     /**
