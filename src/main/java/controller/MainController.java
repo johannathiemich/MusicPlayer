@@ -4,6 +4,7 @@ import javazoom.jlgui.basicplayer.BasicPlayer;
 import model.Playlist;
 import model.Song;
 import model.SongLibrary;
+import view.ColorTheme;
 import view.MusicPlayerGUI;
 
 import javax.swing.*;
@@ -69,6 +70,9 @@ public class MainController {
 
         //Add drop target to scroll pane
         playerView.addDragDropToScrollPane(new DragDropToScrollPane());
+
+        //Extra feature, add listener to extra menus on menu bar
+        playerView.addOptionalMenuItemListener(new OptionalMenuItemListener());
 
     }
 
@@ -235,6 +239,44 @@ public class MainController {
                 System.out.println("none of the menu item action performed.");
             }
 
+        }
+    }
+
+    /**
+     * OptionalMenuItemListener class implements
+     * the action of optional menu items in menu bar
+     * by the name and state of the components.
+     * "darkTheme"  Set or unset the dark theme to the app
+     * "songInfo"   Show or hide the current song info panel at the bottom
+     */
+    class OptionalMenuItemListener implements ActionListener {
+        JCheckBoxMenuItem checkMenu;
+        String menuName;
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            // Get the name of event source component
+            checkMenu = (JCheckBoxMenuItem) e.getSource();
+            menuName = checkMenu.getName();
+
+            if (menuName.equals("darkTheme")) {
+                //[Dark Theme] menu actions
+                if(checkMenu.getState()) {
+                    System.out.println("[ViewMenu] Set Dark Theme.");
+                    playerView.setColorTheme(ColorTheme.dark);
+                }else{
+                    System.out.println("[ViewMenu] Unset Dark Theme.");
+                    playerView.setColorTheme(ColorTheme.white);
+                }
+
+            } else if (menuName.equals("songInfo")) {
+                //[Current Song Info] menu actions
+                if(checkMenu.getState()) {
+                    System.out.println("[ViewMenu] Show Current Song Info.");
+                } else {
+                    System.out.println("[ViewMenu] Hide Current Song Info.");
+                }
+            }
         }
     }
 

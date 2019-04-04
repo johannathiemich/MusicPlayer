@@ -31,6 +31,7 @@ public class MusicPlayerGUI extends JFrame {
     //panel for library and playlist names
     private JPanel sidePanel;
 
+    //TODO Use JTree to show the list of library/playlists
     //buttons for sidePanel
     private JButton playListBtn;
     private JButton libBtn;
@@ -48,6 +49,11 @@ public class MusicPlayerGUI extends JFrame {
     private JPopupMenu popUpMenu;
     private JMenuItem deleteSongMenuItemPopup;
     private JMenuItem addSongMenuItemPopup;
+
+    //menu for extra features
+    private JMenu viewMenu;
+    private JCheckBoxMenuItem darkThemeMenuItem;
+    private JCheckBoxMenuItem songInfoMenuItem;
 
     /**
      * This constructor initializes all necessary components.
@@ -69,6 +75,8 @@ public class MusicPlayerGUI extends JFrame {
 
         // Standard Menu setup
         createMenu();
+        //TODO temporarily testing playlist actions...
+        testPlaylistActions();
 
         // PopUp Menu setup
         popUpMenu = new JPopupMenu();
@@ -90,9 +98,6 @@ public class MusicPlayerGUI extends JFrame {
         sidePanel.add(libBtn);
         sidePanel.add(playListBtn);
 
-        //TODO temporarily testing playlist actions...
-        testPlaylistActions();
-
         //putting all panels into main frame
         this.add(songListView, BorderLayout.CENTER);
         this.add(controlView, BorderLayout.SOUTH);
@@ -109,11 +114,6 @@ public class MusicPlayerGUI extends JFrame {
         this.setBackground(colorTheme.bgColor[0]);
         songListView.setColorTheme(colorTheme);
         controlView.setColorTheme(colorTheme);
-
-        //menu bar
-//        menuBar.setBackground(bgColor[1]);
-//        menu.setBackground(bgColor[1]);
-//        menu.setForeground(fgColor[1]);
 
         //side panel
         sidePanel.setBackground(colorTheme.bgColor[1]);
@@ -139,6 +139,7 @@ public class MusicPlayerGUI extends JFrame {
      */
     private void createMenu() {
         menuBar = new JMenuBar();
+
         menu = new JMenu("Menu");
         openSongMenuItem = new JMenuItem("Open Song");
         addSongMenuItem = new JMenuItem("Add Song to Library");
@@ -162,6 +163,16 @@ public class MusicPlayerGUI extends JFrame {
         menu.addSeparator();
         menu.add(exitMenuItem);
         menuBar.add(menu);
+
+        //extra menus
+        viewMenu = new JMenu("View");
+        darkThemeMenuItem = new JCheckBoxMenuItem("Dark Theme",true);
+        songInfoMenuItem = new JCheckBoxMenuItem("Current Song Info",true);
+        darkThemeMenuItem.setName("darkTheme");
+        songInfoMenuItem.setName("songInfo");
+        viewMenu.add(darkThemeMenuItem);
+        viewMenu.add(songInfoMenuItem);
+        menuBar.add(viewMenu);
 
         this.setJMenuBar(menuBar);
     }
@@ -245,6 +256,15 @@ public class MusicPlayerGUI extends JFrame {
         //popup menu items
         addSongMenuItemPopup.addActionListener(listener);
         deleteSongMenuItemPopup.addActionListener(listener);
+    }
+
+    /**
+     * Attach a listener to optional menu items in menu bar
+     * @param listener ActionListener with optional menu actions
+     */
+    public void addOptionalMenuItemListener(ActionListener listener) {
+        darkThemeMenuItem.addActionListener(listener);
+        songInfoMenuItem.addActionListener(listener);
     }
 
     /**

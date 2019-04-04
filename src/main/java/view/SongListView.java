@@ -88,7 +88,7 @@ public class SongListView extends JPanel {
     public void setColorTheme(ColorTheme colorTheme){
         Color[] bgColor = colorTheme.bgColor;
         Color[] fgColor = colorTheme.fgColor;
-        Color pointColor = colorTheme.pointColor;
+        Color[] pointColor = colorTheme.pointColor;
 
         //table
         tableScrollPane.setBorder(BorderFactory.createEmptyBorder());
@@ -100,7 +100,7 @@ public class SongListView extends JPanel {
         songTable.getTableHeader().setForeground(fgColor[2]);
 
         //table row selection
-        songTable.setSelectionBackground(pointColor);
-        songTable.setSelectionForeground(fgColor[0]);
+        songTable.setSelectionBackground(pointColor[0]);
+        songTable.setSelectionForeground(pointColor[1]);
     }
 }
