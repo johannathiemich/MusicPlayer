@@ -8,6 +8,7 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.dnd.DropTarget;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 
@@ -90,7 +91,7 @@ public class MusicPlayerGUI extends JFrame {
         sidePanel.add(playListBtn);
 
         //TODO temporarily testing playlist actions...
-        //testPlaylistActions();
+        testPlaylistActions();
 
         //putting all panels into main frame
         this.add(songListView, BorderLayout.CENTER);
@@ -293,5 +294,64 @@ public class MusicPlayerGUI extends JFrame {
     }
 
 
+    private void testPlaylistActions(){
+        JMenu testMenu = new JMenu("TEST");
+        JMenuItem libraryMenuItem = new JMenuItem("Library");
+        JMenu playlistMenu = new JMenu("Playlist");
+        JMenuItem pl1MenuItem = new JMenuItem("PL1-Main");
+        JMenuItem pl2MenuItem = new JMenuItem("PL2-New");
+        JMenuItem pl3MenuItem = new JMenuItem("PL3-New");
+        testMenu.add(libraryMenuItem);
+        testMenu.add(playlistMenu);
+        playlistMenu.add(pl1MenuItem);
+        playlistMenu.add(pl2MenuItem);
+        playlistMenu.add(pl3MenuItem);
+        menuBar.add(testMenu);
+
+        //show library on the main frame
+        libraryMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Show the library on the main window.");
+                //songListView = new SongListView(library);
+                songListView.setName("libraryView");
+                songListView.repaint();
+            }
+        });
+        //show playlist on the main frame
+        pl1MenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Show playlist1 on the main window.");
+                songListView = new SongListView();
+                songListView.setName("playlistView");
+                songListView.repaint();
+            }
+        });
+        //show playlist on the new window
+        pl2MenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Show playlist2 on the new window.");
+                JFrame pl2Window = new JFrame("playlist2");
+                pl2Window.setPreferredSize(new Dimension(500,300));
+                pl2Window.setMinimumSize(new Dimension(500,300));
+                pl2Window.setLayout(new BorderLayout());
+                pl2Window.add(new SongListView(), BorderLayout.CENTER);
+                ControlView controlViewForNewWindow = new ControlView();
+                controlViewForNewWindow.showSongInfoPanel(false);
+                pl2Window.add(controlViewForNewWindow, BorderLayout.SOUTH);
+                pl2Window.pack();
+                pl2Window.setVisible(true);
+            }
+        });
+        //show playlist on the new window
+        pl3MenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Show playlist3 on the new window.");
+            }
+        });
+    }
 
 }

@@ -38,6 +38,7 @@ public class SongListView extends JPanel {
         tableScrollPane = new JScrollPane(songTable);
         this.setLayout(new BorderLayout());
         this.add(tableScrollPane, BorderLayout.CENTER);
+        initializeTable();
     }
 
     /**
@@ -66,7 +67,7 @@ public class SongListView extends JPanel {
      *                 which can be from the library or a playlist.
      */
     public void updateTableView(ArrayList<Song> songList) {
-        initializeTable();
+
         for (Song song : songList) {
             tableModel.addRow(song.toArray());
         }
