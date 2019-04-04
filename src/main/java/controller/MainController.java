@@ -247,7 +247,7 @@ public class MainController {
      * the action of optional menu items(JCheckBoxMenuItem) in menu bar
      * by the name and state of the components.
      * "darkTheme"  Set or unset the dark theme to the app
-     * "songInfo"   Show or hide the current song info panel at the bottom
+     * "songInfo"   Show or hide the info panel of the currently playing song at the bottom
      */
     class OptionalMenuItemListener implements ActionListener {
         JCheckBoxMenuItem checkMenu;
@@ -272,10 +272,10 @@ public class MainController {
             } else if (menuName.equals("songInfo")) {
                 //[Current Song Info] menu actions
                 if(checkMenu.getState()) {
-                    System.out.println("[ViewMenu] Show Current Song Info.");
+                    System.out.println("[ViewMenu] Show Playing Song Info.");
                     playerView.getControlView().showSongInfoPanel(true);
                 } else {
-                    System.out.println("[ViewMenu] Hide Current Song Info.");
+                    System.out.println("[ViewMenu] Hide Playing Song Info.");
                     playerView.getControlView().showSongInfoPanel(false);
                 }
             }

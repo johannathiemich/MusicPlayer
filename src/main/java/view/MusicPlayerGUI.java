@@ -38,7 +38,7 @@ public class MusicPlayerGUI extends JFrame {
 
     //top bar containing standard menu and menu items for its entries
     private JMenuBar menuBar;
-    private JMenu menu;
+    private JMenu fileMenu;
     private JMenuItem openSongMenuItem;
     private JMenuItem addSongMenuItem;
     private JMenuItem deleteSongMenuItem;
@@ -143,40 +143,39 @@ public class MusicPlayerGUI extends JFrame {
     private void createMenu() {
         menuBar = new JMenuBar();
 
-        menu = new JMenu("Menu");
+        fileMenu = new JMenu("File");
         openSongMenuItem = new JMenuItem("Open Song");
         addSongMenuItem = new JMenuItem("Add Song to Library");
         deleteSongMenuItem = new JMenuItem("Delete Song from Library");
         aboutMenuItem = new JMenuItem("About");
         exitMenuItem = new JMenuItem("Exit");
-
         //setting name(key) of menu item components
         openSongMenuItem.setName("open");
         addSongMenuItem.setName("add");
         deleteSongMenuItem.setName("delete");
         aboutMenuItem.setName("about");
         exitMenuItem.setName("exit");
-
-        menu.setPreferredSize(new Dimension(50, menu.getPreferredSize().height));
-
-        menu.add(openSongMenuItem);
-        menu.add(addSongMenuItem);
-        menu.add(deleteSongMenuItem);
-        menu.add(aboutMenuItem);
-        menu.addSeparator();
-        menu.add(exitMenuItem);
-        menuBar.add(menu);
+        //add menu items to fileMenu
+        fileMenu.add(openSongMenuItem);
+        fileMenu.add(addSongMenuItem);
+        fileMenu.add(deleteSongMenuItem);
+        fileMenu.add(aboutMenuItem);
+        fileMenu.addSeparator();
+        fileMenu.add(exitMenuItem);
 
         //extra menus
         viewMenu = new JMenu("View");
         darkThemeMenuItem = new JCheckBoxMenuItem("Dark Theme",true);
-        songInfoMenuItem = new JCheckBoxMenuItem("Current Song Info",false);
+        songInfoMenuItem = new JCheckBoxMenuItem("Playing Song Info",false);
         darkThemeMenuItem.setName("darkTheme");
         songInfoMenuItem.setName("songInfo");
         viewMenu.add(darkThemeMenuItem);
         viewMenu.add(songInfoMenuItem);
-        menuBar.add(viewMenu);
 
+        //add menus to the menu bar
+        menuBar.add(fileMenu);
+        menuBar.add(viewMenu);
+        //add menu bar to main frame
         this.setJMenuBar(menuBar);
     }
 
@@ -332,7 +331,7 @@ public class MusicPlayerGUI extends JFrame {
 
     private void testPlaylistActions(){
         //menu items for playlist action testing
-        JMenu testMenu = new JMenu("TEST:Playlist");
+        JMenu testMenu = new JMenu("TEST");
         JMenuItem libraryMenuItem = new JMenuItem("Library");
         final JMenu playlistMenu = new JMenu("Playlist");
         JMenuItem pl1MenuItem = new JMenuItem("PL1-Main");
