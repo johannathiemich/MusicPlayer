@@ -159,6 +159,7 @@ public class MusicPlayerGUI extends JFrame {
         menu.add(addSongMenuItem);
         menu.add(deleteSongMenuItem);
         menu.add(aboutMenuItem);
+        menu.addSeparator();
         menu.add(exitMenuItem);
         menuBar.add(menu);
 
