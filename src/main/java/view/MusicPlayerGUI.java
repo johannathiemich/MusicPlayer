@@ -7,7 +7,6 @@ import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.dnd.DropTarget;
 import java.awt.event.ActionListener;
@@ -31,7 +30,6 @@ public class MusicPlayerGUI extends JFrame {
 
     //panels to hold buttons, table, etc.
     private JPanel mainPanel;
-    private JScrollPane tableScrollPane;
     private JPanel bottomPanel;
     private JPanel buttonPanel;
     private JPanel sliderPanel;
@@ -39,12 +37,7 @@ public class MusicPlayerGUI extends JFrame {
     private JPanel sidePanel;
     private JPanel playListPanel;
 
-
-
-    //components for table
-    private JTable songTable;
-    private DefaultTableModel tableModel;
-    private String[] columnHeader;
+    private SongListView libraryView;
 
     //components for songInfoPanel
     private JPanel songInfoPanel;
@@ -108,18 +101,8 @@ public class MusicPlayerGUI extends JFrame {
         // Standard Menu setup
         createMenu();
 
-        // Table setup
-        columnHeader = new String[]{"Path", "Title", "Artist", "Album", "Year", "Comment", "Genre"};
-        songTable = new JTable(){
-            @Override   //block table contents editing
-            public boolean isCellEditable(int row, int column) { return false; }
-        };
-        initializeTable();
-        songTable.setFillsViewportHeight(true);
-        songTable.setShowVerticalLines(false);
-        songTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        songTable.getTableHeader().setReorderingAllowed(false);
-        tableScrollPane = new JScrollPane(songTable);
+        // library or playlist view of the main window
+        libraryView = new SongListView();
 
         // PopUp Menu setup
         popUpMenu = new JPopupMenu();
@@ -154,15 +137,14 @@ public class MusicPlayerGUI extends JFrame {
         createSongInfoPanel();
         //Set a new look of the view @sellabae
         setDarkTheme();
+        //To check the whole layout of GUI @sellabae
         //showLayoutBorders(true);
 
         //Add components in place-----------------
         stopPanel.add(stopBtn);
-
         buttonPanel.add(prevBtn);
         buttonPanel.add(playBtn);
         buttonPanel.add(nextBtn);
-
 
         //slider setup
         sliderPanel.add(volumeSlider);
@@ -177,9 +159,9 @@ public class MusicPlayerGUI extends JFrame {
         bottomPanel.add(stopPanel, BorderLayout.WEST);
         sidePanel.add(playListPanel, BorderLayout.NORTH);
 
-
         //putting all panels into main frame
-        this.add(tableScrollPane, BorderLayout.CENTER);
+        this.add(libraryView, BorderLayout.CENTER);
+//        this.add(tableScrollPane, BorderLayout.CENTER);
         this.add(bottomPanel, BorderLayout.SOUTH);
         this.add(sidePanel, BorderLayout.WEST);
 
@@ -200,18 +182,8 @@ public class MusicPlayerGUI extends JFrame {
 //        menu.setBackground(bgColor[1]);
 //        menu.setForeground(fgColor[1]);
 
-        //table
-        tableScrollPane.setBorder(BorderFactory.createEmptyBorder());
-        songTable.setRowHeight(20);
-        songTable.setShowGrid(false);
-        songTable.setBackground(bgColor[0]);
-        songTable.setForeground(fgColor[1]);
-        songTable.getTableHeader().setBackground(bgColor[1]);
-        songTable.getTableHeader().setForeground(fgColor[2]);
-
-        //table row selection
-        songTable.setSelectionBackground(fgColor[2]);
-        songTable.setSelectionForeground(bgColor[0]);
+        //table view
+        libraryView.setTheme(bgColor, fgColor);
 
         //bottom panel
         bottomPanel.setBackground(bgColor[1]);
@@ -229,7 +201,6 @@ public class MusicPlayerGUI extends JFrame {
         sidePanel.setPreferredSize(sidePanelSize);
         libBtn.setPreferredSize(buttonSize);
         playListBtn.setPreferredSize(buttonSize);
-
 
 
         //song info panel
@@ -287,8 +258,7 @@ public class MusicPlayerGUI extends JFrame {
      */
     private void showLayoutBorders(boolean show){
         LineBorder[] border = {new LineBorder(Color.red), new LineBorder(Color.green), new LineBorder(Color.blue)};
-        tableScrollPane.setBorder(border[0]);
-            songTable.setBorder(border[1]);
+        libraryView.setBorder(border[0]);
         bottomPanel.setBorder(border[0]);
             stopPanel.setBorder(border[1]);
                 stopBtn.setBorder(border[2]);
@@ -354,26 +324,18 @@ public class MusicPlayerGUI extends JFrame {
 
         this.setJMenuBar(menuBar);
     }
+//
+//    /**
+//     * This method initializes the table model.
+//     */
+//    private void initializeTable() {
+//        //for dynamic row addition
+//        tableModel = new DefaultTableModel(columnHeader,0);
+//        songTable.setModel(tableModel);
+//    }
 
-    /**
-     * This method initializes the table model.
-     */
-    private void initializeTable() {
-        //for dynamic row addition
-        tableModel = new DefaultTableModel(columnHeader,0);
-        songTable.setModel(tableModel);
-    }
-
-    /**
-     * Updates the table view.
-     * @param library SongLibrary reflected to table view.
-     */
-    public void updateTableView(SongLibrary library) {
-        initializeTable();
-        for (Song song : library) {
-            tableModel.addRow(song.toArray());
-        }
-        tableModel.fireTableDataChanged();
+    public void updateTableView(SongLibrary library){
+        libraryView.updateTableView(library);
     }
 
     /**
@@ -381,7 +343,7 @@ public class MusicPlayerGUI extends JFrame {
      * @return whether or not any row is selected.
      */
     public boolean isAnyRowSelected() {
-        return (songTable.getSelectedRow() != -1);
+        return (libraryView.getSongTable().getSelectedRow() != -1);
     }
 
     /**
@@ -389,7 +351,7 @@ public class MusicPlayerGUI extends JFrame {
      * @param rowIndex row to be selected.
      */
     public void changeTableRowSelection(int rowIndex){
-        songTable.changeSelection(rowIndex,0,false,
+        libraryView.getSongTable().changeSelection(rowIndex,0,false,
                 false);
     }
 
@@ -397,7 +359,7 @@ public class MusicPlayerGUI extends JFrame {
      * Returns the songTable.
      * @return JTable containing songs in the library
      */
-    public JTable getSongTable(){ return songTable; }
+    public JTable getSongTable(){ return libraryView.getSongTable(); }
 
     /**
      * Returns a popup menu when right-clicking on the table area
@@ -420,12 +382,6 @@ public class MusicPlayerGUI extends JFrame {
     }
 
     /**
-     * Returns the scroll panel of the table
-     * @return JScrollPane for the table.
-     */
-    public JScrollPane getScrollPane() { return this.tableScrollPane; }
-
-    /**
      * This method sets the text for the play button in order to switch between 'Play'<->'Pause' text change.
      * @param text the text to be assigned to the play button
      */
@@ -441,7 +397,7 @@ public class MusicPlayerGUI extends JFrame {
     }
 
 
-// Adding listeners ---------------------------------------------
+// Add listeners ---------------------------------------------
 
     /**
      * Attach a listener to all menu items in menu bar and popup menu
@@ -478,12 +434,16 @@ public class MusicPlayerGUI extends JFrame {
         volumeSlider.addChangeListener(listener);
     }
 
+
+// Add listeners for table view interactions --------------------------
+    //TODO These 3 listener attachers should be in SongListView class for further uses.
+
     /**
      * This method adds a ListSelectionListener to the song table.
      * @param listener the listener to be added to the song table
      */
     public void addSelectionListenerForTable(ListSelectionListener listener){
-        songTable.getSelectionModel().addListSelectionListener(listener);
+        libraryView.getSongTable().getSelectionModel().addListSelectionListener(listener);
     }
 
     /**
@@ -491,7 +451,7 @@ public class MusicPlayerGUI extends JFrame {
      * @param adapter the adapter to be added to the song table
      */
     public void addMouseListenerForTable(MouseAdapter adapter){
-        songTable.addMouseListener(adapter);
+        libraryView.getSongTable().addMouseListener(adapter);
     }
 
     /**
@@ -499,7 +459,7 @@ public class MusicPlayerGUI extends JFrame {
      * @param dropTarget the drop target to be added to the scroll panel
      */
     public void addDragDropToScrollPane(DropTarget dropTarget){
-        tableScrollPane.setDropTarget(dropTarget);
+        libraryView.setDropTarget(dropTarget);
     }
 
 }
