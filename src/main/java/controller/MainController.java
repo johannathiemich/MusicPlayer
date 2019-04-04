@@ -273,8 +273,10 @@ public class MainController {
                 //[Current Song Info] menu actions
                 if(checkMenu.getState()) {
                     System.out.println("[ViewMenu] Show Current Song Info.");
+                    playerView.getControlView().showSongInfoPanel(true);
                 } else {
                     System.out.println("[ViewMenu] Hide Current Song Info.");
+                    playerView.getControlView().showSongInfoPanel(false);
                 }
             }
         }

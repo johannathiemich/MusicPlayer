@@ -205,6 +205,18 @@ public class MusicPlayerGUI extends JFrame {
     public JTable getSongTable(){ return songListView.getSongTable(); }
 
     /**
+     * Gets songListView of the main window
+     * @return SongListView that the main frame currently showing
+     */
+    public SongListView getSongListView(){ return songListView; }
+
+    /**
+     * Gets controlView of the main window
+     * @return ControlView that the main frame currently showing
+     */
+    public ControlView getControlView() { return controlView; }
+
+    /**
      * Returns a popup menu when right-clicking on the table area
      * with deleteSong menu item.
      * @return JPopupMenu containing menu items delete, add song
