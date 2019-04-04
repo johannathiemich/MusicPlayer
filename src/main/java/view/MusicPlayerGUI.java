@@ -4,7 +4,6 @@ import model.Song;
 import model.SongLibrary;
 
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
@@ -30,35 +29,17 @@ public class MusicPlayerGUI extends JFrame {
 
     //panels to hold buttons, table, etc.
     private JPanel mainPanel;
-    private JPanel bottomPanel;
-    private JPanel buttonPanel;
-    private JPanel sliderPanel;
-    private JPanel stopPanel;
+    private SongListView libraryView;
+    private ControlView controlView;
+
     private JPanel sidePanel;
     private JPanel playListPanel;
-
-    private SongListView libraryView;
-
-    //components for songInfoPanel
-    private JPanel songInfoPanel;
-    private JLabel songTitleLbl;
-    private JLabel songDetailLbl;
-    private JLabel songTimePlayingLbl;
-    private JLabel songTimeRemainingLbl;
-    private JProgressBar songProgressBar;
-
-    //components for player control
-    private JButton playBtn;
-    private JButton nextBtn;
-    private JButton prevBtn;
-    private JButton stopBtn;
-    private JSlider volumeSlider;
 
     //buttons for sidePanel
     private JButton playListBtn;
     private JButton libBtn;
 
-    //top bar containing standard menu and components for its entries
+    //top bar containing standard menu and menu items for its entries
     private JMenuBar menuBar;
     private JMenu menu;
     private JMenuItem openSongMenuItem;
@@ -67,7 +48,7 @@ public class MusicPlayerGUI extends JFrame {
     private JMenuItem aboutMenuItem;
     private JMenuItem exitMenuItem;
 
-    //all components for popup menu (left click)
+    //popup menu(right-click) and menu items
     private JPopupMenu popUpMenu;
     private JMenuItem deleteSongMenuItemPopup;
     private JMenuItem addSongMenuItemPopup;
@@ -82,27 +63,20 @@ public class MusicPlayerGUI extends JFrame {
         this.setPreferredSize(frameSize);
         this.setMinimumSize(frameMinSize);
 
-        //Panels and Layout
         mainPanel = new JPanel();
-        bottomPanel = new JPanel();
-        buttonPanel = new JPanel();
-        sliderPanel = new JPanel();
-        stopPanel = new JPanel();
+        // library or playlist view of the main window
+        libraryView = new SongListView();
+        // controlView with player buttons and volume slider
+        controlView = new ControlView();
+
         sidePanel = new JPanel();
         playListPanel = new JPanel();
         //Panel Layout
-        bottomPanel.setLayout(new BorderLayout(0,0));
-        stopPanel.setLayout(new BorderLayout());
-        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER,0,0));
-        sliderPanel.setLayout(new BorderLayout());
         sidePanel.setLayout(new BorderLayout());
         playListPanel.setLayout(new BorderLayout());
 
         // Standard Menu setup
         createMenu();
-
-        // library or playlist view of the main window
-        libraryView = new SongListView();
 
         // PopUp Menu setup
         popUpMenu = new JPopupMenu();
@@ -113,56 +87,27 @@ public class MusicPlayerGUI extends JFrame {
         popUpMenu.add(deleteSongMenuItemPopup);
         popUpMenu.add(addSongMenuItemPopup);
 
-        //Buttons and Slider setup
-        stopBtn = new JButton("◼");
-        prevBtn = new JButton("⦉⦉");
-        playBtn = new JButton("▶");
-        nextBtn = new JButton("⦊⦊");
-        volumeSlider = new JSlider();
-
         //Side Panel Buttons
         libBtn= new JButton("Library");
         playListBtn = new JButton("Playlist");
-
-        //setting name(key) of button components
-        stopBtn.setName("stop");
-        playBtn.setName("play");
-        prevBtn.setName("prev");
-        nextBtn.setName("next");
         playListBtn.setName("playlist");
         libBtn.setName("library");
 
 
-        //Song Info Panel @sellabae
-        createSongInfoPanel();
         //Set a new look of the view @sellabae
         setDarkTheme();
         //To check the whole layout of GUI @sellabae
         //showLayoutBorders(true);
 
-        //Add components in place-----------------
-        stopPanel.add(stopBtn);
-        buttonPanel.add(prevBtn);
-        buttonPanel.add(playBtn);
-        buttonPanel.add(nextBtn);
-
-        //slider setup
-        sliderPanel.add(volumeSlider);
 
         //playlist setup
         playListPanel.add(libBtn, BorderLayout.NORTH);
         playListPanel.add(playListBtn,BorderLayout.SOUTH);
-
-        //putting all buttons into bottomPanel
-        bottomPanel.add(buttonPanel, BorderLayout.CENTER);
-        bottomPanel.add(sliderPanel, BorderLayout.EAST);
-        bottomPanel.add(stopPanel, BorderLayout.WEST);
         sidePanel.add(playListPanel, BorderLayout.NORTH);
 
         //putting all panels into main frame
         this.add(libraryView, BorderLayout.CENTER);
-//        this.add(tableScrollPane, BorderLayout.CENTER);
-        this.add(bottomPanel, BorderLayout.SOUTH);
+        this.add(controlView, BorderLayout.SOUTH);
         this.add(sidePanel, BorderLayout.WEST);
 
         this.pack();
@@ -174,26 +119,14 @@ public class MusicPlayerGUI extends JFrame {
     public void setDarkTheme(){
 //  public void setTheme(Color[] bgColor, Color[] fgColor, Color pointColor){  //for later
 
-        //frame
         this.setBackground(bgColor[0]);
+        libraryView.setTheme(bgColor, fgColor);
+        controlView.setColorTheme(bgColor, fgColor);
 
         //menu bar
 //        menuBar.setBackground(bgColor[1]);
 //        menu.setBackground(bgColor[1]);
 //        menu.setForeground(fgColor[1]);
-
-        //table view
-        libraryView.setTheme(bgColor, fgColor);
-
-        //bottom panel
-        bottomPanel.setBackground(bgColor[1]);
-        stopPanel.setOpaque(false);
-        buttonPanel.setOpaque(false);
-        sliderPanel.setOpaque(false);
-        stopBtn.setPreferredSize(buttonSize);
-        prevBtn.setPreferredSize(buttonSize);
-        playBtn.setPreferredSize(buttonSize);
-        nextBtn.setPreferredSize(buttonSize);
 
         //side panel
         sidePanel.setBackground(bgColor[1]);
@@ -202,80 +135,8 @@ public class MusicPlayerGUI extends JFrame {
         libBtn.setPreferredSize(buttonSize);
         playListBtn.setPreferredSize(buttonSize);
 
-
-        //song info panel
-        if(songInfoPanel!=null) {
-            songInfoPanel.setBackground(bgColor[1]);
-            songTitleLbl.setForeground(fgColor[1]);
-            songDetailLbl.setForeground(fgColor[2]);
-            songTimePlayingLbl.setForeground(fgColor[2]);
-            songTimeRemainingLbl.setForeground(fgColor[2]);
-            songTitleLbl.setFont(new Font("Helvetica", Font.PLAIN, 14));
-        }
-
         //Repaint main frame view
         this.repaint();
-    }
-
-    /**
-     * Create all components for song info panel
-     * which contains song title, artist, progressbar, duration.
-     */
-    private void createSongInfoPanel() {
-        songInfoPanel = new JPanel();
-        songInfoPanel.setLayout(new BorderLayout(0,0));
-
-        //song info
-        songTitleLbl = new JLabel("Title");
-        songDetailLbl = new JLabel("Artist");
-        songTimePlayingLbl = new JLabel("0:00");
-        songTimeRemainingLbl = new JLabel("3:33");
-        songTitleLbl.setHorizontalAlignment(SwingConstants.CENTER);
-        songDetailLbl.setHorizontalAlignment(SwingConstants.CENTER);
-        songTimePlayingLbl.setHorizontalAlignment(SwingConstants.LEFT);
-        songTimeRemainingLbl.setHorizontalAlignment(SwingConstants.RIGHT);
-
-        //progress bar
-        songProgressBar = new JProgressBar(0,0,190);
-        songProgressBar.setValue(60);
-
-        //add all components to song info panel
-        songInfoPanel.add(Box.createHorizontalStrut(10));   //invisible space
-        songInfoPanel.add(songTitleLbl, BorderLayout.NORTH);
-        songInfoPanel.add(songDetailLbl, BorderLayout.CENTER);
-        songInfoPanel.add(songTimePlayingLbl, BorderLayout.WEST);
-        songInfoPanel.add(songTimeRemainingLbl, BorderLayout.EAST);
-        songInfoPanel.add(songProgressBar, BorderLayout.SOUTH);
-
-        //add this song info panel to bottom panel
-        bottomPanel.add(songInfoPanel, BorderLayout.NORTH);
-    }
-
-    /**
-     * Only for development use.
-     * Show borders of all components in the ui to check the layout.
-     * @param show true to show, false not to show borders
-     */
-    private void showLayoutBorders(boolean show){
-        LineBorder[] border = {new LineBorder(Color.red), new LineBorder(Color.green), new LineBorder(Color.blue)};
-        libraryView.setBorder(border[0]);
-        bottomPanel.setBorder(border[0]);
-            stopPanel.setBorder(border[1]);
-                stopBtn.setBorder(border[2]);
-            buttonPanel.setBorder(border[1]);
-                prevBtn.setBorder(border[2]);
-                playBtn.setBorder(border[2]);
-                nextBtn.setBorder(border[2]);
-            sliderPanel.setBorder(border[1]);
-                volumeSlider.setBorder(border[2]);
-        if(songInfoPanel != null){
-            songInfoPanel.setBorder(border[0]);
-            songTitleLbl.setBorder(border[1]);
-            songDetailLbl.setBorder(border[1]);
-            songTimePlayingLbl.setBorder(border[1]);
-            songTimeRemainingLbl.setBorder(border[1]);
-            songProgressBar.setBorder(border[1]);
-        }
     }
 
     /**
@@ -284,14 +145,7 @@ public class MusicPlayerGUI extends JFrame {
      * @param song currently playing song
      */
     public void updateCurrentPlayingView(Song song){
-        if(songInfoPanel != null) {
-            songTitleLbl.setText(song.getTitle());
-            songDetailLbl.setText(song.getArtist());
-            songTimePlayingLbl.setText("0:00");
-            songTimeRemainingLbl.setText(song.getDurationMinSec());
-            songProgressBar.setMinimum(0);
-            songProgressBar.setMaximum(song.getDuration());
-        }
+        controlView.updateCurrentPlayingView(song);
     }
 
     /**
@@ -324,15 +178,6 @@ public class MusicPlayerGUI extends JFrame {
 
         this.setJMenuBar(menuBar);
     }
-//
-//    /**
-//     * This method initializes the table model.
-//     */
-//    private void initializeTable() {
-//        //for dynamic row addition
-//        tableModel = new DefaultTableModel(columnHeader,0);
-//        songTable.setModel(tableModel);
-//    }
 
     public void updateTableView(SongLibrary library){
         libraryView.updateTableView(library);
@@ -385,7 +230,7 @@ public class MusicPlayerGUI extends JFrame {
      * This method sets the text for the play button in order to switch between 'Play'<->'Pause' text change.
      * @param text the text to be assigned to the play button
      */
-    public void setPlayBtnText(String text){ playBtn.setText(text); }
+    public void setPlayBtnText(String text){ controlView.getPlayBtn().setText(text); }
 
     /**
      * This method displays an error message dialog.
@@ -420,10 +265,10 @@ public class MusicPlayerGUI extends JFrame {
      * @param listener ActionListener with button actions
      */
     public void addPlayerControlButtonListener(ActionListener listener) {
-        playBtn.addActionListener(listener);
-        stopBtn.addActionListener(listener);
-        prevBtn.addActionListener(listener);
-        nextBtn.addActionListener(listener);
+        controlView.getPlayBtn().addActionListener(listener);
+        controlView.getStopBtn().addActionListener(listener);
+        controlView.getPrevBtn().addActionListener(listener);
+        controlView.getNextBtn().addActionListener(listener);
     }
 
     /**
@@ -431,7 +276,7 @@ public class MusicPlayerGUI extends JFrame {
      * @param listener the listener to be added to the volume slider
      */
     public void addVolumeSliderListener(ChangeListener listener){
-        volumeSlider.addChangeListener(listener);
+        controlView.getVolumeSlider().addChangeListener(listener);
     }
 
 
