@@ -17,21 +17,17 @@ import java.awt.event.MouseAdapter;
  * for displaying the data from the model and delegating user interactions to the controller.
  */
 public class MusicPlayerGUI extends JFrame {
-    // UI variables
+    //panel size dimensions
     private Dimension frameSize = new Dimension(800,600);
     private Dimension frameMinSize = new Dimension(500,300);
-    private Dimension buttonSize = new Dimension(60,40);
-    private Color[] bgColor = {new Color(40,40,40), new Color(50,50,50)};
-    private Color pointColor = new Color(0, 95, 96);
-    private Color[] fgColor = {Color.white, Color.lightGray, Color.gray};
-    private Font font = new Font("Helvetica", Font.PLAIN, 14);
     private Dimension sidePanelSize = new Dimension(100, 500);
 
-    //panels to hold buttons, table, etc.
-    private JPanel mainPanel;
+    //complete SongListView panel
     private SongListView libraryView;
+    //complete ControlView panel
     private ControlView controlView;
 
+    //panels to hold buttons, table, etc.
     private JPanel sidePanel;
     private JPanel playListPanel;
 
@@ -63,7 +59,6 @@ public class MusicPlayerGUI extends JFrame {
         this.setPreferredSize(frameSize);
         this.setMinimumSize(frameMinSize);
 
-        mainPanel = new JPanel();
         // library or playlist view of the main window
         libraryView = new SongListView();
         // controlView with player buttons and volume slider
@@ -95,9 +90,7 @@ public class MusicPlayerGUI extends JFrame {
 
 
         //Set a new look of the view @sellabae
-        setDarkTheme();
-        //To check the whole layout of GUI @sellabae
-        //showLayoutBorders(true);
+        setColorTheme(ColorTheme.dark);
 
 
         //playlist setup
@@ -114,14 +107,13 @@ public class MusicPlayerGUI extends JFrame {
     }
 
     /**
-     * Apply dark theme to the all components and repaint main frame view.
+     * Apply ColorTheme to the all components and repaint main frame view.
+     * @param colorTheme the color theme to apply
      */
-    public void setDarkTheme(){
-//  public void setTheme(Color[] bgColor, Color[] fgColor, Color pointColor){  //for later
-
-        this.setBackground(bgColor[0]);
-        libraryView.setTheme(bgColor, fgColor);
-        controlView.setColorTheme(bgColor, fgColor);
+    public void setColorTheme(ColorTheme colorTheme){
+        this.setBackground(colorTheme.bgColor[0]);
+        libraryView.setTheme(colorTheme);
+        controlView.setColorTheme(colorTheme);
 
         //menu bar
 //        menuBar.setBackground(bgColor[1]);
@@ -129,11 +121,9 @@ public class MusicPlayerGUI extends JFrame {
 //        menu.setForeground(fgColor[1]);
 
         //side panel
-        sidePanel.setBackground(bgColor[1]);
+        sidePanel.setBackground(colorTheme.bgColor[1]);
         sidePanel.setOpaque(false);
         sidePanel.setPreferredSize(sidePanelSize);
-        libBtn.setPreferredSize(buttonSize);
-        playListBtn.setPreferredSize(buttonSize);
 
         //Repaint main frame view
         this.repaint();

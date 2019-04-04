@@ -145,7 +145,11 @@ public class ControlView extends JPanel {
     /**
      * Set color theme to components in the control view.
      */
-    public void setColorTheme(Color[] bgColor, Color[] fgColor) {
+    public void setColorTheme(ColorTheme colorTheme) {
+        Color[] bgColor = colorTheme.bgColor;
+        Color[] fgColor = colorTheme.fgColor;
+        Color pointColor = colorTheme.pointColor;
+
         this.setBackground(bgColor[1]);
         stopPanel.setOpaque(false);
         buttonPanel.setOpaque(false);
@@ -159,6 +163,8 @@ public class ControlView extends JPanel {
             songTimePlayingLbl.setForeground(fgColor[2]);
             songTimeRemainingLbl.setForeground(fgColor[2]);
             songTitleLbl.setFont(new Font("Helvetica", Font.PLAIN, 14));
+            //progressBar color setting.. not simple to change..
+            //songProgressBar.setForeground(pointColor);
         }
     }
     /**

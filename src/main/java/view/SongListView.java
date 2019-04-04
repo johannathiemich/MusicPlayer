@@ -84,7 +84,11 @@ public class SongListView extends JPanel {
     /**
      * Set Dark theme to the table view panel.
      */
-    public void setTheme(Color[] bgColor, Color[] fgColor){
+    public void setTheme(ColorTheme colorTheme){
+        Color[] bgColor = colorTheme.bgColor;
+        Color[] fgColor = colorTheme.fgColor;
+        Color pointColor = colorTheme.pointColor;
+
         //table
         tableScrollPane.setBorder(BorderFactory.createEmptyBorder());
         songTable.setRowHeight(20);
@@ -95,7 +99,7 @@ public class SongListView extends JPanel {
         songTable.getTableHeader().setForeground(fgColor[2]);
 
         //table row selection
-        songTable.setSelectionBackground(fgColor[2]);
-        songTable.setSelectionForeground(bgColor[0]);
+        songTable.setSelectionBackground(pointColor);
+        songTable.setSelectionForeground(fgColor[0]);
     }
 }
