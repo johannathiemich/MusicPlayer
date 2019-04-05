@@ -6,6 +6,7 @@ import model.Song;
 import model.SongLibrary;
 import view.ColorTheme;
 import view.MusicPlayerGUI;
+import view.PlaylistWindow;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -499,6 +500,9 @@ public class MainController {
                     //show the selected playlist on the main window
                     //TODO Pass ArrayList<Song> of the selectedPlaylist
                     playerView.updateTableView(new ArrayList<Song>());
+
+                    //testing for a new window
+                    new PlaylistWindow(selectedPlaylist, ColorTheme.dark);
                 }
             }
         }
