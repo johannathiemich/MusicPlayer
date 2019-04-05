@@ -27,14 +27,8 @@ public class MusicPlayerGUI extends JFrame {
     private SongListView songListView;
     //complete ControlView panel at the bottom
     private ControlView controlView;
-
-    //panel for library and playlist names
-    private JPanel sidePanel;
-
-    //TODO Use JTree to show the list of library/playlists
-    //buttons for sidePanel
-    private JButton playListBtn;
-    private JButton libBtn;
+    //complete SidePanelView on the left
+    private SidePanelView sideView;
 
     //top bar containing standard menu and menu items for its entries
     private JMenuBar menuBar;
@@ -65,18 +59,18 @@ public class MusicPlayerGUI extends JFrame {
         this.setPreferredSize(frameSize);
         this.setMinimumSize(frameMinSize);
 
-        // library or playlist view of the main window
+        // table view of a list of songs
         songListView = new SongListView();
         // controlView with player buttons and volume slider
         controlView = new ControlView();
+        // tree view of library/playlist
+        sideView = new SidePanelView();
 
-        sidePanel = new JPanel();
-        sidePanel.setLayout(new FlowLayout());
+        //Set a new look of the view @sellabae
+        setColorTheme(ColorTheme.dark);
 
         // Standard Menu setup
         createMenu();
-        //TODO temporarily testing playlist actions...
-        testPlaylistActions();
 
         // PopUp Menu setup
         popUpMenu = new JPopupMenu();
@@ -87,21 +81,10 @@ public class MusicPlayerGUI extends JFrame {
         popUpMenu.add(deleteSongMenuItemPopup);
         popUpMenu.add(addSongMenuItemPopup);
 
-        //Set a new look of the view @sellabae
-        setColorTheme(ColorTheme.dark);
-
-        //Side Panel Buttons
-        libBtn= new JButton("Library");
-        playListBtn = new JButton("Playlist");
-
-        //playlist setup
-        sidePanel.add(libBtn);
-        sidePanel.add(playListBtn);
-
         //putting all panels into main frame
         this.add(songListView, BorderLayout.CENTER);
         this.add(controlView, BorderLayout.SOUTH);
-        this.add(sidePanel, BorderLayout.WEST);
+        this.add(sideView, BorderLayout.WEST);
 
         this.pack();
     }
@@ -113,16 +96,10 @@ public class MusicPlayerGUI extends JFrame {
     public void setColorTheme(ColorTheme colorTheme){
         this.setBackground(colorTheme.bgColor[0]);
 
-        //set theme on table view panel
+        //pass the colorTheme
         songListView.setColorTheme(colorTheme);
-        //set theme on control view panel
         controlView.setColorTheme(colorTheme);
-
-        //set theme on side panel
-        sidePanel.setBackground(colorTheme.bgColor[1]);
-        sidePanel.setOpaque(true);
-        sidePanel.setBorder(BorderFactory.createLineBorder(colorTheme.bgColor[0]));
-        sidePanel.setPreferredSize(sidePanelSize);
+        sideView.setColorTheme(colorTheme);
 
         //Repaint main frame view
         this.repaint();
