@@ -6,6 +6,7 @@ import model.Song;
 import model.SongLibrary;
 import view.ColorTheme;
 import view.MusicPlayerGUI;
+import view.PlaylistWindow;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -42,6 +43,7 @@ public class MainController {
     private PlayerController playerControl;
 
     private Song selectedSong;  //different from currentSong
+    private String selectedPlaylist;
 
     /**
      * Construct a main controller and initialize all modules
@@ -431,7 +433,6 @@ public class MainController {
         private JTree tree;
         private TreePath treePath;
         private boolean isPlaylistSelected;
-        private String selectedPlaylist;
 
         @Override
         public void mousePressed(MouseEvent e) {
@@ -440,7 +441,6 @@ public class MainController {
             treePath = tree.getPathForLocation(e.getX(), e.getY());
             // initialize state variables
             isPlaylistSelected = false;
-            selectedPlaylist = null;
 
             // Check if the event is within trees
             if ( treePath != null ) {
@@ -455,6 +455,7 @@ public class MainController {
                 if ((tree.getName().equals("playlistTree")) && (treePath.getParentPath() != null)) {
                     isPlaylistSelected = true;
                     selectedPlaylist = treePath.getLastPathComponent().toString();
+                    System.out.println("selectedPlaylist: " + selectedPlaylist);
                 }
 
                 // [3] Right-click Popup Trigger (for MacOS)
@@ -482,6 +483,8 @@ public class MainController {
                 System.out.println("[Playlist] right clicked: " + selectedPlaylist);
                 tree.setSelectionPath(treePath);
                 //show popup menu
+                JPopupMenu popupMenu = playerView.getSideView().getPlaylistPopupMenu();
+                popupMenu.show(e.getComponent(),e.getX(),e.getY());
             }
         }
         @Override
@@ -526,11 +529,22 @@ public class MainController {
             if (menuName.equals("playlist-openNewWindow")) {
                 //Open in New Window menu action
                 System.out.println("[PopupMenu] Open in New Window is pressed.");
-                //new PlaylistWindow(selectedPlaylist, ColorTheme.dark);
+
+                PlaylistWindow playlistWindow = new PlaylistWindow(selectedPlaylist, ColorTheme.dark);
+                //TODO update the table view of the playlist window
+                //playlistWindow.getPlaylistView().updateTableView(/*songs in playlist*/);
+
             } else if (menuName.equals("playlist-delete")) {
                 //Delete Playlist menu action
                 System.out.println("[PopupMenu] Delete Playlist is pressed.");
 
+                //TODO Delete the selected playlist
+                //Ask user if they surely want to delete playlist via dialog
+                //...
+                //delete the selected playlist by calling a method that works with database
+                //...
+                //update the playlist tree view
+                //...
             }
         }
     }

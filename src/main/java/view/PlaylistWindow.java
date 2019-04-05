@@ -44,4 +44,20 @@ public class PlaylistWindow extends JFrame {
         this.pack();
         this.setVisible(true);
     }
+
+    /**
+     * Gets the table view of the playlist from this window
+     * @return SongListView
+     */
+    public SongListView getPlaylistView(){
+        return playlistView;
+    }
+
+    /**
+     * Gets the control view of this window
+     * @return
+     */
+    public ControlView getControlView() {
+        return controlView;
+    }
 }
