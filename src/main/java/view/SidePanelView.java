@@ -34,6 +34,7 @@ public class SidePanelView extends JPanel {
     public SidePanelView() {
         //creates a "Library" tree with only one node (the root node)
         libRootNode = new DefaultMutableTreeNode("Library");
+        libRootNode.setAllowsChildren(false);
         libTreeModel = new DefaultTreeModel(libRootNode);
         libraryTree = new JTree(libTreeModel);
         libraryTreePanel = new JPanel();
@@ -84,16 +85,9 @@ public class SidePanelView extends JPanel {
         //..
     }
 
-    public void expandPlaylistTree() {
-
-    }
-
-    public void collapsePlaylistTree() {
-
-    }
-
-    public void addMouseListenerForPlaylist(MouseAdapter adapter) {
-        //..
+    public void addMouseListener(MouseAdapter adapter) {
+        libraryTree.addMouseListener(adapter);
+        playlistTree.addMouseListener(adapter);
     }
 
     /**
@@ -116,6 +110,7 @@ public class SidePanelView extends JPanel {
         renderer.setBackgroundNonSelectionColor(null);
         renderer.setTextNonSelectionColor(colorTheme.fgColor[0]);
         renderer.setBackgroundSelectionColor(colorTheme.pointColor[0]);
+        renderer.setBorderSelectionColor(colorTheme.pointColor[0]);
         renderer.setTextSelectionColor(colorTheme.pointColor[1]);
         renderer.setBackground(null);
     }
