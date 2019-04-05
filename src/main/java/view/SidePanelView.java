@@ -38,7 +38,8 @@ public class SidePanelView extends JPanel {
         libTreeModel = new DefaultTreeModel(libRootNode);
         libraryTree = new JTree(libTreeModel);
         libraryTreePanel = new JPanel();
-        libraryTreePanel.add(libraryTree);
+        libraryTreePanel.setLayout(new BorderLayout());
+        libraryTreePanel.add(libraryTree, BorderLayout.CENTER);
 
         //create a "Playlist" tree with playlist nodes
         pllRootNode = new DefaultMutableTreeNode("Playlist");

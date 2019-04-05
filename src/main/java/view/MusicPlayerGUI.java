@@ -143,7 +143,7 @@ public class MusicPlayerGUI extends JFrame {
         //extra menus
         viewMenu = new JMenu("View");
         darkThemeMenuItem = new JCheckBoxMenuItem("Dark Theme",true);
-        songInfoMenuItem = new JCheckBoxMenuItem("Playing Song Info",false);
+        songInfoMenuItem = new JCheckBoxMenuItem("Song Info",false);
         darkThemeMenuItem.setName("darkTheme");
         songInfoMenuItem.setName("songInfo");
         viewMenu.add(darkThemeMenuItem);
@@ -253,7 +253,7 @@ public class MusicPlayerGUI extends JFrame {
      * Attach a listener to optional menu items in menu bar
      * @param listener ActionListener with optional menu actions
      */
-    public void addOptionalMenuItemListener(ActionListener listener) {
+    public void addViewMenuListener(ActionListener listener) {
         darkThemeMenuItem.addActionListener(listener);
         songInfoMenuItem.addActionListener(listener);
     }

@@ -46,7 +46,7 @@ public class MainController {
      */
     public MainController() {
         //assign modules
-        playerView = new MusicPlayerGUI("MyTunes1.0");
+        playerView = new MusicPlayerGUI("MyTunes1.4");
         library = new SongLibrary(); //should always be up-to-date with db
         Playlist.setLibrary(library);
 
@@ -72,7 +72,7 @@ public class MainController {
         playerView.addDragDropToScrollPane(new DragDropToScrollPane());
 
         //Extra feature, add listener to extra menus on menu bar
-        playerView.addOptionalMenuItemListener(new OptionalMenuItemListener());
+        playerView.addViewMenuListener(new ViewMenuListener());
 
     }
 
@@ -225,10 +225,10 @@ public class MainController {
                 //About menu actions
                 System.out.println("[Menu] About is pressed.");
                 String title = "About";
-                String appName = "MyTunes1.0";
+                String appName = "MyTunes1.4";
                 String teamInfo = "[CECS543 Team6]\nSella Bae\nBrett Rexius\nJohanna Thiemich";
-                String date = "3/14/2019";
-                String msg = appName+"\n"+date+"\n\n"+teamInfo;
+                String year = "2019";
+                String msg = appName+"\n"+year+"\n\n"+teamInfo;
                 JOptionPane.showMessageDialog(playerView, msg, title, JOptionPane.PLAIN_MESSAGE);
 
             } else if (menuName.equals("exit")) {
@@ -243,13 +243,13 @@ public class MainController {
     }
 
     /**
-     * OptionalMenuItemListener class implements
-     * the action of optional menu items(JCheckBoxMenuItem) in menu bar
+     * ViewMenuListener class implements
+     * the action of [View] menu items(JCheckBoxMenuItem) in menu bar
      * by the name and state of the components.
      * "darkTheme"  Set or unset the dark theme to the app
      * "songInfo"   Show or hide the info panel of the currently playing song at the bottom
      */
-    class OptionalMenuItemListener implements ActionListener {
+    class ViewMenuListener implements ActionListener {
         JCheckBoxMenuItem checkMenu;
         String menuName;
 
@@ -413,6 +413,10 @@ public class MainController {
                 ex.printStackTrace();
             }
         }
+    }
+
+    class MouseListenerForTree extends MouseAdapter {
+
     }
 
 }
