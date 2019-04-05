@@ -191,9 +191,15 @@ public class MusicPlayerGUI extends JFrame {
 
     /**
      * Gets controlView of the main window
-     * @return ControlView that the main frame currently showing
+     * @return ControlView that the main frame has
      */
     public ControlView getControlView() { return controlView; }
+
+    /**
+     * Gets sideView of the main window
+     * @return SidePanelView that the main frame has
+     */
+    public SidePanelView getSideView() { return sideView; }
 
     /**
      * Returns a popup menu when right-clicking on the table area

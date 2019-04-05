@@ -37,6 +37,8 @@ public class SidePanelView extends JPanel {
         libRootNode.setAllowsChildren(false);
         libTreeModel = new DefaultTreeModel(libRootNode);
         libraryTree = new JTree(libTreeModel);
+        libraryTree.setName("libraryTree");
+        //place library tree in panel
         libraryTreePanel = new JPanel();
         libraryTreePanel.setLayout(new BorderLayout());
         libraryTreePanel.add(libraryTree, BorderLayout.CENTER);
@@ -45,13 +47,15 @@ public class SidePanelView extends JPanel {
         pllRootNode = new DefaultMutableTreeNode("Playlist");
         pllTreeModel = new DefaultTreeModel(pllRootNode);
         playlistTree = new JTree(pllTreeModel);
+        playlistTree.setName("playlistTree");
+        //place playlist tree in panel
         playlistTreePanel = new JScrollPane(playlistTree);
 
         //call the list of playlist names from the db
         //create nodes under "Playlist"
-        DefaultMutableTreeNode pll1Node = new DefaultMutableTreeNode("Playlist 1");
-        DefaultMutableTreeNode pll2Node = new DefaultMutableTreeNode("Playlist 2");
-        DefaultMutableTreeNode pll3Node = new DefaultMutableTreeNode("Playlist 3");
+        DefaultMutableTreeNode pll1Node = new DefaultMutableTreeNode("Favorite");
+        DefaultMutableTreeNode pll2Node = new DefaultMutableTreeNode("Party");
+        DefaultMutableTreeNode pll3Node = new DefaultMutableTreeNode("Jazz");
         pllRootNode.add(pll1Node);
         pllRootNode.add(pll2Node);
         pllRootNode.add(pll3Node);
@@ -77,6 +81,9 @@ public class SidePanelView extends JPanel {
 
         this.setPreferredSize(sidePanelSize);
     }
+
+    public JTree getLibraryTree() { return libraryTree; }
+    public JTree getPlaylistTree() { return playlistTree; }
 
     public void addPlaylist(String name) {
 
