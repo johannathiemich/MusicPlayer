@@ -6,7 +6,6 @@ import model.Song;
 import model.SongLibrary;
 import view.ColorTheme;
 import view.MusicPlayerGUI;
-import view.PlaylistWindow;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -79,6 +78,7 @@ public class MainController {
 
         //Add listener to the trees in the side panel
         playerView.getSideView().addMouseListener(new MouseListenerForSideView());
+        playerView.getSideView().addMenuListener(new PopupMenuListenerForPlaylist());
     }
 
     //Listeners
@@ -503,11 +503,35 @@ public class MainController {
                     //TODO Pass ArrayList<Song> of the selectedPlaylist
                     playerView.updateTableView(new ArrayList<Song>());
 
-                    //testing for a new window
-                    new PlaylistWindow(selectedPlaylist, ColorTheme.dark);
                 }
             }
         }
     }
 
+
+    /**
+     * PopupMenuItemListenerForPlaylist class implements
+     * the actions of popup menu items about playlist
+     * by the name of the components.
+     * "playlist-openNewWindow"  Open in New Window
+     * "playlist-delete"         Delete Playlist
+     */
+    private class PopupMenuListenerForPlaylist implements ActionListener {
+        String menuName;
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            // Get the name of event source component
+            menuName = ((JMenuItem)e.getSource()).getName();
+
+            if (menuName.equals("playlist-openNewWindow")) {
+                //Open in New Window menu action
+                System.out.println("[PopupMenu] Open in New Window is pressed.");
+                //new PlaylistWindow(selectedPlaylist, ColorTheme.dark);
+            } else if (menuName.equals("playlist-delete")) {
+                //Delete Playlist menu action
+                System.out.println("[PopupMenu] Delete Playlist is pressed.");
+
+            }
+        }
+    }
 }
