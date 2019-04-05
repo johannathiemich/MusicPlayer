@@ -6,6 +6,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 
 /**
@@ -27,6 +28,11 @@ public class SidePanelView extends JPanel {
     private DefaultMutableTreeNode pllRootNode;
 
     private DefaultTreeCellRenderer renderer;
+
+    //popup menu items for playlist
+    private JPopupMenu playlistPopupMenu;
+    private JMenuItem openNewWindowMenuItem;
+    private JMenuItem deletePlaylistMenuItem;
 
     /**
      * Constructs a panel to show "Library" and "Playlist" with a tree.
@@ -73,6 +79,16 @@ public class SidePanelView extends JPanel {
         this.add(playlistTreePanel, BorderLayout.CENTER);
 
         this.setPreferredSize(sidePanelSize);
+
+
+        //playlist popup menu
+        playlistPopupMenu = new JPopupMenu();
+        openNewWindowMenuItem = new JMenuItem("Open in New Window");
+        deletePlaylistMenuItem = new JMenuItem("Delete Playlist");
+        openNewWindowMenuItem.setName("playlist-openNewWindow");
+        deletePlaylistMenuItem.setName("playlist-delete");
+        playlistPopupMenu.add(openNewWindowMenuItem);
+        playlistPopupMenu.add(deletePlaylistMenuItem);
     }
 
     public JTree getLibraryTree() { return libraryTree; }
@@ -91,8 +107,17 @@ public class SidePanelView extends JPanel {
     }
 
     /**
-     * Adds a mouse listener to trees of library/playlist.
-     * @param adapter the adapter to be added to the trees.
+     * Gets a popup menu for a playlist with
+     * "Open in New Window" and "Delete Playlist"
+     * @return playlist popup menu
+     */
+    public JPopupMenu getPlaylistPopupMenu(){
+        return playlistPopupMenu;
+    }
+
+    /**
+     * Attaches a mouse listener to trees of library/playlist.
+     * @param adapter the MouseAdapter with mouse actions on trees.
      */
     public void addMouseListener(MouseAdapter adapter) {
         libraryTree.addMouseListener(adapter);
@@ -100,7 +125,17 @@ public class SidePanelView extends JPanel {
     }
 
     /**
-     * Set color theme on the side panel with trees.
+     * Attaches a listener to all popup menu items for playlist
+     * @param listener ActionListener with playlist popup menu actions
+     */
+    public void addMenuListener(ActionListener listener) {
+        //popup menu items for playlist
+        openNewWindowMenuItem.addActionListener(listener);
+        deletePlaylistMenuItem.addActionListener(listener);
+    }
+
+    /**
+     * Sets color theme on the side panel with trees.
      * @param colorTheme the theme to apply to this side panel view.
      */
     public void setColorTheme(final ColorTheme colorTheme) {

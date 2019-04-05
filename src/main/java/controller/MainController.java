@@ -461,7 +461,9 @@ public class MainController {
                 if (e.isPopupTrigger() && isPlaylistSelected) {
                     System.out.println("[Playlist] right clicked: " + selectedPlaylist);
                     tree.setSelectionPath(treePath);
-                    //show popup menu
+                    //show playlist popup menu
+                    JPopupMenu popupMenu = playerView.getSideView().getPlaylistPopupMenu();
+                    popupMenu.show(e.getComponent(),e.getX(),e.getY());
                 }
             } else {
                 // [4] Clear any tree selections when left-clicking outside of tree
