@@ -456,9 +456,9 @@ public class MainController {
 
                 // [3] Right-click Popup Trigger (for MacOS)
                 if (e.isPopupTrigger() && isPlaylistSelected) {
-                    System.out.println("right click on a playlist: " + selectedPlaylist);
+                    System.out.println("right click on [" + selectedPlaylist +"]");
+                    tree.setSelectionPath(treePath);
                     //show popup menu
-                    //highlight selected node
                 }
             } else {
                 // Clear any tree selections when left-clicking outside of tree
@@ -475,9 +475,9 @@ public class MainController {
         {
             // [3] Right-click Popup Trigger (for Windows)
             if (e.isPopupTrigger() && isPlaylistSelected) {
-                System.out.println("right click on a playlist: " + selectedPlaylist);
+                System.out.println("right click on [" + selectedPlaylist+"]");
+                tree.setSelectionPath(treePath);
                 //show popup menu
-                //highlight selected node
             }
         }
         @Override
@@ -485,7 +485,7 @@ public class MainController {
             // [1] Double-click on "Library"
             if ( tree.getName().equals("libraryTree") ){
                 if ( (e.getClickCount() == 2) && !e.isConsumed() && !e.isPopupTrigger()) {
-                    System.out.println("double clicked on Library");
+                    System.out.println("double clicked on [Library]");
                     //show library on the main window
                 }
             }
@@ -493,7 +493,7 @@ public class MainController {
             // [2] Double-click on a playlist name under "Playlist"
             if ( isPlaylistSelected ) {
                 if ( (e.getClickCount() == 2) && !e.isConsumed() && !e.isPopupTrigger()) {
-                    System.out.println("double clicked on a playlist: " + selectedPlaylist);
+                    System.out.println("double clicked on [" + selectedPlaylist + "]");
                     //show the selected playlist on the main window
                 }
             }
