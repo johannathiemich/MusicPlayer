@@ -96,6 +96,10 @@ public class SidePanelView extends JPanel {
         //..
     }
 
+    /**
+     * Set color theme on the side panel with trees.
+     * @param colorTheme
+     */
     public void setColorTheme(final ColorTheme colorTheme) {
         //this panel color setup
         this.setBackground(colorTheme.bgColor[1]);

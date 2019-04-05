@@ -144,7 +144,7 @@ public class ControlView extends JPanel {
     }
 
     /**
-     * Set color theme to components in the control view.
+     * Set color theme on the control view panel.
      */
     public void setColorTheme(ColorTheme colorTheme) {
         Color[] bgColor = colorTheme.bgColor;

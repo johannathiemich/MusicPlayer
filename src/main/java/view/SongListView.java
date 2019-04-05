@@ -67,7 +67,6 @@ public class SongListView extends JPanel {
      *                 which can be from the library or a playlist.
      */
     public void updateTableView(ArrayList<Song> songList) {
-
         for (Song song : songList) {
             tableModel.addRow(song.toArray());
         }
@@ -83,7 +82,7 @@ public class SongListView extends JPanel {
     }
 
     /**
-     * Set Dark theme to the table view panel.
+     * Set color theme on the table view panel.
      */
     public void setColorTheme(ColorTheme colorTheme){
         Color[] bgColor = colorTheme.bgColor;
