@@ -456,7 +456,7 @@ public class MainController {
 
                 // [3] Right-click Popup Trigger (for MacOS)
                 if (e.isPopupTrigger() && isPlaylistSelected) {
-                    System.out.println("right click on [" + selectedPlaylist +"]");
+                    System.out.println("[Playlist] right clicked: " + selectedPlaylist);
                     tree.setSelectionPath(treePath);
                     //show popup menu
                 }
@@ -475,7 +475,7 @@ public class MainController {
         {
             // [3] Right-click Popup Trigger (for Windows)
             if (e.isPopupTrigger() && isPlaylistSelected) {
-                System.out.println("right click on [" + selectedPlaylist+"]");
+                System.out.println("[Playlist] right clicked: " + selectedPlaylist);
                 tree.setSelectionPath(treePath);
                 //show popup menu
             }
@@ -485,7 +485,7 @@ public class MainController {
             // [1] Double-click on "Library"
             if ( tree.getName().equals("libraryTree") ){
                 if ( (e.getClickCount() == 2) && !e.isConsumed() && !e.isPopupTrigger()) {
-                    System.out.println("double clicked on [Library]");
+                    System.out.println("[Library] double clicked");
                     //show library on the main window
                 }
             }
@@ -493,7 +493,7 @@ public class MainController {
             // [2] Double-click on a playlist name under "Playlist"
             if ( isPlaylistSelected ) {
                 if ( (e.getClickCount() == 2) && !e.isConsumed() && !e.isPopupTrigger()) {
-                    System.out.println("double clicked on [" + selectedPlaylist + "]");
+                    System.out.println("[Playlist] double clicked: " + selectedPlaylist);
                     //show the selected playlist on the main window
                 }
             }
