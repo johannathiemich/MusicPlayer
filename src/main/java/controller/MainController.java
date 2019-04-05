@@ -22,6 +22,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -423,6 +424,7 @@ public class MainController {
      * [1] double-click on "Library" to show it on the main window
      * [2] double-click on a playlist node to show it on the main window
      * [3] popup trigger for right-click on a playlist node
+     * [4] clear selections for left-click outside of trees
      */
     class MouseListenerForSideView extends MouseAdapter {
         private JTree tree;
@@ -461,14 +463,13 @@ public class MainController {
                     //show popup menu
                 }
             } else {
-                // Clear any tree selections when left-clicking outside of tree
+                // [4] Clear any tree selections when left-clicking outside of tree
                 if ( ! e.isPopupTrigger()) {
                     playerView.getSideView().getLibraryTree().clearSelection();
                     playerView.getSideView().getPlaylistTree().clearSelection();
                     System.out.println("cleared tree selections.");
                 }
             }
-
         }
         @Override
         public void mouseReleased(MouseEvent e)
@@ -482,22 +483,24 @@ public class MainController {
         }
         @Override
         public void mouseClicked(MouseEvent e) {
-            // [1] Double-click on "Library"
-            if ( tree.getName().equals("libraryTree") ){
-                if ( (e.getClickCount() == 2) && !e.isConsumed() && !e.isPopupTrigger()) {
+            // Detect double-click event
+            if ( (e.getClickCount() == 2) && !e.isConsumed() && !e.isPopupTrigger()) {
+
+                // [1] Double-click on "Library"
+                if (tree.getName().equals("libraryTree")) {
                     System.out.println("[Library] double clicked");
                     //show library on the main window
+                    playerView.updateTableView(library);
                 }
-            }
 
-            // [2] Double-click on a playlist name under "Playlist"
-            if ( isPlaylistSelected ) {
-                if ( (e.getClickCount() == 2) && !e.isConsumed() && !e.isPopupTrigger()) {
+                // [2] Double-click on a playlist name under "Playlist"
+                if (isPlaylistSelected) {
                     System.out.println("[Playlist] double clicked: " + selectedPlaylist);
                     //show the selected playlist on the main window
+                    //TODO Pass ArrayList<Song> of the selectedPlaylist
+                    playerView.updateTableView(new ArrayList<Song>());
                 }
             }
-
         }
     }
 

@@ -1,7 +1,6 @@
 package view;
 
 import model.Song;
-import model.SongLibrary;
 
 import javax.swing.*;
 import javax.swing.event.ChangeListener;
@@ -11,6 +10,7 @@ import java.awt.dnd.DropTarget;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
+import java.util.ArrayList;
 
 /**
  * This class represents the main frame for our application. It holds all the GUI components.
@@ -156,8 +156,8 @@ public class MusicPlayerGUI extends JFrame {
         this.setJMenuBar(menuBar);
     }
 
-    public void updateTableView(SongLibrary library){
-        songListView.updateTableView(library);
+    public void updateTableView(ArrayList<Song> songList){
+        songListView.updateTableView(songList);
     }
 
     /**
