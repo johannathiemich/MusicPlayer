@@ -24,8 +24,11 @@ public class PlaylistWindow extends JFrame {
 
         //initialize variables
         this.playlistName = playlistName;
-        playlistView = new SongListView();
         controlView = new ControlView();
+        playlistView = new SongListView();
+
+        //TODO call updateTableView(playlist)
+        //playlistView.updateTableView(/*somehow playlist*/);
 
         //not show song info as a default for playlist window
         controlView.showSongInfoPanel(false);

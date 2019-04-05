@@ -51,16 +51,9 @@ public class SidePanelView extends JPanel {
         //place playlist tree in panel
         playlistTreePanel = new JScrollPane(playlistTree);
 
-        //call the list of playlist names from the db
         //create nodes under "Playlist"
-        DefaultMutableTreeNode pll1Node = new DefaultMutableTreeNode("Favorite");
-        DefaultMutableTreeNode pll2Node = new DefaultMutableTreeNode("Party");
-        DefaultMutableTreeNode pll3Node = new DefaultMutableTreeNode("Jazz");
-        pllRootNode.add(pll1Node);
-        pllRootNode.add(pll2Node);
-        pllRootNode.add(pll3Node);
-        //reload tree model to display updated tree nodes
-        pllTreeModel.reload();
+        String[] testPlaylist = {"Favorite","Rock","Party","Jazz"};
+        updatePlaylistTree(testPlaylist);
 
 
         //tree cell renderer setup for trees
@@ -85,14 +78,22 @@ public class SidePanelView extends JPanel {
     public JTree getLibraryTree() { return libraryTree; }
     public JTree getPlaylistTree() { return playlistTree; }
 
-    public void addPlaylist(String name) {
-
+    /**
+     * Updates the tree view under "Playlist"
+     * @param playlist the array of playlist names
+     */
+    public void updatePlaylistTree(String[] playlist){
+        //update the tree view
+        for (int i=0; i<playlist.length; i++) {
+            pllRootNode.add(new DefaultMutableTreeNode(playlist[i]));
+        }
+        pllTreeModel.reload();
     }
 
-    public void removePlaylist(String name) {
-        //..
-    }
-
+    /**
+     * Adds a mouse listener to trees of library/playlist.
+     * @param adapter the adapter to be added to the trees.
+     */
     public void addMouseListener(MouseAdapter adapter) {
         libraryTree.addMouseListener(adapter);
         playlistTree.addMouseListener(adapter);
@@ -100,7 +101,7 @@ public class SidePanelView extends JPanel {
 
     /**
      * Set color theme on the side panel with trees.
-     * @param colorTheme
+     * @param colorTheme the theme to apply to this side panel view.
      */
     public void setColorTheme(final ColorTheme colorTheme) {
         //this panel color setup
