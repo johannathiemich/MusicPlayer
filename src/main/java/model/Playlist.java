@@ -11,27 +11,18 @@ public class Playlist {
     private String name;
     private static DatabaseHandler dbHandler = DatabaseHandler.getInstance();
     //this needs to be instantiated just once at the very start of the application
-    private static HashMap<String, Playlist> allPlaylists = getPlaylistMapFromDB();
     private static SongLibrary library;
 
     //private constructor since we only instantiate this class using the static factory method in order to keep track
     //of all the playlists already instantiated
-    private Playlist(String name) {
-
+    public Playlist(String name) {
             this.songList = new ArrayList<Song>();
             this.name = name;
-            dbHandler.addPlaylist(this);
     }
 
-    public static Playlist instantiatePlaylist(String name) {
-        //check if playlist already exists
-        if (allPlaylists.containsKey(name)) {
-            return allPlaylists.get(name);
-        } else {
-            Playlist newPlaylist = new Playlist(name);
-            allPlaylists.put(name, newPlaylist);
-            return newPlaylist;
-        }
+    public Playlist (String name, ArrayList<Song> pSongList) {
+        this.songList = pSongList;
+        this.name = name;
     }
 
     public boolean addMultipleSongs(ArrayList<Song> songs) {
@@ -91,7 +82,7 @@ public class Playlist {
         return false;
     }
 
-    //TODO: maybe have a DB method that returns a list of Playlist objects instead of Strings
+  /**  //TODO: maybe have a DB method that returns a list of Playlist objects instead of Strings
     private static HashMap<String, Playlist> getPlaylistMapFromDB() {
         if (allPlaylists == null)
             allPlaylists = new HashMap<String, Playlist>();
@@ -105,5 +96,5 @@ public class Playlist {
 
     public static void setLibrary(SongLibrary plibrary) {
         library = plibrary;
-    }
+    }**/
 }

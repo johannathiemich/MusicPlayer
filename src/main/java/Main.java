@@ -11,19 +11,15 @@ public class Main {
 
         MainController controller = new MainController();
 
-        DatabaseHandler handler = DatabaseHandler.getInstance();
+/**        DatabaseHandler handler = DatabaseHandler.getInstance();
         handler.addSong(new Song(1));
 
         Playlist plist1 =  Playlist.instantiatePlaylist("myPlaylist1");
         Playlist plist2 = Playlist.instantiatePlaylist("myPlaylist2");
-        System.out.println(plist1.addSong(new Song(1)));
-        System.out.println(plist2.addSong(new Song(1)));
 
+        handler.deleteSong(new Song(1));
+        handler.deleteSong(new Song(10));
         handler.deleteSongFromPlaylist(plist1, new Song(1));
-        handler.addSongToPlaylist(Playlist.instantiatePlaylist("newPlaylist"), new Song(1));
-
-        handler.addSong(new Song(10));
-        plist1.addSong(new Song(10));
 
         System.out.println("This should be true: " + handler.playlistExists(plist1.getName()));
         System.out.println("This should be false: "  + handler.playlistExists("randomPlaylistXYZ"));
@@ -64,27 +60,7 @@ public class Main {
         }
         for (Song song: handler.getSongsInPlaylist(plist2)) {
             System.out.println(plist2.getName() + "  :  " +   song.getPath());
-        }
+        }**/
 
-
-        //CreateCoffeeDB db = new CreateCoffeeDB();
-
-        /*
-        database.DatabaseHandler db = new database.DatabaseHandler();
-        model.Song mySong = new model.Song("myPath", "myTitle", "myArtist", "myAlbum",
-                2000, "myComment", "myGenre");
-        model.Song newSong = new model.Song("ddd", "dd", "dd", "dd", 200,
-                "dd", "ss");
-
-        ArrayList<model.Song> library = db.getSongLibrary();
-        System.out.println(library.toString());
-        db.addSong(newSong);
-
-        library = db.getSongLibrary();
-        System.out.println(library.toString());
-
-        view.MusicPlayerGUI player = new view.MusicPlayerGUI("MyTunes");
-        player.setVisible(true);
-        */
     }
 }

@@ -44,6 +44,7 @@ public class MusicPlayerGUI extends JFrame {
     private JPopupMenu popUpMenu;
     private JMenuItem deleteSongMenuItemPopup;
     private JMenuItem addSongMenuItemPopup;
+    private JMenu addToPlaylistPopupMenu;
 
     //menu for extra features
     private JMenu viewMenu;
@@ -77,10 +78,15 @@ public class MusicPlayerGUI extends JFrame {
         popUpMenu = new JPopupMenu();
         deleteSongMenuItemPopup = new JMenuItem("Delete This Song");
         addSongMenuItemPopup = new JMenuItem("Add A Song");
+        addToPlaylistPopupMenu = new JMenu("Add To Playlist");
         deleteSongMenuItemPopup.setName("delete");
         addSongMenuItemPopup.setName("add");
+        addToPlaylistPopupMenu.setName("add playlist");
+
+
         popUpMenu.add(deleteSongMenuItemPopup);
         popUpMenu.add(addSongMenuItemPopup);
+        popUpMenu.add(addToPlaylistPopupMenu);
 
         //putting all panels into main frame
         this.add(songListView, BorderLayout.CENTER);
@@ -205,10 +211,11 @@ public class MusicPlayerGUI extends JFrame {
     /**
      * Returns a popup menu when right-clicking on the table area
      * with deleteSong menu item.
-     * @return JPopupMenu containing menu items delete, add song
+     * @return JPopupMenu containing menu items delete, add song, add song to playlist
      */
     public JPopupMenu getPopUpMenu() {
         deleteSongMenuItemPopup.setVisible(true);
+        addToPlaylistPopupMenu.setVisible(true);
         return popUpMenu;
     }
 
@@ -219,8 +226,10 @@ public class MusicPlayerGUI extends JFrame {
      */
     public JPopupMenu getPopUpMenuInBlankspace(){
         deleteSongMenuItemPopup.setVisible(false);
+        addToPlaylistPopupMenu.setVisible(false);
         return popUpMenu;
     }
+
 
     /**
      * This method sets the text for the play button in order to switch between 'Play'<->'Pause' text change.
@@ -310,6 +319,10 @@ public class MusicPlayerGUI extends JFrame {
      */
     public void addDragDropToScrollPane(DropTarget dropTarget){
         songListView.setDropTarget(dropTarget);
+    }
+
+    public JMenu getAddToPlaylistPopupMenu() {
+        return addToPlaylistPopupMenu;
     }
 
 }

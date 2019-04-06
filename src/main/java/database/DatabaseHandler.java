@@ -460,7 +460,7 @@ public class DatabaseHandler {
             while(results.next())
             {
                 String name = results.getString(results.findColumn("NAME"));
-                Playlist playlist = Playlist.instantiatePlaylist(name);
+                Playlist playlist = new Playlist(name);
                 list.add(playlist);
             }
             results.close();
@@ -474,6 +474,12 @@ public class DatabaseHandler {
             }
             return null;
         }
+
+        for (Playlist playlist : list) {
+            ArrayList<Song> songList = getSongsInPlaylist(playlist);
+            playlist.addMultipleSongs(songList);
+        }
+
         return list;
     }
 
