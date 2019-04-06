@@ -63,6 +63,7 @@ public class MainController {
 
         //setup presentation
         playerView.updateTableView(library);
+        playerView.getSideView().updatePlaylistTree(playlistLibrary.getAllPlaylistNamesArray());
         playerView.setVisible(true);
 
         //create menu items under [Add To Playlist] popup menu
