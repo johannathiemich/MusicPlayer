@@ -46,7 +46,6 @@ public class MusicPlayerGUI extends JFrame {
     private JMenuItem deleteSongMenuItemPopup;
     private JMenuItem addSongMenuItemPopup;
     private JMenu addToPlaylistPopupMenu;
-    private ArrayList<JMenuItem> playlistPopupMenuItems;
 
     //menu for extra features
     private JMenu viewMenu;
@@ -84,7 +83,6 @@ public class MusicPlayerGUI extends JFrame {
         deleteSongMenuItemPopup.setName("delete");
         addSongMenuItemPopup.setName("add");
         addToPlaylistPopupMenu.setName("add playlist");
-        playlistPopupMenuItems = new ArrayList<JMenuItem>();
 
         popUpMenu.add(deleteSongMenuItemPopup);
         popUpMenu.add(addSongMenuItemPopup);
@@ -133,8 +131,8 @@ public class MusicPlayerGUI extends JFrame {
         openSongMenuItem = new JMenuItem("Open Song");
         addSongMenuItem = new JMenuItem("Add Song to Library");
         deleteSongMenuItem = new JMenuItem("Delete Song from Library");
-        aboutMenuItem = new JMenuItem("About");
         newPlaylistMenuItem = new JMenuItem("New Playlist");
+        aboutMenuItem = new JMenuItem("About");
         exitMenuItem = new JMenuItem("Exit");
         //setting name(key) of menu item components
         openSongMenuItem.setName("open");
@@ -146,9 +144,9 @@ public class MusicPlayerGUI extends JFrame {
         fileMenu.add(openSongMenuItem);
         fileMenu.add(addSongMenuItem);
         fileMenu.add(deleteSongMenuItem);
-        fileMenu.add(aboutMenuItem);
         fileMenu.add(newPlaylistMenuItem);
         fileMenu.addSeparator();
+        fileMenu.add(aboutMenuItem);
         fileMenu.add(exitMenuItem);
 
         //extra menus
