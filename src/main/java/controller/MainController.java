@@ -530,6 +530,7 @@ public class MainController {
                 //Open in New Window menu action
                 System.out.println("[PopupMenu] Open in New Window is pressed.");
 
+                //TODO check if the playlist is already open in a new window
                 PlaylistWindow playlistWindow = new PlaylistWindow(selectedPlaylist, ColorTheme.dark);
                 //TODO update the table view of the playlist window
                 //playlistWindow.getPlaylistView().updateTableView(/*songs in playlist*/);

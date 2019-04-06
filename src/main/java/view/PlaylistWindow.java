@@ -17,7 +17,7 @@ public class PlaylistWindow extends JFrame {
      * @param theme ColorTheme to apply to this playlist window
      */
     public PlaylistWindow(String playlistName, ColorTheme theme){
-        super(playlistName);
+        super("Playlist: "+playlistName);
         //this.setDefaultCloseOperation();
         this.setPreferredSize(new Dimension(500,300));
         this.setMinimumSize(new Dimension(500,300));
@@ -59,5 +59,21 @@ public class PlaylistWindow extends JFrame {
      */
     public ControlView getControlView() {
         return controlView;
+    }
+
+    /**
+     * Gets the playlist name of this window
+     * @return the string of the playlist name
+     */
+    public String getPlaylistName(){
+        return playlistName;
+    }
+
+    /**
+     * Sets the playlist name
+     * @param playlistName
+     */
+    public void setPlaylistName(String playlistName) {
+        this.playlistName = playlistName;
     }
 }
