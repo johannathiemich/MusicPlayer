@@ -228,7 +228,6 @@ public class DatabaseHandler {
      * @return true if the song was deleted successfully; false if not
      */
     public boolean deleteSong(Song song) {
-        //TODO should the song be removed from all playlists if it is no longer in the library? --> yes
         boolean success = true;
         Connection conn = null;
         Statement statement = null;
@@ -461,7 +460,7 @@ public class DatabaseHandler {
             while(results.next())
             {
                 String name = results.getString(results.findColumn("NAME"));
-                Playlist playlist = Playlist.instantiatePlaylist(name);
+                Playlist playlist = new Playlist(name);
                 list.add(playlist);
             }
             results.close();
@@ -475,6 +474,12 @@ public class DatabaseHandler {
             }
             return null;
         }
+
+        for (Playlist playlist : list) {
+            ArrayList<Song> songList = getSongsInPlaylist(playlist);
+            playlist.addMultipleSongs(songList);
+        }
+
         return list;
     }
 

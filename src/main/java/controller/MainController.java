@@ -2,6 +2,7 @@ package controller;
 
 import javazoom.jlgui.basicplayer.BasicPlayer;
 import model.Playlist;
+import model.PlaylistLibrary;
 import model.Song;
 import model.SongLibrary;
 import view.ColorTheme;
@@ -33,12 +34,15 @@ import java.util.List;
  * It makes data and interfaces are independent from each other.
  * ActionListeners are here.
  */
+@SuppressWarnings("ALL")
 public class MainController {
 
     //View
     private MusicPlayerGUI playerView;
     //Models
     private SongLibrary library;
+    private PlaylistLibrary playlistLibrary;
+
     //Other Controllers
     private PlayerController playerControl;
 
@@ -52,7 +56,7 @@ public class MainController {
         //assign modules
         playerView = new MusicPlayerGUI("MyTunes1.5");
         library = new SongLibrary(); //should always be up-to-date with db
-        Playlist.setLibrary(library);
+        playlistLibrary = new PlaylistLibrary(); //should always be up-to-date with db
 
         playerControl = new PlayerController(library, playerView);
         selectedSong = null;
@@ -60,6 +64,18 @@ public class MainController {
         //setup presentation
         playerView.updateTableView(library);
         playerView.setVisible(true);
+
+
+        //DefaultListModel<String> playlistModel = new DefaultListModel<>();
+        //JList<String> list = new JList<>( model );
+
+        //for ( int i = 0; i < customers.length; i++ ){
+         //   model.addElement( customers[i].getName() );
+        //}
+        JList<String> playlistList = new JList<String>(playlistLibrary.getAllPlaylistNamesArray());
+        playlistList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+
+        playerView.getAddToPlaylistPopupMenu().add(playlistList);
 
         //Add listeners to buttons and slider
         playerView.addPlayerControlButtonListener(new PlayerControlButtonListener());
