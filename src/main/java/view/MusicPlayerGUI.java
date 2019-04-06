@@ -77,16 +77,17 @@ public class MusicPlayerGUI extends JFrame {
 
         // PopUp Menu setup
         popUpMenu = new JPopupMenu();
-        deleteSongMenuItemPopup = new JMenuItem("Delete This Song");
-        addSongMenuItemPopup = new JMenuItem("Add A Song");
+        deleteSongMenuItemPopup = new JMenuItem("Delete Song");
+        addSongMenuItemPopup = new JMenuItem("Add New Song");
         addToPlaylistPopupMenu = new JMenu("Add To Playlist");
         deleteSongMenuItemPopup.setName("delete");
         addSongMenuItemPopup.setName("add");
         addToPlaylistPopupMenu.setName("add playlist");
 
         popUpMenu.add(deleteSongMenuItemPopup);
-        popUpMenu.add(addSongMenuItemPopup);
         popUpMenu.add(addToPlaylistPopupMenu);
+        popUpMenu.addSeparator();
+        popUpMenu.add(addSongMenuItemPopup);
 
         //putting all panels into main frame
         this.add(songListView, BorderLayout.CENTER);
