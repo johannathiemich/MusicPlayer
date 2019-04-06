@@ -7,8 +7,9 @@ public class Main {
     public static void main(String[] args) {
 
         DatabaseHandler handler = DatabaseHandler.getInstance();
-        handler.addPlaylist(new Playlist("playlist1"));
-        handler.addPlaylist(new Playlist("playlist2"));
+        handler.addPlaylist(new Playlist("Favorite"));
+        handler.addPlaylist(new Playlist("Party"));
+        handler.addPlaylist(new Playlist("Jazz"));
 
         MainController controller = new MainController();
 
