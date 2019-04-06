@@ -93,7 +93,6 @@ public class SidePanelView extends JPanel {
         libraryTree.setFocusable(false);
         playlistTree.setFocusable(false);
 
-
         //playlist popup menu
         playlistPopupMenu = new JPopupMenu();
         openNewWindowMenuItem = new JMenuItem("Open in New Window");
@@ -118,12 +117,12 @@ public class SidePanelView extends JPanel {
 
     /**
      * Updates the tree view under "Playlist"
-     * @param playlist the array of playlist names
+     * @param playlistName the array of playlist names
      */
-    public void updatePlaylistTree(String[] playlist){
+    public void updatePlaylistTree(String[] playlistName){
         //update the tree view
-        for (int i=0; i<playlist.length; i++) {
-            pllRootNode.add(new DefaultMutableTreeNode(playlist[i]));
+        for (int i=0; i<playlistName.length; i++) {
+            pllRootNode.add(new DefaultMutableTreeNode(playlistName[i]));
         }
         pllTreeModel.reload();
     }

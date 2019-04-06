@@ -170,15 +170,23 @@ public class ControlView extends JPanel {
         buttonPanel.setOpaque(false);
         sliderPanel.setOpaque(false);
 
-        //button transparent background
+        //button&slider transparent background
         stopBtn.setOpaque(false);
         prevBtn.setOpaque(false);
         playBtn.setOpaque(false);
         nextBtn.setOpaque(false);
+        volumeSlider.setOpaque(false);
         stopBtn.setBorder(BorderFactory.createEmptyBorder());
         prevBtn.setBorder(BorderFactory.createEmptyBorder());
         playBtn.setBorder(BorderFactory.createEmptyBorder());
         nextBtn.setBorder(BorderFactory.createEmptyBorder());
+        volumeSlider.setBorder(BorderFactory.createEmptyBorder());
+        //button&slider background color
+        stopBtn.setBackground(bgColor[1]);
+        prevBtn.setBackground(bgColor[1]);
+        playBtn.setBackground(bgColor[1]);
+        nextBtn.setBackground(bgColor[1]);
+        volumeSlider.setBackground(bgColor[1]);
         //button text color
         stopBtn.setForeground(fgColor[2]);
         prevBtn.setForeground(fgColor[2]);
