@@ -173,6 +173,7 @@ public class MainController {
      * "delete" Delete Song From Library
      * "about"  About
      * "exit"   Exit
+     * "addToPlaylist"  Add To Playlist
      */
     class MenuItemListener implements ActionListener {
         String menuName;
@@ -180,7 +181,7 @@ public class MainController {
         public void actionPerformed(ActionEvent e) {
             // Get the name of event source component
             menuName = ((JMenuItem)e.getSource()).getName();
-            System.out.println("menuname is " + menuName);
+            System.out.println("menuName: " + menuName);
 
             if (menuName == null) {
                 System.out.println("[Menu_Error] menuName: null");
