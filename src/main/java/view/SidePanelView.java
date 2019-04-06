@@ -1,6 +1,8 @@
 package view;
 
 
+import model.PlaylistLibrary;
+
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
@@ -34,6 +36,7 @@ public class SidePanelView extends JPanel {
     private JPopupMenu playlistPopupMenu;
     private JMenuItem openNewWindowMenuItem;
     private JMenuItem deletePlaylistMenuItem;
+    private PlaylistLibrary playlistLibrary;
 
     /**
      * Constructs a panel to show "Library" and "Playlist" with a tree.
@@ -61,9 +64,9 @@ public class SidePanelView extends JPanel {
         playlistTreePanel.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
         //create nodes under "Playlist"
+        playlistLibrary = new PlaylistLibrary();
         String[] testPlaylist = {"Favorite","Rock","Party","Jazz"};
-        updatePlaylistTree(testPlaylist);
-
+        updatePlaylistTree(playlistLibrary.getAllPlaylistNamesArray());
 
         //tree UI setups
         //cell renderer for trees
