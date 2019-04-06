@@ -4,13 +4,16 @@ import javazoom.jlgui.basicplayer.BasicPlayer;
 import model.Playlist;
 import model.Song;
 import model.SongLibrary;
+import view.ColorTheme;
 import view.MusicPlayerGUI;
+import view.PlaylistWindow;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.tree.TreePath;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
@@ -20,6 +23,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -39,13 +43,14 @@ public class MainController {
     private PlayerController playerControl;
 
     private Song selectedSong;  //different from currentSong
+    private String selectedPlaylist;
 
     /**
      * Construct a main controller and initialize all modules
      */
     public MainController() {
         //assign modules
-        playerView = new MusicPlayerGUI("MyTunes1.0");
+        playerView = new MusicPlayerGUI("MyTunes1.5");
         library = new SongLibrary(); //should always be up-to-date with db
         Playlist.setLibrary(library);
 
@@ -70,6 +75,12 @@ public class MainController {
         //Add drop target to scroll pane
         playerView.addDragDropToScrollPane(new DragDropToScrollPane());
 
+        //Extra feature, add listener to extra menus on menu bar
+        playerView.addViewMenuListener(new ViewMenuListener());
+
+        //Add listener to the trees in the side panel
+        playerView.getSideView().addMouseListener(new MouseListenerForSideView());
+        playerView.getSideView().addMenuListener(new PopupMenuListenerForPlaylist());
     }
 
     //Listeners
@@ -221,10 +232,10 @@ public class MainController {
                 //About menu actions
                 System.out.println("[Menu] About is pressed.");
                 String title = "About";
-                String appName = "MyTunes1.0";
+                String appName = "MyTunes1.5";
                 String teamInfo = "[CECS543 Team6]\nSella Bae\nBrett Rexius\nJohanna Thiemich";
-                String date = "3/14/2019";
-                String msg = appName+"\n"+date+"\n\n"+teamInfo;
+                String year = "2019";
+                String msg = appName+"\n"+year+"\n\n"+teamInfo;
                 JOptionPane.showMessageDialog(playerView, msg, title, JOptionPane.PLAIN_MESSAGE);
 
             } else if (menuName.equals("exit")) {
@@ -235,6 +246,46 @@ public class MainController {
                 System.out.println("none of the menu item action performed.");
             }
 
+        }
+    }
+
+    /**
+     * ViewMenuListener class implements
+     * the action of [View] menu items(JCheckBoxMenuItem) in menu bar
+     * by the name and state of the components.
+     * "darkTheme"  Set or unset the dark theme to the app
+     * "songInfo"   Show or hide the info panel of the currently playing song at the bottom
+     */
+    class ViewMenuListener implements ActionListener {
+        JCheckBoxMenuItem checkMenu;
+        String menuName;
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            // Get the name of event source component
+            checkMenu = (JCheckBoxMenuItem) e.getSource();
+            menuName = checkMenu.getName();
+
+            if (menuName.equals("darkTheme")) {
+                //[Dark Theme] menu actions
+                if(checkMenu.getState()) {
+                    System.out.println("[ViewMenu] Set Dark Theme.");
+                    playerView.setColorTheme(ColorTheme.dark);
+                }else{
+                    System.out.println("[ViewMenu] Unset Dark Theme.");
+                    playerView.setColorTheme(ColorTheme.white);
+                }
+
+            } else if (menuName.equals("songInfo")) {
+                //[Current Song Info] menu actions
+                if(checkMenu.getState()) {
+                    System.out.println("[ViewMenu] Show Playing Song Info.");
+                    playerView.getControlView().showSongInfoPanel(true);
+                } else {
+                    System.out.println("[ViewMenu] Hide Playing Song Info.");
+                    playerView.getControlView().showSongInfoPanel(false);
+                }
+            }
         }
     }
 
@@ -371,4 +422,130 @@ public class MainController {
         }
     }
 
+    /**
+     * MouseListenerForTree covers:
+     * [1] double-click on "Library" to show it on the main window
+     * [2] double-click on a playlist node to show it on the main window
+     * [3] popup trigger for right-click on a playlist node
+     * [4] clear selections for left-click outside of trees
+     */
+    class MouseListenerForSideView extends MouseAdapter {
+        private JTree tree;
+        private TreePath treePath;
+        private boolean isPlaylistSelected;
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            tree = (JTree)e.getSource();
+            // Get treePath of the selected tree node
+            treePath = tree.getPathForLocation(e.getX(), e.getY());
+            // initialize state variables
+            isPlaylistSelected = false;
+
+            // Check if the event is within trees
+            if ( treePath != null ) {
+                //clear highlight on the not selected tree.
+                if (tree.getName().equals("libraryTree")) {
+                    playerView.getSideView().getPlaylistTree().clearSelection();
+                } else if (tree.getName().equals("playlistTree")) {
+                    playerView.getSideView().getLibraryTree().clearSelection();
+                }
+
+                // Get the playlist name if a playlist is selected
+                if ((tree.getName().equals("playlistTree")) && (treePath.getParentPath() != null)) {
+                    isPlaylistSelected = true;
+                    selectedPlaylist = treePath.getLastPathComponent().toString();
+                }
+
+                // [3] Right-click Popup Trigger (for MacOS)
+                if (e.isPopupTrigger() && isPlaylistSelected) {
+                    System.out.println("[Playlist] right clicked: " + selectedPlaylist);
+                    tree.setSelectionPath(treePath);
+                    //show playlist popup menu
+                    JPopupMenu popupMenu = playerView.getSideView().getPlaylistPopupMenu();
+                    popupMenu.show(e.getComponent(),e.getX(),e.getY());
+                }
+            } else {
+                // [4] Clear any tree selections when left-clicking outside of tree
+                if ( ! e.isPopupTrigger()) {
+                    playerView.getSideView().getLibraryTree().clearSelection();
+                    playerView.getSideView().getPlaylistTree().clearSelection();
+                    System.out.println("cleared tree selections.");
+                }
+            }
+        }
+        @Override
+        public void mouseReleased(MouseEvent e)
+        {
+            // [3] Right-click Popup Trigger (for Windows)
+            if (e.isPopupTrigger() && isPlaylistSelected) {
+                System.out.println("[Playlist] right clicked: " + selectedPlaylist);
+                tree.setSelectionPath(treePath);
+                //show popup menu
+                JPopupMenu popupMenu = playerView.getSideView().getPlaylistPopupMenu();
+                popupMenu.show(e.getComponent(),e.getX(),e.getY());
+            }
+        }
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            // Detect double-click event
+            if ( (e.getClickCount() == 2) && !e.isConsumed() && !e.isPopupTrigger()) {
+
+                // [1] Double-click on "Library"
+                if (tree.getName().equals("libraryTree")) {
+                    System.out.println("[Library] double clicked");
+                    //show library on the main window
+                    playerView.updateTableView(library);
+                }
+
+                // [2] Double-click on a playlist name under "Playlist"
+                if (isPlaylistSelected) {
+                    System.out.println("[Playlist] double clicked: " + selectedPlaylist);
+                    //show the selected playlist on the main window
+                    //TODO Pass ArrayList<Song> of the selectedPlaylist
+                    playerView.updateTableView(new ArrayList<Song>());
+
+                }
+            }
+        }
+    }
+
+
+    /**
+     * PopupMenuItemListenerForPlaylist class implements
+     * the actions of popup menu items about playlist
+     * by the name of the components.
+     * "playlist-openNewWindow"  Open in New Window
+     * "playlist-delete"         Delete Playlist
+     */
+    private class PopupMenuListenerForPlaylist implements ActionListener {
+        String menuName;
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            // Get the name of event source component
+            menuName = ((JMenuItem)e.getSource()).getName();
+
+            if (menuName.equals("playlist-openNewWindow")) {
+                //Open in New Window menu action
+                System.out.println("[PopupMenu] Open in New Window is pressed.");
+
+                //TODO check if the playlist is already open in a new window
+                PlaylistWindow playlistWindow = new PlaylistWindow(selectedPlaylist, ColorTheme.dark);
+                //TODO update the table view of the playlist window
+                //playlistWindow.getPlaylistView().updateTableView(/*songs in playlist*/);
+
+            } else if (menuName.equals("playlist-delete")) {
+                //Delete Playlist menu action
+                System.out.println("[PopupMenu] Delete Playlist is pressed.");
+
+                //TODO Delete the selected playlist
+                //Ask user if they surely want to delete playlist via dialog
+                //...
+                //delete the selected playlist by calling a method that works with database
+                //...
+                //update the playlist tree view
+                //...
+            }
+        }
+    }
 }
