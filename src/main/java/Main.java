@@ -1,13 +1,14 @@
 import controller.MainController;
 import database.DatabaseHandler;
 import model.Playlist;
-import model.Song;
-
-import java.util.ArrayList;
 
 public class Main {
 
     public static void main(String[] args) {
+
+        DatabaseHandler handler = DatabaseHandler.getInstance();
+        handler.addPlaylist(new Playlist("playlist1"));
+        handler.addPlaylist(new Playlist("playlist2"));
 
         MainController controller = new MainController();
 

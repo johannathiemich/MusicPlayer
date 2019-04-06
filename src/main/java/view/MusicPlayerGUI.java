@@ -1,5 +1,6 @@
 package view;
 
+import model.Playlist;
 import model.Song;
 
 import javax.swing.*;
@@ -45,6 +46,7 @@ public class MusicPlayerGUI extends JFrame {
     private JMenuItem deleteSongMenuItemPopup;
     private JMenuItem addSongMenuItemPopup;
     private JMenu addToPlaylistPopupMenu;
+    private ArrayList<JMenuItem> playlistPopupMenuItems;
 
     //menu for extra features
     private JMenu viewMenu;
@@ -82,7 +84,7 @@ public class MusicPlayerGUI extends JFrame {
         deleteSongMenuItemPopup.setName("delete");
         addSongMenuItemPopup.setName("add");
         addToPlaylistPopupMenu.setName("add playlist");
-
+        playlistPopupMenuItems = new ArrayList<JMenuItem>();
 
         popUpMenu.add(deleteSongMenuItemPopup);
         popUpMenu.add(addSongMenuItemPopup);
@@ -263,6 +265,10 @@ public class MusicPlayerGUI extends JFrame {
         //popup menu items
         addSongMenuItemPopup.addActionListener(listener);
         deleteSongMenuItemPopup.addActionListener(listener);
+        addToPlaylistPopupMenu.addActionListener(listener);
+        for (JMenuItem item : playlistPopupMenuItems) {
+            item.addActionListener(listener);
+        }
     }
 
     /**
@@ -321,8 +327,15 @@ public class MusicPlayerGUI extends JFrame {
         songListView.setDropTarget(dropTarget);
     }
 
-    public JMenu getAddToPlaylistPopupMenu() {
-        return addToPlaylistPopupMenu;
+    public void createPlaylistListPopupMenu(ArrayList<Playlist> playlistList) {
+        //playlistPopupMenuItems = new ArrayList<JMenuItem>();
+        for (Playlist playlist : playlistList) {
+            JMenuItem playlistItem = new JMenuItem(playlist.getName());
+            playlistItem.setName("playlist--" + playlist.getName());
+            this.addToPlaylistPopupMenu.add(new JMenuItem(playlist.getName()));
+            playlistPopupMenuItems.add(playlistItem);
+        }
+
     }
 
 }

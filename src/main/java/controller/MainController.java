@@ -15,6 +15,7 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.tree.TreePath;
+import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
@@ -65,17 +66,7 @@ public class MainController {
         playerView.updateTableView(library);
         playerView.setVisible(true);
 
-
-        //DefaultListModel<String> playlistModel = new DefaultListModel<>();
-        //JList<String> list = new JList<>( model );
-
-        //for ( int i = 0; i < customers.length; i++ ){
-         //   model.addElement( customers[i].getName() );
-        //}
-        JList<String> playlistList = new JList<String>(playlistLibrary.getAllPlaylistNamesArray());
-        playlistList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-
-        playerView.getAddToPlaylistPopupMenu().add(playlistList);
+        playerView.createPlaylistListPopupMenu(playlistLibrary);
 
         //Add listeners to buttons and slider
         playerView.addPlayerControlButtonListener(new PlayerControlButtonListener());
@@ -189,6 +180,7 @@ public class MainController {
         public void actionPerformed(ActionEvent e) {
             // Get the name of event source component
             menuName = ((JMenuItem)e.getSource()).getName();
+            System.out.println("menuname is " + menuName);
 
             if (menuName.equals("open")) {
                 //Open Song menu actions
@@ -258,6 +250,24 @@ public class MainController {
                 //Exit menu actions
                 System.exit(0);
 
+                //}else if (menuName.split("--")[0].equals("playlist")) {
+            }else if (menuName.equalsIgnoreCase("playlist--playlist1")) {
+                String playlistName = menuName.split("--")[1];
+                System.out.println("add a song to a playlist");
+                Playlist playlist = playlistLibrary.getPlaylistByName(playlistName);
+                if (playlist != null) {
+                    int selectedRow = playerView.getSongTable().getSelectedRow();
+                    boolean isRowInbound = (selectedRow >= 0) && (selectedRow < library.size());
+
+                    if ( isRowInbound ) {
+                        Song selectedSong = library.get(selectedRow);
+                        System.out.println("row:"+selectedRow+" is selected to delete.");
+                        playlist.addSong(selectedSong);
+                        //TODO update playlist view where the song was added
+                    } else {
+                        System.out.println("row:"+selectedRow+", nothing selected to delete.");
+                    }
+                }
             } else {
                 System.out.println("none of the menu item action performed.");
             }
