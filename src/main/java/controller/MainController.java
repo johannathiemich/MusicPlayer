@@ -270,11 +270,11 @@ public class MainController {
 
                     if ( isRowInbound ) {
                         Song selectedSong = library.get(selectedRow);
-                        System.out.println("row:"+selectedRow+" is selected to delete.");
+                        System.out.println("row:"+selectedRow+" is selected to be added.");
                         playlist.addSong(selectedSong);
                         //TODO update playlist view where the song was added
                     } else {
-                        System.out.println("row:"+selectedRow+", nothing selected to delete.");
+                        System.out.println("row:"+selectedRow+", nothing selected to add.");
                     }
                 }
 
