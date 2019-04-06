@@ -228,7 +228,6 @@ public class DatabaseHandler {
      * @return true if the song was deleted successfully; false if not
      */
     public boolean deleteSong(Song song) {
-        //TODO should the song be removed from all playlists if it is no longer in the library? --> yes
         boolean success = true;
         Connection conn = null;
         Statement statement = null;
