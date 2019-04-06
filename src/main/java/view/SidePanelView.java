@@ -15,6 +15,7 @@ import java.awt.event.MouseAdapter;
  */
 public class SidePanelView extends JPanel {
     private Dimension sidePanelSize = new Dimension(120,500);
+    private int treeRowHeight = 23;
 
     //components for library tree
     private JPanel libraryTreePanel;
@@ -46,6 +47,7 @@ public class SidePanelView extends JPanel {
         libraryTree.setName("libraryTree");
         //place library tree in panel
         libraryTreePanel = new JPanel();
+        libraryTreePanel.setPreferredSize(new Dimension(this.getWidth(),treeRowHeight+4));
         libraryTreePanel.setLayout(new BorderLayout());
         libraryTreePanel.add(libraryTree, BorderLayout.CENTER);
 
@@ -56,22 +58,30 @@ public class SidePanelView extends JPanel {
         playlistTree.setName("playlistTree");
         //place playlist tree in panel
         playlistTreePanel = new JScrollPane(playlistTree);
+        playlistTreePanel.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
         //create nodes under "Playlist"
         String[] testPlaylist = {"Favorite","Rock","Party","Jazz"};
         updatePlaylistTree(testPlaylist);
 
 
-        //tree cell renderer setup for trees
+        //tree UI setups
+        //cell renderer for trees
         renderer = new DefaultTreeCellRenderer();
+        //change font
+        renderer.setFont(MusicPlayerGUI.FONT);
         //remove default icons
         renderer.setLeafIcon(null);
         renderer.setClosedIcon(null);
         renderer.setOpenIcon(null);
+        //set size of the tree cell
+        renderer.setPreferredSize(new Dimension(sidePanelSize.width, treeRowHeight));
         //apply cell renderer to trees
         libraryTree.setCellRenderer(renderer);
         playlistTree.setCellRenderer(renderer);
-
+        //tree row height setup
+        libraryTree.setRowHeight(treeRowHeight);
+        playlistTree.setRowHeight(treeRowHeight);
 
         //put tree panels in place
         this.setLayout(new BorderLayout());
@@ -91,7 +101,16 @@ public class SidePanelView extends JPanel {
         playlistPopupMenu.add(deletePlaylistMenuItem);
     }
 
+    /**
+     * Gets the library tree with only one node
+     * @return the library tree
+     */
     public JTree getLibraryTree() { return libraryTree; }
+
+    /**
+     * Gets the playlist tree
+     * @return the playlist tree
+     */
     public JTree getPlaylistTree() { return playlistTree; }
 
     /**
@@ -140,14 +159,14 @@ public class SidePanelView extends JPanel {
      */
     public void setColorTheme(final ColorTheme colorTheme) {
         //this panel color setup
-        this.setBackground(colorTheme.bgColor[1]);
+        this.setBackground(colorTheme.bgColor[2]);
         this.setBorder(BorderFactory.createLineBorder(colorTheme.bgColor[0]));
         //tree panel color setup
         libraryTreePanel.setOpaque(false);
-        libraryTree.setBackground(colorTheme.bgColor[1]);
+        libraryTree.setBackground(colorTheme.bgColor[2]);
         libraryTreePanel.setBorder(BorderFactory.createEmptyBorder());
         playlistTreePanel.setOpaque(false);
-        playlistTree.setBackground(colorTheme.bgColor[1]);
+        playlistTree.setBackground(colorTheme.bgColor[2]);
         playlistTreePanel.setBorder(BorderFactory.createEmptyBorder());
 
         //tree cell color setup

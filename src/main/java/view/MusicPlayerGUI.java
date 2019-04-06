@@ -20,7 +20,9 @@ public class MusicPlayerGUI extends JFrame {
     //panel size dimensions
     private Dimension frameSize = new Dimension(800,600);
     private Dimension frameMinSize = new Dimension(500,300);
-    private Dimension sidePanelSize = new Dimension(100, 500);
+
+    //font of the app
+    public static Font FONT = new Font("Helvetica",Font.PLAIN,14);
 
     //complete SongListView panel in the center
     private SongListView songListView;

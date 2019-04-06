@@ -7,7 +7,7 @@ public class ColorTheme {
      * The colorTheme dark.
      */
     public final static ColorTheme dark = new ColorTheme(
-            new Color[] {new Color(40,40,40), new Color(50,50,50)},
+            new Color[] {new Color(40,40,40), new Color(50,50,50), new Color(60,60,60)},
             new Color[] {Color.white, Color.lightGray, Color.gray},
             new Color[] {new Color(0, 89, 200), Color.white}
           );
@@ -16,7 +16,7 @@ public class ColorTheme {
      * The colorTheme white.
      */
     public final static ColorTheme white = new ColorTheme(
-            new Color[] {new Color(245, 245, 245), Color.white},
+            new Color[] {new Color(245, 245, 245), Color.white, new Color(235,235,235)},
             new Color[] {Color.black, Color.darkGray, Color.gray},
             new Color[] {new Color(0, 89, 200), Color.white}
     );
@@ -25,7 +25,7 @@ public class ColorTheme {
      * The colorTheme red.
      */
     public final static ColorTheme red = new ColorTheme(
-            new Color[] {new Color(40,40,40), new Color(50,50,50)},
+            new Color[] {new Color(40,40,40), new Color(50,50,50), new Color(60,60,60)},
             new Color[] {Color.white, Color.lightGray, Color.gray},
             new Color[] {new Color(111, 20, 0), Color.white}
     );

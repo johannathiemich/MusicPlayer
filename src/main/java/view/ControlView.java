@@ -12,6 +12,7 @@ import java.awt.*;
  */
 public class ControlView extends JPanel {
     private Dimension buttonSize = new Dimension(60,40);
+    private Font buttonFont = new Font("Helvetica",Font.PLAIN,20);
 
     //components for basic control view
     private JPanel buttonPanel;
@@ -51,6 +52,10 @@ public class ControlView extends JPanel {
         prevBtn.setPreferredSize(buttonSize);
         playBtn.setPreferredSize(buttonSize);
         nextBtn.setPreferredSize(buttonSize);
+        stopBtn.setFont(buttonFont);
+        prevBtn.setFont(buttonFont);
+        playBtn.setFont(buttonFont);
+        nextBtn.setFont(buttonFont);
 
         //setting name(key) of button components
         stopBtn.setName("stop");
@@ -156,8 +161,23 @@ public class ControlView extends JPanel {
         buttonPanel.setOpaque(false);
         sliderPanel.setOpaque(false);
 
+        /*
+        stopBtn.setOpaque(true);
+        prevBtn.setOpaque(true);
+        playBtn.setOpaque(true);
+        nextBtn.setOpaque(true);
+        stopBtn.setBackground(pointColor[0]);
+        prevBtn.setBackground(bgColor[0]);
+        playBtn.setBackground(bgColor[0]);
+        nextBtn.setBackground(bgColor[0]);
+        stopBtn.setForeground(fgColor[1]);
+        prevBtn.setForeground(fgColor[1]);
+        playBtn.setForeground(fgColor[1]);
+        nextBtn.setForeground(fgColor[1]);
+        */
+
         //song info panel
-        if(songInfoPanel!=null) {
+        if(songInfoPanel!=null && songInfoPanel.isVisible()) {
             songInfoPanel.setBackground(bgColor[1]);
             songTitleLbl.setForeground(fgColor[1]);
             songDetailLbl.setForeground(fgColor[2]);

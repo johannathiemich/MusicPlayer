@@ -15,9 +15,10 @@ import java.util.ArrayList;
 public class SongListView extends JPanel {
     //components for table
     private JScrollPane tableScrollPane;
-    private JTable songTable;
+    private JTable table;
     private DefaultTableModel tableModel;
     private String[] columnHeader;
+    private int tableRowHeight = 24;
 
     /**
      * Constructs a panel to show a list of songs
@@ -26,16 +27,36 @@ public class SongListView extends JPanel {
     public SongListView(){
         // Table setup
         columnHeader = new String[]{"Path", "Title", "Artist", "Album", "Year", "Comment", "Genre"};
-        songTable = new JTable(){
+        table = new JTable(){
             @Override   //block table contents editing
             public boolean isCellEditable(int row, int column) { return false; }
         };
-        initializeTable();
-        songTable.setFillsViewportHeight(true);
-        songTable.setShowVerticalLines(false);
-        songTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        songTable.getTableHeader().setReorderingAllowed(false);
-        tableScrollPane = new JScrollPane(songTable);
+
+        //for dynamic row addition
+        tableModel = new DefaultTableModel(columnHeader,0);
+        table.setModel(tableModel);
+
+        //table behavior setups
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        table.getTableHeader().setReorderingAllowed(false);
+
+        //ui setups
+        table.setFillsViewportHeight(true);
+        table.setShowVerticalLines(false);
+        table.setShowHorizontalLines(true);
+        table.setFont(MusicPlayerGUI.FONT);
+        table.getTableHeader().setFont(MusicPlayerGUI.FONT);
+        table.setRowHeight(tableRowHeight);
+        //table.setShowGrid(false);
+
+//        //change the look of the header
+//        DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer();
+//        renderer.setBorder(BorderFactory.createEmptyBorder());
+//        table.getTableHeader().setDefaultRenderer(renderer);
+
+        //put table in place
+        tableScrollPane = new JScrollPane(table);
+        tableScrollPane.setBorder(BorderFactory.createEmptyBorder());
         this.setLayout(new BorderLayout());
         this.add(tableScrollPane, BorderLayout.CENTER);
     }
@@ -52,21 +73,12 @@ public class SongListView extends JPanel {
     }
 
     /**
-     * Initializes the table model to dynamically add rows later.
-     */
-    private void initializeTable() {
-        //for dynamic row addition
-        tableModel = new DefaultTableModel(columnHeader,0);
-        songTable.setModel(tableModel);
-    }
-
-    /**
      * Updates the table view.
      * @param songList list of Songs to be reflected in table view,
      *                 which can be from the library or a playlist.
      */
     public void updateTableView(ArrayList<Song> songList) {
-        initializeTable();
+        table.removeAll();
         for (Song song : songList) {
             tableModel.addRow(song.toArray());
         }
@@ -74,11 +86,11 @@ public class SongListView extends JPanel {
     }
 
     /**
-     * Returns the songTable of this SongListView
+     * Returns the table of this SongListView
      * @return JTable containing songs
      */
     public JTable getSongTable(){
-        return songTable;
+        return table;
     }
 
     /**
@@ -90,16 +102,16 @@ public class SongListView extends JPanel {
         Color[] pointColor = colorTheme.pointColor;
 
         //table
-        tableScrollPane.setBorder(BorderFactory.createEmptyBorder());
-        songTable.setRowHeight(20);
-        songTable.setShowGrid(false);
-        songTable.setBackground(bgColor[0]);
-        songTable.setForeground(fgColor[1]);
-        songTable.getTableHeader().setBackground(bgColor[1]);
-        songTable.getTableHeader().setForeground(fgColor[2]);
+        table.setBackground(bgColor[0]);
+        table.setForeground(fgColor[1]);
+        table.getTableHeader().setBackground(bgColor[1]);
+        table.getTableHeader().setForeground(fgColor[2]);
+
+        //horizontal line of the table
+        table.setGridColor(bgColor[2]);
 
         //table row selection
-        songTable.setSelectionBackground(pointColor[0]);
-        songTable.setSelectionForeground(pointColor[1]);
+        table.setSelectionBackground(pointColor[0]);
+        table.setSelectionForeground(pointColor[1]);
     }
 }
