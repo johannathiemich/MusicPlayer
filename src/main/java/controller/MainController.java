@@ -455,7 +455,6 @@ public class MainController {
                 if ((tree.getName().equals("playlistTree")) && (treePath.getParentPath() != null)) {
                     isPlaylistSelected = true;
                     selectedPlaylist = treePath.getLastPathComponent().toString();
-                    System.out.println("selectedPlaylist: " + selectedPlaylist);
                 }
 
                 // [3] Right-click Popup Trigger (for MacOS)

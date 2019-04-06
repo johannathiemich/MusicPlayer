@@ -90,6 +90,9 @@ public class SidePanelView extends JPanel {
 
         this.setPreferredSize(sidePanelSize);
 
+        libraryTree.setFocusable(false);
+        playlistTree.setFocusable(false);
+
 
         //playlist popup menu
         playlistPopupMenu = new JPopupMenu();
@@ -161,17 +164,18 @@ public class SidePanelView extends JPanel {
         //this panel color setup
         this.setBackground(colorTheme.bgColor[2]);
         this.setBorder(BorderFactory.createLineBorder(colorTheme.bgColor[0]));
-        //tree panel color setup
+
+        //tree panel background color setup
         libraryTreePanel.setOpaque(false);
-        libraryTree.setBackground(colorTheme.bgColor[2]);
-        libraryTreePanel.setBorder(BorderFactory.createEmptyBorder());
         playlistTreePanel.setOpaque(false);
+        libraryTree.setBackground(colorTheme.bgColor[2]);
         playlistTree.setBackground(colorTheme.bgColor[2]);
+        libraryTreePanel.setBorder(BorderFactory.createEmptyBorder());
         playlistTreePanel.setBorder(BorderFactory.createEmptyBorder());
 
         //tree cell color setup
         renderer.setBackgroundNonSelectionColor(null);
-        renderer.setTextNonSelectionColor(colorTheme.fgColor[0]);
+        renderer.setTextNonSelectionColor(colorTheme.fgColor[1]);
         renderer.setBackgroundSelectionColor(colorTheme.pointColor[0]);
         renderer.setBorderSelectionColor(colorTheme.pointColor[0]);
         renderer.setTextSelectionColor(colorTheme.pointColor[1]);

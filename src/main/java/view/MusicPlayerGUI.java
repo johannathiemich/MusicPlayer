@@ -19,7 +19,7 @@ import java.util.ArrayList;
 public class MusicPlayerGUI extends JFrame {
     //panel size dimensions
     private Dimension frameSize = new Dimension(800,600);
-    private Dimension frameMinSize = new Dimension(500,300);
+    private Dimension frameMinSize = new Dimension(600,400);
 
     //font of the app
     public static Font FONT = new Font("Helvetica",Font.PLAIN,14);

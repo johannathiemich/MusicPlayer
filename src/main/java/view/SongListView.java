@@ -4,6 +4,7 @@ import model.Song;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.util.ArrayList;
 
@@ -32,9 +33,8 @@ public class SongListView extends JPanel {
             public boolean isCellEditable(int row, int column) { return false; }
         };
 
-        //for dynamic row addition
-        tableModel = new DefaultTableModel(columnHeader,0);
-        table.setModel(tableModel);
+        //initialize table for dynamic row addition
+        initializeTable();
 
         //table behavior setups
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -48,6 +48,20 @@ public class SongListView extends JPanel {
         table.getTableHeader().setFont(MusicPlayerGUI.FONT);
         table.setRowHeight(tableRowHeight);
         //table.setShowGrid(false);
+
+
+        //table column width
+        int[] columnsWidth = {200, 25, 25, 25, 25, 25, 25, 25, 50};
+
+        // Configures table's column width.
+        for(int i=0; i<columnHeader.length; i++) {
+            int width = columnsWidth[i];
+            TableColumn column = table.getColumnModel().getColumn(i);
+            column.setMinWidth(width);
+            column.setMaxWidth(width);
+            column.setPreferredWidth(width);
+        }
+
 
 //        //change the look of the header
 //        DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer();
@@ -73,12 +87,21 @@ public class SongListView extends JPanel {
     }
 
     /**
+     * Initializes the table model to dynamically add rows later.
+     */
+    private void initializeTable() {
+        //for dynamic row addition
+        tableModel = new DefaultTableModel(columnHeader,0);
+        table.setModel(tableModel);
+    }
+
+    /**
      * Updates the table view.
      * @param songList list of Songs to be reflected in table view,
      *                 which can be from the library or a playlist.
      */
     public void updateTableView(ArrayList<Song> songList) {
-        table.removeAll();
+        initializeTable();
         for (Song song : songList) {
             tableModel.addRow(song.toArray());
         }

@@ -11,7 +11,7 @@ import java.awt.*;
  * This contains play/stop/prev/next buttons and a volume slider.
  */
 public class ControlView extends JPanel {
-    private Dimension buttonSize = new Dimension(60,40);
+    private Dimension buttonSize = new Dimension(60,48);
     private Font buttonFont = new Font("Helvetica",Font.PLAIN,20);
 
     //components for basic control view
@@ -37,9 +37,9 @@ public class ControlView extends JPanel {
         sliderPanel = new JPanel();
         stopPanel = new JPanel();
 
-        //set layout managers to panels
+        //set layout of the panels
         this.setLayout(new BorderLayout(0,0));
-        stopPanel.setLayout(new BorderLayout());
+        stopPanel.setLayout(new FlowLayout(FlowLayout.CENTER,0,0));
         buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER,0,0));
         sliderPanel.setLayout(new BorderLayout());
 
@@ -56,6 +56,10 @@ public class ControlView extends JPanel {
         prevBtn.setFont(buttonFont);
         playBtn.setFont(buttonFont);
         nextBtn.setFont(buttonFont);
+        stopBtn.setFocusable(false);
+        prevBtn.setFocusable(false);
+        playBtn.setFocusable(false);
+        nextBtn.setFocusable(false);
 
         //setting name(key) of button components
         stopBtn.setName("stop");
@@ -65,6 +69,7 @@ public class ControlView extends JPanel {
 
         //Slider setup
         volumeSlider = new JSlider();
+        volumeSlider.setFocusable(false);
 
         //Add components in place
         stopPanel.add(stopBtn);
@@ -102,6 +107,10 @@ public class ControlView extends JPanel {
         songDetailLbl = new JLabel("Artist");
         songTimePlayingLbl = new JLabel("0:00");
         songTimeRemainingLbl = new JLabel("3:33");
+
+        //ui setup
+        songTitleLbl.setPreferredSize(new Dimension(this.getWidth(),24));
+        songTitleLbl.setVerticalAlignment(SwingConstants.BOTTOM);
         songTitleLbl.setHorizontalAlignment(SwingConstants.CENTER);
         songDetailLbl.setHorizontalAlignment(SwingConstants.CENTER);
         songTimePlayingLbl.setHorizontalAlignment(SwingConstants.LEFT);
@@ -161,33 +170,33 @@ public class ControlView extends JPanel {
         buttonPanel.setOpaque(false);
         sliderPanel.setOpaque(false);
 
-        /*
-        stopBtn.setOpaque(true);
-        prevBtn.setOpaque(true);
-        playBtn.setOpaque(true);
-        nextBtn.setOpaque(true);
-        stopBtn.setBackground(pointColor[0]);
-        prevBtn.setBackground(bgColor[0]);
-        playBtn.setBackground(bgColor[0]);
-        nextBtn.setBackground(bgColor[0]);
-        stopBtn.setForeground(fgColor[1]);
-        prevBtn.setForeground(fgColor[1]);
-        playBtn.setForeground(fgColor[1]);
-        nextBtn.setForeground(fgColor[1]);
-        */
+        //button transparent background
+        stopBtn.setOpaque(false);
+        prevBtn.setOpaque(false);
+        playBtn.setOpaque(false);
+        nextBtn.setOpaque(false);
+        stopBtn.setBorder(BorderFactory.createEmptyBorder());
+        prevBtn.setBorder(BorderFactory.createEmptyBorder());
+        playBtn.setBorder(BorderFactory.createEmptyBorder());
+        nextBtn.setBorder(BorderFactory.createEmptyBorder());
+        //button text color
+        stopBtn.setForeground(fgColor[2]);
+        prevBtn.setForeground(fgColor[2]);
+        playBtn.setForeground(fgColor[2]);
+        nextBtn.setForeground(fgColor[2]);
 
         //song info panel
-        if(songInfoPanel!=null && songInfoPanel.isVisible()) {
-            songInfoPanel.setBackground(bgColor[1]);
-            songTitleLbl.setForeground(fgColor[1]);
-            songDetailLbl.setForeground(fgColor[2]);
-            songTimePlayingLbl.setForeground(fgColor[2]);
-            songTimeRemainingLbl.setForeground(fgColor[2]);
-            songTitleLbl.setFont(new Font("Helvetica", Font.PLAIN, 14));
-            //progressBar color setting.. not simple to change..
-            //songProgressBar.setForeground(pointColor[0]);
-        }
+        songInfoPanel.setBackground(bgColor[1]);
+        songTitleLbl.setForeground(fgColor[1]);
+        songDetailLbl.setForeground(fgColor[2]);
+        songTimePlayingLbl.setForeground(fgColor[2]);
+        songTimeRemainingLbl.setForeground(fgColor[2]);
+        songTitleLbl.setFont(MusicPlayerGUI.FONT);
+        //progressBar color setting.. not simple to change..
+        //songProgressBar.setForeground(pointColor[0]);
+
     }
+
     /**
      * Only for development use.
      * Show borders of all components in the ui to check the layout.
