@@ -15,7 +15,6 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.tree.TreePath;
-import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
@@ -66,7 +65,8 @@ public class MainController {
         playerView.updateTableView(library);
         playerView.setVisible(true);
 
-        playerView.createPlaylistListPopupMenu(playlistLibrary);
+        //create menu items under [Add To Playlist] popup menu
+        playerView.createAddToPlaylistPopupMenuItem(playlistLibrary.getAllPlaylistNames());
 
         //Add listeners to buttons and slider
         playerView.addPlayerControlButtonListener(new PlayerControlButtonListener());
@@ -182,8 +182,12 @@ public class MainController {
             menuName = ((JMenuItem)e.getSource()).getName();
             System.out.println("menuname is " + menuName);
 
+            if (menuName == null) {
+                System.out.println("[Menu_Error] menuName: null");
+                return;
+            }
             if (menuName.equals("open")) {
-                //Open Song menu actions
+            //[Open Song] menu actions
                 System.out.println("[Menu] Open/Play Song not in library is pressed.");
                 JFileChooser chooser = new JFileChooser();
                 chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -200,7 +204,7 @@ public class MainController {
                 }
 
             } else if (menuName.equals("add")) {
-                //Add A Song To Library menu actions
+            //[Add A Song To Library] menu actions
                 System.out.println("[Menu] Add Song is pressed.");
                 JFileChooser chooser = new JFileChooser();
                 chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -220,7 +224,7 @@ public class MainController {
                 }
 
             } else if (menuName.equals("delete")) {
-                //Delete Song From Library menu actions
+            //[Delete Song From Library] menu actions
                 System.out.println("[Menu] Delete Song is pressed.");
 
                 int selectedRow = playerView.getSongTable().getSelectedRow();
@@ -237,7 +241,7 @@ public class MainController {
                 }
 
             } else if (menuName.equals("about")) {
-                //About menu actions
+            //[About] menu actions
                 System.out.println("[Menu] About is pressed.");
                 String title = "About";
                 String appName = "MyTunes1.5";
@@ -247,13 +251,13 @@ public class MainController {
                 JOptionPane.showMessageDialog(playerView, msg, title, JOptionPane.PLAIN_MESSAGE);
 
             } else if (menuName.equals("exit")) {
-                //Exit menu actions
+            //[Exit] menu actions
                 System.exit(0);
 
-                //}else if (menuName.split("--")[0].equals("playlist")) {
-            }else if (menuName.equalsIgnoreCase("playlist--playlist1")) {
-                String playlistName = menuName.split("--")[1];
-                System.out.println("add a song to a playlist");
+            } else if (menuName.equals("addToPlaylist")) {
+            //[Add To Playlist] menu actions
+                String playlistName = ((JMenuItem)e.getSource()).getText();
+                System.out.println("[PopupMenu] Add To Playlist \""+playlistName+"\" is clicked.");
                 Playlist playlist = playlistLibrary.getPlaylistByName(playlistName);
                 if (playlist != null) {
                     int selectedRow = playerView.getSongTable().getSelectedRow();
@@ -268,6 +272,7 @@ public class MainController {
                         System.out.println("row:"+selectedRow+", nothing selected to delete.");
                     }
                 }
+
             } else {
                 System.out.println("none of the menu item action performed.");
             }

@@ -1,6 +1,5 @@
 package view;
 
-import model.Playlist;
 import model.Song;
 
 import javax.swing.*;
@@ -262,12 +261,13 @@ public class MusicPlayerGUI extends JFrame {
         deleteSongMenuItem.addActionListener(listener);
         aboutMenuItem.addActionListener(listener);
         exitMenuItem.addActionListener(listener);
+
         //popup menu items
         addSongMenuItemPopup.addActionListener(listener);
         deleteSongMenuItemPopup.addActionListener(listener);
-        addToPlaylistPopupMenu.addActionListener(listener);
-        for (JMenuItem item : playlistPopupMenuItems) {
-            item.addActionListener(listener);
+        //add listener to menu items in the "Add To Playlist" menu
+        for (int i=0; i<addToPlaylistPopupMenu.getItemCount(); i++) {
+            addToPlaylistPopupMenu.getItem(i).addActionListener(listener);
         }
     }
 
@@ -327,15 +327,18 @@ public class MusicPlayerGUI extends JFrame {
         songListView.setDropTarget(dropTarget);
     }
 
-    public void createPlaylistListPopupMenu(ArrayList<Playlist> playlistList) {
-        //playlistPopupMenuItems = new ArrayList<JMenuItem>();
-        for (Playlist playlist : playlistList) {
-            JMenuItem playlistItem = new JMenuItem(playlist.getName());
-            playlistItem.setName("playlist--" + playlist.getName());
-            this.addToPlaylistPopupMenu.add(new JMenuItem(playlist.getName()));
-            playlistPopupMenuItems.add(playlistItem);
+    /**
+     * Creates menu items from an array of playlist names
+     * add them to [Add To Playlist] popup menu.
+     * All menu item components are named as "addToPlaylist" to distinguish menu item types.
+     * @param playlistName the string array of all playlist names
+     */
+    public void createAddToPlaylistPopupMenuItem(ArrayList<String> playlistName){
+        for (int i=0; i<playlistName.size(); i++){
+            JMenuItem playlistItem = new JMenuItem(playlistName.get(i));
+            playlistItem.setName("addToPlaylist");
+            addToPlaylistPopupMenu.add(playlistItem);
         }
-
     }
 
 }
