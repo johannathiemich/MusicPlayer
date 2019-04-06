@@ -4,7 +4,6 @@ import model.Song;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.util.ArrayList;
 
@@ -48,20 +47,6 @@ public class SongListView extends JPanel {
         table.getTableHeader().setFont(MusicPlayerGUI.FONT);
         table.setRowHeight(tableRowHeight);
         //table.setShowGrid(false);
-
-
-        //table column width
-        int[] columnsWidth = {200, 25, 25, 25, 25, 25, 25, 25, 50};
-
-        // Configures table's column width.
-        for(int i=0; i<columnHeader.length; i++) {
-            int width = columnsWidth[i];
-            TableColumn column = table.getColumnModel().getColumn(i);
-            column.setMinWidth(width);
-            column.setMaxWidth(width);
-            column.setPreferredWidth(width);
-        }
-
 
 //        //change the look of the header
 //        DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer();

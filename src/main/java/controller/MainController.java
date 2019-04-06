@@ -50,7 +50,7 @@ public class MainController {
      */
     public MainController() {
         //assign modules
-        playerView = new MusicPlayerGUI("MyTunes1.4");
+        playerView = new MusicPlayerGUI("MyTunes1.5");
         library = new SongLibrary(); //should always be up-to-date with db
         Playlist.setLibrary(library);
 
@@ -232,7 +232,7 @@ public class MainController {
                 //About menu actions
                 System.out.println("[Menu] About is pressed.");
                 String title = "About";
-                String appName = "MyTunes1.4";
+                String appName = "MyTunes1.5";
                 String teamInfo = "[CECS543 Team6]\nSella Bae\nBrett Rexius\nJohanna Thiemich";
                 String year = "2019";
                 String msg = appName+"\n"+year+"\n\n"+teamInfo;
