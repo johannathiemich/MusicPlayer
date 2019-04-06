@@ -38,6 +38,7 @@ public class MusicPlayerGUI extends JFrame {
     private JMenuItem addSongMenuItem;
     private JMenuItem deleteSongMenuItem;
     private JMenuItem aboutMenuItem;
+    private JMenuItem newPlaylistMenuItem;
     private JMenuItem exitMenuItem;
 
     //popup menu(right-click) and menu items
@@ -132,6 +133,7 @@ public class MusicPlayerGUI extends JFrame {
         addSongMenuItem = new JMenuItem("Add Song to Library");
         deleteSongMenuItem = new JMenuItem("Delete Song from Library");
         aboutMenuItem = new JMenuItem("About");
+        newPlaylistMenuItem = new JMenuItem("New Playlist");
         exitMenuItem = new JMenuItem("Exit");
         //setting name(key) of menu item components
         openSongMenuItem.setName("open");
@@ -144,6 +146,7 @@ public class MusicPlayerGUI extends JFrame {
         fileMenu.add(addSongMenuItem);
         fileMenu.add(deleteSongMenuItem);
         fileMenu.add(aboutMenuItem);
+        fileMenu.add(newPlaylistMenuItem);
         fileMenu.addSeparator();
         fileMenu.add(exitMenuItem);
 

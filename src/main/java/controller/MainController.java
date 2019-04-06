@@ -181,6 +181,7 @@ public class MainController {
      * "add"    Add Song To Library
      * "delete" Delete Song From Library
      * "about"  About
+     * "newPlaylist" New Playlist
      * "exit"   Exit
      */
     class MenuItemListener implements ActionListener {
@@ -251,8 +252,11 @@ public class MainController {
                 String appName = "MyTunes1.5";
                 String teamInfo = "[CECS543 Team6]\nSella Bae\nBrett Rexius\nJohanna Thiemich";
                 String year = "2019";
-                String msg = appName+"\n"+year+"\n\n"+teamInfo;
+                String msg = appName + "\n" + year + "\n\n" + teamInfo;
                 JOptionPane.showMessageDialog(playerView, msg, title, JOptionPane.PLAIN_MESSAGE);
+            } else if (menuName.equals("newPlaylist")) {
+                //Create a new playlist
+                System.out.println("[Menu] New Playlist is pressed.");
 
             } else if (menuName.equals("exit")) {
                 //Exit menu actions
