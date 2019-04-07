@@ -2,7 +2,7 @@ package view;
 
 import model.Song;
 import model.SongLibrary;
-import model.SongTransferHandler;
+import model.TableRowTransferHandler;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -21,12 +21,14 @@ public class SongListView extends JPanel {
     private DefaultTableModel tableModel;
     private String[] columnHeader;
     private int tableRowHeight = 24;
+    private final TransferHandler handler;
 
     /**
      * Constructs a panel to show a list of songs
      * with an empty table view.
      */
     public SongListView(){
+        handler = new TableRowTransferHandler();
         // Table setup
         columnHeader = new String[]{"Path", "Title", "Artist", "Album", "Year", "Comment", "Genre"};
         table = new JTable(){
@@ -49,6 +51,8 @@ public class SongListView extends JPanel {
         table.setFont(MusicPlayerGUI.FONT);
         table.getTableHeader().setFont(MusicPlayerGUI.FONT);
         table.setRowHeight(tableRowHeight);
+        table.setTransferHandler(handler);
+        table.setDropMode(DropMode.INSERT_ROWS);
         //table.setShowGrid(false);
 
 //        //change the look of the header
@@ -255,6 +259,5 @@ public class SongListView extends JPanel {
     }
 
     public void setTransferHandlerLibrary(SongLibrary library) {
-        table.setTransferHandler(new SongTransferHandler(library));
     }
 }
