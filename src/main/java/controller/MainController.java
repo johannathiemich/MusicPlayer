@@ -90,6 +90,7 @@ public class MainController {
         playerView.getSideView().addMouseListener(new MouseListenerForSideView());
         playerView.getSideView().addMenuListener(new PopupMenuListenerForPlaylist());
 
+        //COMMENTED OUT FROM MERGE CONFLICT for Drag&Drop function
         //playerView.getSongListView().setTransferHandlerLibrary(library);
     }
 
