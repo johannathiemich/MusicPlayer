@@ -88,6 +88,8 @@ public class MainController {
         //Add listener to the trees in the side panel
         playerView.getSideView().addMouseListener(new MouseListenerForSideView());
         playerView.getSideView().addMenuListener(new PopupMenuListenerForPlaylist());
+
+        playerView.getSongListView().setTransferHandlerLibrary(library);
     }
 
     //Listeners
