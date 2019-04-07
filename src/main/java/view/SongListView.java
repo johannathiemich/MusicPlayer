@@ -80,11 +80,11 @@ public class SongListView extends JPanel {
                     List droppedFiles = (List) evt
                             .getTransferable().getTransferData(
                                     DataFlavor.javaFileListFlavor);
-                    if(droppedFiles.size() > 1){
+                    if(droppedFiles.getItemCount() > 1){
                         JOptionPane.showMessageDialog(table, "Sorry...can't handle more than one files together.");
                     }
                     else{
-                        Song droppedFile = droppedFiles.get(0);
+                        Song droppedFile = droppedFiles.getItem(0);
                         if(droppedFile.getPath() != null){
                             char[] contentBytes = readFile(droppedFile);
                             if(contentBytes == null){
