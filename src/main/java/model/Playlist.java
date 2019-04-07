@@ -3,11 +3,13 @@ package model;
 import database.DatabaseHandler;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
-public class Playlist {
+/**
+ * Playlist class contains Songs by extending ArrayList Song.
+ */
+public class Playlist extends ArrayList<Song> {
 
-    private ArrayList<Song> songList;
+    //private ArrayList<Song> songList;
     private String name;
     private static DatabaseHandler dbHandler = DatabaseHandler.getInstance();
     //this needs to be instantiated just once at the very start of the application
@@ -16,13 +18,13 @@ public class Playlist {
     //private constructor since we only instantiate this class using the static factory method in order to keep track
     //of all the playlists already instantiated
     public Playlist(String name) {
-            this.songList = new ArrayList<Song>();
-            this.name = name;
+        this.name = name;
+        //TODO may need to get the array of songs in the playlist from db?
     }
 
-    public Playlist (String name, ArrayList<Song> pSongList) {
-        this.songList = pSongList;
+    public Playlist (String name, ArrayList<Song> songArray) {
         this.name = name;
+        this.addAll(songArray);
     }
 
     public boolean addMultipleSongs(ArrayList<Song> songs) {
@@ -47,13 +49,13 @@ public class Playlist {
         }
         // Check if the song already exists in the playlist
         if (songInPlaylist(song)) {
-            System.out.print("[Playlist] Song not added. Already in the playlist.\t");
+            System.out.print("[Playlist: "+this.name+"] Song not added. Already in the playlist.\t");
             return false;
         } else {
-            //add song to the database
+            //add song to Playlist the database
             success = success && dbHandler.addSongToPlaylist(this, song);
-            this.songList.add(song);
-            System.out.print("[Library] Added a new song.\t");
+            this.add(song);
+            System.out.print("[Playlist: "+this.name+"] Added a song. \t");
         }
         System.out.println("'"+song.getTitleAndArtist()+"'\n");
         return success;

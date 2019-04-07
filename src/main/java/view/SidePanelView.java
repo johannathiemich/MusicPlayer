@@ -1,8 +1,6 @@
 package view;
 
 
-import model.PlaylistLibrary;
-
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
@@ -10,6 +8,7 @@ import javax.swing.tree.DefaultTreeModel;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
+import java.util.ArrayList;
 
 /**
  * SidePanelView class is to show "Library" and "Playlist"
@@ -36,7 +35,6 @@ public class SidePanelView extends JPanel {
     private JPopupMenu playlistPopupMenu;
     private JMenuItem openNewWindowMenuItem;
     private JMenuItem deletePlaylistMenuItem;
-    private PlaylistLibrary playlistLibrary;
 
     /**
      * Constructs a panel to show "Library" and "Playlist" with a tree.
@@ -62,11 +60,6 @@ public class SidePanelView extends JPanel {
         //place playlist tree in panel
         playlistTreePanel = new JScrollPane(playlistTree);
         playlistTreePanel.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-
-        //create nodes under "Playlist"
-        playlistLibrary = new PlaylistLibrary();
-        String[] testPlaylist = {"Favorite","Rock","Party","Jazz"};
-        updatePlaylistTree(playlistLibrary.getAllPlaylistNamesArray());
 
         //tree UI setups
         //cell renderer for trees
@@ -122,10 +115,12 @@ public class SidePanelView extends JPanel {
      * Updates the tree view under "Playlist"
      * @param playlistName the array of playlist names
      */
-    public void updatePlaylistTree(String[] playlistName){
+    public void updatePlaylistTree(ArrayList<String> playlistName){
+        //clear current tree
+        pllRootNode.removeAllChildren();
         //update the tree view
-        for (int i=0; i<playlistName.length; i++) {
-            pllRootNode.add(new DefaultMutableTreeNode(playlistName[i]));
+        for (int i=0; i<playlistName.size(); i++) {
+            pllRootNode.add(new DefaultMutableTreeNode(playlistName.get(i)));
         }
         pllTreeModel.reload();
     }
