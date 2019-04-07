@@ -1,3 +1,8 @@
+/**
+ * This class was largely copied from here:
+ * https://github.com/aterai/java-swing-tips/blob/master/DragRowsAnotherTable/src/java/example/MainPanel.java
+ */
+
 package model;
 
 import javax.swing.*;
