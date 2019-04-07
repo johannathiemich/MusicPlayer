@@ -247,6 +247,7 @@ public class DatabaseHandler {
                 e.printStackTrace();
             }
         }
+        //TODO need to look into its behavior...
         if (success) {
             for (Playlist playlist : this.getAllPlaylistsObjects()) {
                 this.deleteSongFromPlaylist(playlist, song);
@@ -475,6 +476,7 @@ public class DatabaseHandler {
             return null;
         }
 
+        //TODO need to check this behavior...
         for (Playlist playlist : list) {
             ArrayList<Song> songList = getSongsInPlaylist(playlist);
             playlist.addMultipleSongs(songList);
@@ -542,6 +544,34 @@ public class DatabaseHandler {
         return exists;
     }
 
+    /**
+     * Clears Playlist_Songs and Playlist table
+     */
+    public boolean clearPlaylists(){
+        boolean success = false;
+        Connection conn = null;
+        Statement statement = null;
+        String sql1 = "DELETE FROM " + playlistTableName + "'";
+        String sql2 = "DELETE FROM " + playlistSongsTableName + "'";
+        try {
+            conn = DriverManager.getConnection(createDatabaseURL);
+            statement = conn.createStatement();
+            statement.execute(sql1);
+            statement.execute(sql2);
+            conn.close();
+            success = true;
+            System.out.println("[Database] Cleared "+playlistTableName+" and "+playlistSongsTableName+".");
+
+        } catch (SQLException e) {
+            success = false;
+            if (e.getSQLState().equals("XJ015")) {
+                System.out.println("[Database] Derby shutdown normally.");
+            } else {
+                e.printStackTrace();
+            }
+        }
+        return success;
+    }
 
     /**
      * This method drops all tables currently contained in the database. This method is usefule for resetting

@@ -4,6 +4,9 @@ import database.DatabaseHandler;
 
 import java.util.ArrayList;
 
+/**
+ * PlaylistLibrary class manages all Playlists.
+ */
 public class PlaylistLibrary extends ArrayList<Playlist> {
 
     private DatabaseHandler dbHandler;
@@ -41,31 +44,22 @@ public class PlaylistLibrary extends ArrayList<Playlist> {
         return names;
     }
 
-    public String[] getAllPlaylistNamesArray() {
-        String[] names = new String[this.size()];
-        for(int i = 0; i < this.size(); i++) {
-            names[i] = this.get(i).getName();
-        }
-        return names;
-    }
-
-
 
     public boolean addPlaylist(Playlist playlist){
         boolean success = false;
         if(playlist == null) {
-            System.out.println("[Library_ERROR] Not added. playlist: null\n");
+            System.out.println("[PlaylistLibrary_ERROR] Not added. playlist: null\n");
             success = false;
         } else {
             // Check if the playlist already exists in the library
             if ( getPlaylistByName(playlist.getName()) != null ) {
-                System.out.print("[Library] Not added. Already in the playlist library.\t");
+                System.out.print("[PlaylistLibrary] Not added. Already in the playlist library.\t");
                 success = false;
             } else {
                 //add playlist to the database
                 dbHandler.addPlaylist(playlist);
                 this.add(playlist);
-                System.out.print("[Library] Added a new song.\t");
+                System.out.print("[PlaylistLibrary] Added a new song.\t");
                 success = true;
             }
             System.out.println("'"+playlist.getName()+"'\n");
@@ -78,9 +72,9 @@ public class PlaylistLibrary extends ArrayList<Playlist> {
         if( getPlaylistByName(playlist.getName()) != null) {
             dbHandler.deletePlaylist(playlist);
             this.remove(playlist);
-            System.out.print("[Library] Deleted.\t");
+            System.out.print("[PlaylistLibrary] Deleted.\t");
         }else{
-            System.out.print("[Library] Song does not exist in library.\t");
+            System.out.print("[PlaylistLibrary] Song does not exist in library.\t");
         }
         System.out.println("'"+playlist.getName()+"'\n");
     }
