@@ -381,7 +381,7 @@ public class MainController {
             if (e.isPopupTrigger() && library.size() > 0) {
                 if ( isRowInbound ) {   //right click in table
                     System.out.println("right clicked in table. row:"+row);
-                    source.changeSelection(row, col, false, false);
+                    //source.changeSelection(row, col, false, false);
                     playerView.getPopUpMenu().show(e.getComponent(), e.getX(), e.getY());
                 } else {                //right click out of table
                     System.out.println("right clicked outside of the table");
