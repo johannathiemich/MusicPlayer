@@ -273,7 +273,7 @@ public class MainController {
                         Song selectedSong = library.get(selectedRow);
                         System.out.println("row:"+selectedRow+" is selected to be added.");
                         playlist.addSong(selectedSong);
-                        //TODO update playlist view where the song was added
+                        //TODO repaint the playlist window if opened
                     } else {
                         System.out.println("row:"+selectedRow+", nothing selected to add.");
                     }
@@ -566,8 +566,8 @@ public class MainController {
 
                 //TODO check if the playlist is already open in a new window
                 PlaylistWindow playlistWindow = new PlaylistWindow(selectedPlaylistName, ColorTheme.dark);
-                //TODO update the table view of the playlist window
-                //playlistWindow.getPlaylistView().updateTableView(/*songs in playlist*/);
+                //update the table view of the playlist window
+                playlistWindow.getTableView().updateTableView(playlistLibrary.getPlaylistByName(selectedPlaylistName));
 
             } else if (menuName.equals("playlist-delete")) {
                 //Delete Playlist menu action

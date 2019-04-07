@@ -91,6 +91,7 @@ public class SongListView extends JPanel {
             tableModel.addRow(song.toArray());
         }
         tableModel.fireTableDataChanged();
+        this.repaint();
     }
 
     /**

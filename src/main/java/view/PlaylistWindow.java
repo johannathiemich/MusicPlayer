@@ -49,7 +49,7 @@ public class PlaylistWindow extends JFrame {
      * Gets the table view of the playlist from this window
      * @return SongListView
      */
-    public SongListView getPlaylistView(){
+    public SongListView getTableView(){
         return playlistView;
     }
 
