@@ -551,8 +551,8 @@ public class DatabaseHandler {
         boolean success = false;
         Connection conn = null;
         Statement statement = null;
-        String sql1 = "DELETE FROM " + playlistTableName + "'";
-        String sql2 = "DELETE FROM " + playlistSongsTableName + "'";
+        String sql1 = "DELETE FROM " + playlistTableName;
+        String sql2 = "DELETE FROM " + playlistSongsTableName;
         try {
             conn = DriverManager.getConnection(createDatabaseURL);
             statement = conn.createStatement();
