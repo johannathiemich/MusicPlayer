@@ -7,10 +7,6 @@ import model.SongTransferHandler;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.dnd.DnDConstants;
-import java.awt.dnd.DropTarget;
-import java.awt.dnd.DropTargetDropEvent;
 import java.util.ArrayList;
 
 /**
@@ -53,9 +49,6 @@ public class SongListView extends JPanel {
         table.setFont(MusicPlayerGUI.FONT);
         table.getTableHeader().setFont(MusicPlayerGUI.FONT);
         table.setRowHeight(tableRowHeight);
-
-
-
         //table.setShowGrid(false);
 
 //        //change the look of the header
@@ -69,7 +62,8 @@ public class SongListView extends JPanel {
         this.setLayout(new BorderLayout());
         this.add(tableScrollPane, BorderLayout.CENTER);
 
-
+/*
+//COMMENTED OUT FROM MERGE CONFLICT for Drag&Drop function
         table.setDropTarget(new DropTarget() {
             private static final long serialVersionUID = -6418118605479053389L;
 
@@ -192,6 +186,7 @@ public class SongListView extends JPanel {
 
         });
 
+    */
 
     }
 
@@ -226,6 +221,7 @@ public class SongListView extends JPanel {
             tableModel.addRow(song.toArray());
         }
         tableModel.fireTableDataChanged();
+        this.repaint();
     }
 
     /**

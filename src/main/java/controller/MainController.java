@@ -90,7 +90,8 @@ public class MainController {
         playerView.getSideView().addMouseListener(new MouseListenerForSideView());
         playerView.getSideView().addMenuListener(new PopupMenuListenerForPlaylist());
 
-        playerView.getSongListView().setTransferHandlerLibrary(library);
+        //COMMENTED OUT FROM MERGE CONFLICT for Drag&Drop function
+        //playerView.getSongListView().setTransferHandlerLibrary(library);
     }
 
     //Listeners
@@ -571,8 +572,8 @@ public class MainController {
 
                 //TODO check if the playlist is already open in a new window
                 PlaylistWindow playlistWindow = new PlaylistWindow(selectedPlaylistName, ColorTheme.dark);
-                //TODO update the table view of the playlist window
-                //playlistWindow.getPlaylistView().updateTableView(/*songs in playlist*/);
+                //update the table view of the playlist window
+                playlistWindow.getTableView().updateTableView(playlistLibrary.getPlaylistByName(selectedPlaylistName));
 
             } else if (menuName.equals("playlist-delete")) {
                 //Delete Playlist menu action
