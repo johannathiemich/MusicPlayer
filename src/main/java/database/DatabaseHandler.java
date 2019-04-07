@@ -247,6 +247,7 @@ public class DatabaseHandler {
                 e.printStackTrace();
             }
         }
+        //TODO need to look into its behavior...
         if (success) {
             for (Playlist playlist : this.getAllPlaylistsObjects()) {
                 this.deleteSongFromPlaylist(playlist, song);
@@ -475,6 +476,7 @@ public class DatabaseHandler {
             return null;
         }
 
+        //TODO need to check this behavior...
         for (Playlist playlist : list) {
             ArrayList<Song> songList = getSongsInPlaylist(playlist);
             playlist.addMultipleSongs(songList);

@@ -4,6 +4,9 @@ import database.DatabaseHandler;
 
 import java.util.ArrayList;
 
+/**
+ * Playlist class contains Songs by extending ArrayList Song.
+ */
 public class Playlist extends ArrayList<Song> {
 
     //private ArrayList<Song> songList;
@@ -46,13 +49,13 @@ public class Playlist extends ArrayList<Song> {
         }
         // Check if the song already exists in the playlist
         if (songInPlaylist(song)) {
-            System.out.print("[Playlist] Song not added. Already in the playlist.\t");
+            System.out.print("[Playlist: "+this.name+"] Song not added. Already in the playlist.\t");
             return false;
         } else {
-            //add song to the database
+            //add song to Playlist the database
             success = success && dbHandler.addSongToPlaylist(this, song);
             this.add(song);
-            System.out.print("[Library] Added a new song.\t");
+            System.out.print("[Playlist: "+this.name+"] Added a song. \t");
         }
         System.out.println("'"+song.getTitleAndArtist()+"'\n");
         return success;

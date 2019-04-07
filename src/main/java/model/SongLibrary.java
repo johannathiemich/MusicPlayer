@@ -2,13 +2,13 @@ package model;
 
 import database.DatabaseHandler;
 
-import javax.xml.crypto.Data;
 import java.util.ArrayList;
 
 //same with SongDAO(Data Access Object). same concept same work.
 
 /**
- * Model class in the MVC pattern. For managing the list of songs that is shown in the application ("song library").
+ * Model class in the MVC pattern.
+ * SongLibrary class manages all songs.
  */
 public class SongLibrary extends ArrayList<Song>{
 
