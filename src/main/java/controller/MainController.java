@@ -89,6 +89,8 @@ public class MainController {
         //Add listener to the trees in the side panel
         playerView.getSideView().addMouseListener(new MouseListenerForSideView());
         playerView.getSideView().addMenuListener(new PopupMenuListenerForPlaylist());
+
+        //playerView.getSongListView().setTransferHandlerLibrary(library);
     }
 
     //Listeners
@@ -266,16 +268,19 @@ public class MainController {
                 System.out.println("[PopupMenu] Add To Playlist \""+playlistName+"\" is clicked.");
                 Playlist playlist = playlistLibrary.getPlaylistByName(playlistName);
                 if (playlist != null) {
-                    int selectedRow = playerView.getSongTable().getSelectedRow();
-                    boolean isRowInbound = (selectedRow >= 0) && (selectedRow < library.size());
+                    int[] selectedRow = playerView.getSongTable().getSelectedRows();
 
-                    if ( isRowInbound ) {
-                        Song selectedSong = library.get(selectedRow);
-                        System.out.println("row:"+selectedRow+" is selected to be added.");
-                        playlist.addSong(selectedSong);
-                        //TODO repaint the playlist window if opened
-                    } else {
-                        System.out.println("row:"+selectedRow+", nothing selected to add.");
+                    for (int i = 0; i < selectedRow.length; i++) {
+                        boolean isRowInbound = (selectedRow[i] >= 0) && (selectedRow[i] < library.size());
+
+                        if (isRowInbound) {
+                            Song selectedSong = library.get(selectedRow[i]);
+                            System.out.println("row:" + selectedRow[i] + " is selected to be added.");
+                            playlist.addSong(selectedSong);
+                            //TODO update playlist view where the song was added
+                        } else {
+                            System.out.println("row:" + selectedRow[i] + ", nothing selected to add.");
+                        }
                     }
                 }
 
