@@ -24,7 +24,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -47,7 +46,7 @@ public class MainController {
     private PlayerController playerControl;
 
     private Song selectedSong;  //different from currentSong
-    private String selectedPlaylist;
+    private String selectedPlaylistName;
 
     /**
      * Construct a main controller and initialize all modules
@@ -60,6 +59,7 @@ public class MainController {
 
         playerControl = new PlayerController(library, playerView);
         selectedSong = null;
+        selectedPlaylistName = null;
 
         //setup presentation
         playerView.updateTableView(library);
@@ -491,12 +491,12 @@ public class MainController {
                 // Get the playlist name if a playlist is selected
                 if ((tree.getName().equals("playlistTree")) && (treePath.getParentPath() != null)) {
                     isPlaylistSelected = true;
-                    selectedPlaylist = treePath.getLastPathComponent().toString();
+                    selectedPlaylistName = treePath.getLastPathComponent().toString();
                 }
 
                 // [3] Right-click Popup Trigger (for MacOS)
                 if (e.isPopupTrigger() && isPlaylistSelected) {
-                    System.out.println("[Playlist] right clicked: " + selectedPlaylist);
+                    System.out.println("[Playlist] right clicked: " + selectedPlaylistName);
                     tree.setSelectionPath(treePath);
                     //show playlist popup menu
                     JPopupMenu popupMenu = playerView.getSideView().getPlaylistPopupMenu();
@@ -516,7 +516,7 @@ public class MainController {
         {
             // [3] Right-click Popup Trigger (for Windows)
             if (e.isPopupTrigger() && isPlaylistSelected) {
-                System.out.println("[Playlist] right clicked: " + selectedPlaylist);
+                System.out.println("[Playlist] right clicked: " + selectedPlaylistName);
                 tree.setSelectionPath(treePath);
                 //show popup menu
                 JPopupMenu popupMenu = playerView.getSideView().getPlaylistPopupMenu();
@@ -537,11 +537,9 @@ public class MainController {
 
                 // [2] Double-click on a playlist name under "Playlist"
                 if (isPlaylistSelected) {
-                    System.out.println("[Playlist] double clicked: " + selectedPlaylist);
+                    System.out.println("[Playlist] double clicked: " + selectedPlaylistName);
                     //show the selected playlist on the main window
-                    //TODO Pass ArrayList<Song> of the selectedPlaylist
-                    playerView.updateTableView(new ArrayList<Song>());
-
+                    playerView.updateTableView(playlistLibrary.getPlaylistByName(selectedPlaylistName));
                 }
             }
         }
@@ -567,7 +565,7 @@ public class MainController {
                 System.out.println("[PopupMenu] Open in New Window is pressed.");
 
                 //TODO check if the playlist is already open in a new window
-                PlaylistWindow playlistWindow = new PlaylistWindow(selectedPlaylist, ColorTheme.dark);
+                PlaylistWindow playlistWindow = new PlaylistWindow(selectedPlaylistName, ColorTheme.dark);
                 //TODO update the table view of the playlist window
                 //playlistWindow.getPlaylistView().updateTableView(/*songs in playlist*/);
 
