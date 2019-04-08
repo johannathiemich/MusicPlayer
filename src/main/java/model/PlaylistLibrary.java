@@ -20,13 +20,17 @@ public class PlaylistLibrary extends ArrayList<Playlist> {
 
     /**
      * Construct a library from an array of songs
-     * This might be removed later...
      */
     public PlaylistLibrary(ArrayList<Playlist> playlistList){
         this.dbHandler = DatabaseHandler.getInstance();
         this.addAll(playlistList);
     }
 
+    /**
+     * This method returns a playlist object by its name
+     * @param pName the name of the playlist to be returned
+     * @return the playlist with the name pName
+     */
     public Playlist getPlaylistByName(String pName) {
         for (Playlist playlist: this) {
             if (playlist.getName().equals(pName)) {
@@ -36,6 +40,10 @@ public class PlaylistLibrary extends ArrayList<Playlist> {
         return null;
     }
 
+    /**
+     * This method returns a list of names of all the playlists existing
+     * @return all the names of all the playlists existing
+     */
     public ArrayList<String> getAllPlaylistNames() {
         ArrayList<String> names = new ArrayList<String>();
         for (Playlist playlist: this) {
@@ -44,7 +52,11 @@ public class PlaylistLibrary extends ArrayList<Playlist> {
         return names;
     }
 
-
+    /**
+     * This method adds a new playlist to the list of all playlists
+     * @param playlist the playlist to be added
+     * @return true if the playlist could be added, false if not (e.g. the playlist already exists)
+     */
     public boolean addPlaylist(Playlist playlist){
         boolean success = false;
         if(playlist == null) {
@@ -67,11 +79,15 @@ public class PlaylistLibrary extends ArrayList<Playlist> {
         return success;
     }
 
+    /**
+     * This method removes a playlist from the list of all existing playlists
+     * @param playlist the playlist to be deleted
+     */
     public void deletePlaylist(Playlist playlist){
         //Check if the song is in the library before deleteSong()
         if( getPlaylistByName(playlist.getName()) != null) {
-            dbHandler.deletePlaylist(playlist);
-            this.remove(playlist);
+            dbHandler.deletePlaylist(getPlaylistByName(playlist.getName()));
+            this.remove(this.getPlaylistByName(playlist.getName()));
             System.out.print("[PlaylistLibrary] Deleted.\t");
         }else{
             System.out.print("[PlaylistLibrary] Song does not exist in library.\t");

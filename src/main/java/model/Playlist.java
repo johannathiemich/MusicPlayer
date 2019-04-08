@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 /**
  * Playlist class contains Songs by extending ArrayList Song.
+ * This class represents a playlist
  */
 public class Playlist extends ArrayList<Song> {
 
@@ -19,14 +20,20 @@ public class Playlist extends ArrayList<Song> {
     //of all the playlists already instantiated
     public Playlist(String name) {
         this.name = name;
-        //TODO may need to get the array of songs in the playlist from db?
+        library = new SongLibrary(dbHandler.getSongLibrary());
     }
 
     public Playlist (String name, ArrayList<Song> songArray) {
         this.name = name;
         this.addAll(songArray);
+        library = new SongLibrary(dbHandler.getSongLibrary());
     }
 
+    /**
+     * This method adds a list of song to this playlist
+     * @param songs the songs to be added
+     * @return true if all the songs could be added, false if at least one could not be added
+     */
     public boolean addMultipleSongs(ArrayList<Song> songs) {
         boolean success = true;
         for(Song newSong: songs) {
@@ -37,6 +44,11 @@ public class Playlist extends ArrayList<Song> {
         return success;
     }
 
+    /**
+     * This method adds a song to this playlist
+     * @param song the song to be added
+     * @return true if the song was added successfully, false if not (if the song is null or is already in the playlist)
+     */
     public boolean addSong(Song song) {
         boolean success = true;
         if(song.getPath() == null) {
@@ -61,11 +73,19 @@ public class Playlist extends ArrayList<Song> {
         return success;
     }
 
+    /**
+     * This method returns the name of this playlist
+     * @return the name of this playilst
+     */
     public String getName() {
         return this.name;
     }
 
-
+    /**
+     * This method checks if the song is in the song library
+     * @param song the song to be checked
+     * @return true if the song is in the library, false if not
+     */
     private boolean songInLibrary(Song song){
         for (Song currSong : dbHandler.getSongLibrary()) {
             if (currSong.getPath().equals(song.getPath())) {
@@ -75,6 +95,11 @@ public class Playlist extends ArrayList<Song> {
         return false;
     }
 
+    /**
+     * This method checks if the song is in this playlist
+     * @param song the song to be checked
+     * @return true if the song is in this playlist, false if not
+     */
     private boolean songInPlaylist(Song song){
         for (Song currSong : dbHandler.getSongsInPlaylist(this)) {
             if (currSong.getPath().equals(song.getPath())) {
@@ -94,9 +119,13 @@ public class Playlist extends ArrayList<Song> {
             allPlaylists.put(playlistName, newPlaylist);
         }
         return allPlaylists;
-    }
+    }**/
 
+    /**
+     * This method updates the library that this playlist is referring to
+     * @param plibrary the new library
+     */
     public static void setLibrary(SongLibrary plibrary) {
         library = plibrary;
-    }**/
+    }
 }
