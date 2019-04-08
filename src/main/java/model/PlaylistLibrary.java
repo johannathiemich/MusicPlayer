@@ -27,20 +27,28 @@ public class PlaylistLibrary extends ArrayList<Playlist> {
     }
 
     /**
+     * Checks if the name of a playlist exists in playlist library
+     * @param playlistName the playlist name to check (not case sensitive)
+     * @return true if exists, false if not.
+     */
+    public boolean exists(String playlistName){
+        for (Playlist playlist : this) {
+            if (playlist.getName().equalsIgnoreCase(playlistName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * This method returns a playlist object by its name
      * @param pName the name of the playlist to be returned
      * @return the playlist with the name pName
      */
     public Playlist getPlaylistByName(String pName) {
-        boolean playlistExists = false;
-        for (Playlist playlist: this) {
-            if (playlist.getName().equals(pName)) {
-                playlistExists = true;
-            }
-        }
-        if (playlistExists) {
-            ArrayList<Song> playList = dbHandler.getSongsInPlaylist(pName);
-            return new Playlist(pName, playList);
+        if ( this.exists(pName) ) {
+            ArrayList<Song> songs = dbHandler.getSongsInPlaylist(pName);
+            return new Playlist(pName, songs);
         } else {
             return null;
         }
