@@ -2,7 +2,7 @@ package view;
 
 import model.Song;
 import model.SongLibrary;
-import model.TableRowTransferHandler;
+import controller.TableRowTransferHandler;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -65,133 +65,6 @@ public class SongListView extends JPanel {
         tableScrollPane.setBorder(BorderFactory.createEmptyBorder());
         this.setLayout(new BorderLayout());
         this.add(tableScrollPane, BorderLayout.CENTER);
-
-/*
-//COMMENTED OUT FROM MERGE CONFLICT for Drag&Drop function
-        table.setDropTarget(new DropTarget() {
-            private static final long serialVersionUID = -6418118605479053389L;
-
-            @SuppressWarnings("unchecked")
-            public synchronized void drop(DropTargetDropEvent evt) {
-                try {
-                    evt.acceptDrop(DnDConstants.ACTION_COPY);
-                    List droppedFiles = (List) evt
-                            .getTransferable().getTransferData(
-                                    DataFlavor.javaFileListFlavor);
-                    if(droppedFiles.getItemCount() > 1){
-                        JOptionPane.showMessageDialog(table, "Sorry...can't handle more than one files together.");
-                    }
-                    else{
-                        Song droppedFile = droppedFiles.getItem(0);
-                        if(droppedFile.getPath() != null){
-                            char[] contentBytes = readFile(droppedFile);
-                            if(contentBytes == null){
-                                JOptionPane.showMessageDialog(content, "Sorry...file size is too long.");
-                            }
-                            else if(contentBytes.length == 0){
-                                JOptionPane.showMessageDialog(content, "Sorry...file is empty.");
-                            }
-                            else{
-                                content.setText(new String(contentBytes));
-                            }
-                        }
-                        else{
-                            JOptionPane.showMessageDialog(content, "Sorry...not a text file.");
-                        }
-
-                    }
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            }
-        });
-
-        add(splitPane);
-        pack();
-    }
-
-    private char[] readFile(File inputFile){
-        BufferedReader inputReader = null;
-        char[] content = null;
-        long availableHeap = Runtime.getRuntime().freeMemory();
-        long fileSize = inputFile.length();
-        try {
-            if(fileSize <= availableHeap){
-                content = new char[(int)inputFile.length()];
-                inputReader = new BufferedReader(new FileReader(inputFile));
-
-                inputReader.read(content);
-            }
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return content;
-    }
-
-    private File[] getAllDrives(){
-
-        return File.listRoots();
-    }
-
-    private ArrayList getAllDirectories(File file){
-
-        ArrayList directories = new ArrayList();
-        File[] allSub = file.listFiles();
-        if(allSub != null){
-            for(File sub: allSub){
-                if(sub.isDirectory()){
-                    directories.add(sub);
-                }
-            }
-        }
-        return directories;
-    }
-
-    private ArrayList getAllTXTs(File directory){
-        ArrayList pdfs = new ArrayList();
-        File[] allSub = directory.listFiles();
-        if(allSub != null){
-            for(File sub: allSub){
-                if(sub.isFile() && sub.getName().endsWith(".txt")){
-                    pdfs.add(sub);
-                }
-            }
-        }
-        return pdfs;
-    }
-
-    private DefaultMutableTreeNode getTreeStructure(){
-        File[] roots = getAllDrives();
-        DefaultMutableTreeNode allDrives = new DefaultMutableTreeNode("All Drives");
-        for(File root: roots){
-            DefaultMutableTreeNode drive = new DefaultMutableTreeNode(root);
-            ArrayList folderNodes = getAllDirectories(root);
-
-            for(File folderNode : folderNodes){
-                DefaultMutableTreeNode childDrive =new DefaultMutableTreeNode(folderNode.getName());
-                ArrayList txts = getAllTXTs(folderNode);
-                for(File txt : txts){
-                    childDrive.add(new DefaultMutableTreeNode(txt));
-                }
-                drive.add(childDrive);
-            }
-            allDrives.add(drive);
-        }
-        return allDrives;
-    }
-
-}
-
-
-
-        });
-
-    */
-
     }
 
     /**
@@ -258,6 +131,4 @@ public class SongListView extends JPanel {
         table.setSelectionForeground(pointColor[1]);
     }
 
-    public void setTransferHandlerLibrary(SongLibrary library) {
-    }
 }

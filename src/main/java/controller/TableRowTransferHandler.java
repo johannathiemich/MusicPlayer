@@ -3,10 +3,15 @@
  * https://github.com/aterai/java-swing-tips/blob/master/DragRowsAnotherTable/src/java/example/MainPanel.java
  */
 
-package model;
+package controller;
+
+import model.PlaylistLibrary;
+import model.Song;
+import model.SongLibrary;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -16,7 +21,6 @@ import java.io.IOException;
 import java.util.*;
 import java.util.List;
 
-//TODO: copy songs, not cut them from original library
 //TODO: add songs to database (playlist table)
 public class TableRowTransferHandler extends TransferHandler {
     private final DataFlavor localObjectFlavor;
@@ -24,9 +28,18 @@ public class TableRowTransferHandler extends TransferHandler {
     private int addIndex = -1; //Location where items were added
     private int addCount; //Number of items added.
     private JComponent source;
+    private SongLibrary songLibrary;
+    private PlaylistLibrary playlistLibrary;
 
     public TableRowTransferHandler() {
+        //TODO replace this constructor
         super();
+        localObjectFlavor = new DataFlavor(Object[].class, "Array of items");
+    }
+    public TableRowTransferHandler(SongLibrary songL, PlaylistLibrary playlistL) {
+        super();
+        this.songLibrary = songL;
+        this.playlistLibrary = playlistL;
         localObjectFlavor = new DataFlavor(Object[].class, "Array of items");
     }
     @Override protected Transferable createTransferable(JComponent c) {
@@ -101,9 +114,13 @@ public class TableRowTransferHandler extends TransferHandler {
             }
             for (int i = 0; i < values.length; i++) {
                 int idx = index++;
-                model.insertRow(idx, (Vector) values[i]);
-                target.getSelectionModel().addSelectionInterval(idx, idx);
-                //TODO add rows to database here?
+                Vector convValues = (Vector) values[i];
+                if (!tableContainsSong(model, (String) convValues.get(0))) {
+                    model.insertRow(idx, (Vector) values[i]);
+                    //playlistLibrary.getPlaylistByName("").addSong(new Song((String) convValues.get(0)));
+                    target.getSelectionModel().addSelectionInterval(idx, idx);
+                    //TODO add rows to database here?
+                }
             }
             target.clearSelection();
             return true;
@@ -135,4 +152,14 @@ public class TableRowTransferHandler extends TransferHandler {
         addCount = 0;
         addIndex = -1;
     }
+
+    private boolean tableContainsSong(TableModel model, String songName) {
+        for (int i = 0; i < model.getRowCount(); i++) {
+            if (model.getValueAt(i, 0).equals(songName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
