@@ -32,12 +32,18 @@ public class PlaylistLibrary extends ArrayList<Playlist> {
      * @return the playlist with the name pName
      */
     public Playlist getPlaylistByName(String pName) {
+        boolean playlistExists = false;
         for (Playlist playlist: this) {
             if (playlist.getName().equals(pName)) {
-                return playlist;
+                playlistExists = true;
             }
         }
-        return null;
+        if (playlistExists) {
+            ArrayList<Song> playList = dbHandler.getSongsInPlaylist(pName);
+            return new Playlist(pName, playList);
+        } else {
+            return null;
+        }
     }
 
     /**

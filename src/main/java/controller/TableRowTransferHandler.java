@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.List;
 
-//TODO: add songs to database (playlist table)
+//TODO: regular drag and drop stopped working conflicting drop targets
 public class TableRowTransferHandler extends TransferHandler {
     private final DataFlavor localObjectFlavor;
     private int[] indices;
@@ -116,10 +116,23 @@ public class TableRowTransferHandler extends TransferHandler {
                 int idx = index++;
                 Vector convValues = (Vector) values[i];
                 if (!tableContainsSong(model, (String) convValues.get(0))) {
+                    String songPath = (String) convValues.get(0);
                     model.insertRow(idx, (Vector) values[i]);
-                    //playlistLibrary.getPlaylistByName("").addSong(new Song((String) convValues.get(0)));
+                    JFrame frame = (JFrame) SwingUtilities.getRoot(target);
+                    String frameName = frame.getTitle();
+                    System.out.println("frame name: " + frameName);
+                    //frame to add into is a playlist window
+                    if (frameName.split(":")[0].equalsIgnoreCase("playlist")) {
+                        System.out.println("Adding song to playlist");
+                        String playlistName = frameName.split(":")[1].trim();
+                        playlistLibrary.getPlaylistByName(playlistName).addSong(new Song(songPath));
+                    } else {
+                        songLibrary.addSong(new Song(songPath));
+                        System.out.println("Adding song to library");
+                    }
                     target.getSelectionModel().addSelectionInterval(idx, idx);
-                    //TODO add rows to database here?
+
+                    //TODO not quite working yet
                 }
             }
             target.clearSelection();

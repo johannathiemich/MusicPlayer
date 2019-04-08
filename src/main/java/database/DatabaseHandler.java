@@ -425,6 +425,8 @@ public class DatabaseHandler {
                 String comment = results.getString(results.findColumn("COMMENT"));
                 String genre = results.getString(results.findColumn("GENRE"));
 
+                System.out.println("[Database] returning Song path " + file_path);
+
                 //TODO [3] Replace this try-catch to 'int duration = results.getInt(8);'.
                 int duration;
                 try {

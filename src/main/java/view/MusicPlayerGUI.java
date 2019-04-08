@@ -326,6 +326,7 @@ public class MusicPlayerGUI extends JFrame {
      * @param dropTarget the drop target to be added to the scroll panel
      */
     public void addDragDropToScrollPane(DropTarget dropTarget){
+        //TODO: this drop target conflicts with the new drag and drop (to playlists)
         songListView.setDropTarget(dropTarget);
     }
 

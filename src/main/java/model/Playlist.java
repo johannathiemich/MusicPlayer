@@ -10,7 +10,6 @@ import java.util.ArrayList;
  */
 public class Playlist extends ArrayList<Song> {
 
-    //private ArrayList<Song> songList;
     private String name;
     private static DatabaseHandler dbHandler = DatabaseHandler.getInstance();
     //this needs to be instantiated just once at the very start of the application

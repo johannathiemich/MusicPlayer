@@ -8,7 +8,7 @@ public class Main {
 
         DatabaseHandler handler = DatabaseHandler.getInstance();
         //test code for playlist
-        handler.clearPlaylists();
+        //handler.clearPlaylists();
         handler.addPlaylist(new Playlist("Favorite"));
         handler.addPlaylist(new Playlist("Party"));
         handler.addPlaylist(new Playlist("Jazz"));

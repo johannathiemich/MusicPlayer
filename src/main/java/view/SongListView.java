@@ -1,5 +1,6 @@
 package view;
 
+import model.PlaylistLibrary;
 import model.Song;
 import model.SongLibrary;
 import controller.TableRowTransferHandler;
@@ -98,6 +99,7 @@ public class SongListView extends JPanel {
             tableModel.addRow(song.toArray());
         }
         tableModel.fireTableDataChanged();
+        table.repaint();
         this.repaint();
     }
 
@@ -129,6 +131,10 @@ public class SongListView extends JPanel {
         //table row selection
         table.setSelectionBackground(pointColor[0]);
         table.setSelectionForeground(pointColor[1]);
+    }
+
+    public void setSongLPlaylistL(PlaylistLibrary playlistL, SongLibrary songL) {
+        table.setTransferHandler(new TableRowTransferHandler(songL, playlistL));
     }
 
 }

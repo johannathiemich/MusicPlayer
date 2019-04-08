@@ -578,6 +578,7 @@ public class MainController {
                 //TODO check if the playlist is already open in a new window
                 PlaylistWindow playlistWindow = new PlaylistWindow(selectedPlaylistName, ColorTheme.dark);
                 //update the table view of the playlist window
+                playlistWindow.getTableView().setSongLPlaylistL(playlistLibrary, library);
                 playlistWindow.getTableView().updateTableView(playlistLibrary.getPlaylistByName(selectedPlaylistName));
 
             } else if (menuName.equals("playlist-delete")) {
