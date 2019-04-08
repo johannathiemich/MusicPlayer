@@ -88,23 +88,29 @@ public class PlaylistLibrary extends ArrayList<Playlist> {
         // Add playlist to this playlist library
         this.add(new Playlist(playlistName));
         System.out.print("[PlaylistLibrary] Added a new playlist \"" + playlistName + "\".\n");
+
         return true;
     }
 
     /**
      * This method removes a playlist from the list of all existing playlists
-     * @param playlist the playlist to be deleted
+     * @param playlistName the name of the playlist to be deleted
+     * @return true if the playlist is deleted, false if not (e.g. a non existing playlist name)
      */
-    public void deletePlaylist(Playlist playlist){
-        //Check if the song is in the library before deleteSong()
-        if( getPlaylistByName(playlist.getName()) != null) {
-            dbHandler.deletePlaylist(getPlaylistByName(playlist.getName()));
-            this.remove(this.getPlaylistByName(playlist.getName()));
-            System.out.print("[PlaylistLibrary] Deleted.\t");
-        }else{
-            System.out.print("[PlaylistLibrary] Song does not exist in library.\t");
+    public boolean deletePlaylist(String playlistName){
+        //Check if the playlist is in the library
+        if( !this.exists(playlistName) ) {
+            System.out.print("[PlaylistLibrary] There's no playlist named \""+playlistName+"\".\n");
+            return false;
         }
-        System.out.println("'"+playlist.getName()+"'\n");
+
+        // Delete playlist from the database
+        if ( !dbHandler.deletePlaylist(playlistName) ) { return false; }
+        // Delete playlist from this playlist library
+        this.remove(this.getPlaylistByName(playlistName));
+        System.out.print("[PlaylistLibrary] Deleted the playlist \""+playlistName+"\".\n");
+
+        return true;
     }
 
 

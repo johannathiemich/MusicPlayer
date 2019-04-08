@@ -256,14 +256,14 @@ public class DatabaseHandler {
         return success;
     }
 
-    public boolean deletePlaylist(Playlist playlist) {
+    public boolean deletePlaylist(String playlistName) {
         boolean success = true;
         Connection conn = null;
         Statement statement = null;
         String sql1 = "DELETE FROM " + playlistTableName +
-                "      WHERE NAME = '" + playlist.getName() + "'";
+                "      WHERE NAME = '" + playlistName + "'";
         String sql2 = "DELETE FROM " + playlistSongsTableName +
-                "      WHERE NAME = '" + playlist.getName() + "'";
+                "      WHERE NAME = '" + playlistName + "'";
         try {
             conn = DriverManager.getConnection(createDatabaseURL);
             statement = conn.createStatement();
