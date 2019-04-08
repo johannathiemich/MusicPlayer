@@ -547,10 +547,9 @@ public class MainController {
                 // [2] Double-click on a playlist name under "Playlist"
                 if (isPlaylistSelected) {
                     Playlist playlist = playlistLibrary.getPlaylistByName(selectedPlaylistName);
-                    System.out.println("[Playlist] double clicked: " + selectedPlaylistName);
+                    System.out.println("[Playlist] double clicked: " + selectedPlaylistName + " "+playlist.size()+" songs");
                     //show the selected playlist on the main window
                     playerView.updateTableView(playlist);
-                    System.out.println("Playlist \'"+selectedPlaylistName+"\' has "+playlist.size()+" songs.");
                 }
             }
         }
