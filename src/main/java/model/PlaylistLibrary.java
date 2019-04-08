@@ -67,9 +67,9 @@ public class PlaylistLibrary extends ArrayList<Playlist> {
     }
 
     /**
-     * This method adds a new playlist to the list of all playlists
+     * Adds a new playlist to the playlist library and db.
      * @param playlistName the name of a playlist to be added
-     * @return true if the playlist is added, false if not (e.g. the playlist already exists)
+     * @return true if added, false if not (e.g. the playlist already exists)
      */
     public boolean addPlaylist(String playlistName){
         //Check if the parameter is null
@@ -93,9 +93,9 @@ public class PlaylistLibrary extends ArrayList<Playlist> {
     }
 
     /**
-     * This method removes a playlist from the list of all existing playlists
+     * Deletes a playlist from the playlist library and db.
      * @param playlistName the name of the playlist to be deleted
-     * @return true if the playlist is deleted, false if not (e.g. a non existing playlist name)
+     * @return true if deleted, false if not (e.g. a non existing playlist name)
      */
     public boolean deletePlaylist(String playlistName){
         //Check if the parameter is null
