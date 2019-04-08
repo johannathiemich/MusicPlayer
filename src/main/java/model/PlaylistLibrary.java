@@ -68,29 +68,28 @@ public class PlaylistLibrary extends ArrayList<Playlist> {
 
     /**
      * This method adds a new playlist to the list of all playlists
-     * @param playlist the playlist to be added
-     * @return true if the playlist could be added, false if not (e.g. the playlist already exists)
+     * @param playlistName the playlist name to be added
+     * @return true if the playlist is added, false if not (e.g. the playlist already exists)
      */
-    public boolean addPlaylist(Playlist playlist){
-        boolean success = false;
-        if(playlist == null) {
+    public boolean addPlaylist(String playlistName){
+        //Check if the parameter is null
+        if(playlistName == null) {
             System.out.println("[PlaylistLibrary_ERROR] Not added. playlist: null\n");
-            success = false;
-        } else {
-            // Check if the playlist already exists in the library
-            if ( getPlaylistByName(playlist.getName()) != null ) {
-                System.out.print("[PlaylistLibrary] Not added. Already in the playlist library.\t");
-                success = false;
-            } else {
-                //add playlist to the database
-                dbHandler.addPlaylist(playlist);
-                this.add(playlist);
-                System.out.print("[PlaylistLibrary] Added a new song.\t");
-                success = true;
-            }
-            System.out.println("'"+playlist.getName()+"'\n");
+            return false;
         }
-        return success;
+
+        // Check if the playlist already exists in the library
+        if ( this.exists(playlistName) ) {
+            System.out.print("[PlaylistLibrary] Not added. Already in the playlist library.\t");
+            return false;
+        }
+
+        //add playlist to the database
+        dbHandler.addPlaylist( new Playlist(playlistName) );
+        this.add(new Playlist(playlistName));
+        System.out.print("[PlaylistLibrary] Added a new song.\t");
+        System.out.println("'"+playlistName+"'\n");
+        return true;
     }
 
     /**
