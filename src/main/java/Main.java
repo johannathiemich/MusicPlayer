@@ -1,6 +1,5 @@
 import controller.MainController;
 import database.DatabaseHandler;
-import model.Playlist;
 
 public class Main {
 
@@ -9,9 +8,9 @@ public class Main {
         DatabaseHandler handler = DatabaseHandler.getInstance();
         //test code for playlist
         //handler.clearPlaylists();
-        handler.addPlaylist(new Playlist("Favorite"));
-        handler.addPlaylist(new Playlist("Party"));
-        handler.addPlaylist(new Playlist("Jazz"));
+        handler.addPlaylist("Favorite");
+        handler.addPlaylist("Party");
+        handler.addPlaylist("Jazz");
 
         MainController controller = new MainController();
 
