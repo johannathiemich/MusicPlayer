@@ -159,8 +159,19 @@ public class DatabaseHandler {
         return success;
     }
 
+
+    /**
+     * Adds a new playlist name to DB playlist table.
+     * Note that the playlist name is lower-cased before being added.
+     * @param playlistName the name of a playlist to be added in db
+     * @return true if added, false if not
+     */
     public boolean addPlaylist(String playlistName) {
         boolean success = false;
+
+        //change the name to lower case.
+        playlistName = playlistName.toLowerCase();
+
         Connection conn = null;
         Statement statement = null;
         String sql = "INSERT INTO "+ playlistTableName +
@@ -256,8 +267,20 @@ public class DatabaseHandler {
         return success;
     }
 
+    /**
+     * Deletes a playlist from PLAYLIST table
+     * and all songs in the playlist from PLAYLIST_SONG table.
+     * Note that this doesn't delete songs from the library.
+     * Note that all playlist names stored in db are lower-cased.
+     * @param playlistName the name of the playlist to be deleted
+     * @return true if deleted, false if not (e.g. a non existing playlist name)
+     */
     public boolean deletePlaylist(String playlistName) {
         boolean success = true;
+
+        //change the name to lower case.
+        playlistName = playlistName.toLowerCase();
+
         Connection conn = null;
         Statement statement = null;
         String sql1 = "DELETE FROM " + playlistTableName +
@@ -353,6 +376,7 @@ public class DatabaseHandler {
         return list;
     }
 
+    //TODO better to reuse one of getSongsInPlaylist() methods.
     public ArrayList<Song> getSongsInPlaylist(Playlist playlist) {
         Connection conn = null;
         Statement statement = null;
@@ -405,11 +429,16 @@ public class DatabaseHandler {
      */
     public ArrayList<Song> getSongsInPlaylist(String playlistName) {
         Connection conn = null;
+
+        //lower case the playlist name
+        playlistName = playlistName.toLowerCase();
+
         Statement statement = null;
         ArrayList<Song> list = new ArrayList<Song>();
         String sql = "SELECT * FROM " + playlistSongsTableName + " INNER JOIN " + songsTableName + " ON " +
                 playlistSongsTableName + ".FILEPATH = " + songsTableName + ".FILEPATH " +
                 "WHERE " + playlistSongsTableName + ".NAME = '" + playlistName + "'";
+
         try {
             conn = DriverManager.getConnection(createDatabaseURL);
             statement = conn.createStatement();

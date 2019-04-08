@@ -42,6 +42,7 @@ public class PlaylistLibrary extends ArrayList<Playlist> {
 
     /**
      * This method returns a playlist object by its name
+     * Note that the playlist names are not case sensitive.
      * @param pName the name of the playlist to be returned
      * @return the playlist with the name pName
      */
