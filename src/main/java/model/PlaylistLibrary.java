@@ -68,7 +68,7 @@ public class PlaylistLibrary extends ArrayList<Playlist> {
 
     /**
      * This method adds a new playlist to the list of all playlists
-     * @param playlistName the playlist name to be added
+     * @param playlistName the name of a playlist to be added
      * @return true if the playlist is added, false if not (e.g. the playlist already exists)
      */
     public boolean addPlaylist(String playlistName){
@@ -98,6 +98,11 @@ public class PlaylistLibrary extends ArrayList<Playlist> {
      * @return true if the playlist is deleted, false if not (e.g. a non existing playlist name)
      */
     public boolean deletePlaylist(String playlistName){
+        //Check if the parameter is null
+        if(playlistName == null) {
+            System.out.println("[PlaylistLibrary_ERROR] Not deleted. playlist: null\n");
+            return false;
+        }
         //Check if the playlist is in the library
         if( !this.exists(playlistName) ) {
             System.out.print("[PlaylistLibrary] There's no playlist named \""+playlistName+"\".\n");
