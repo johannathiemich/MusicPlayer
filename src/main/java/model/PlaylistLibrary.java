@@ -77,18 +77,17 @@ public class PlaylistLibrary extends ArrayList<Playlist> {
             System.out.println("[PlaylistLibrary_ERROR] Not added. playlist: null\n");
             return false;
         }
-
         // Check if the playlist already exists in the library
         if ( this.exists(playlistName) ) {
-            System.out.print("[PlaylistLibrary] Not added. Already in the playlist library.\t");
+            System.out.print("[PlaylistLibrary] Not added. \""+playlistName+"\" already in the playlist library.\n");
             return false;
         }
 
-        //add playlist to the database
-        dbHandler.addPlaylist( new Playlist(playlistName) );
+        // Add playlist to the database
+        if( !dbHandler.addPlaylist(playlistName) ) { return false; }
+        // Add playlist to this playlist library
         this.add(new Playlist(playlistName));
-        System.out.print("[PlaylistLibrary] Added a new song.\t");
-        System.out.println("'"+playlistName+"'\n");
+        System.out.print("[PlaylistLibrary] Added a new playlist \"" + playlistName + "\".\n");
         return true;
     }
 

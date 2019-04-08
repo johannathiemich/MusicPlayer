@@ -159,12 +159,12 @@ public class DatabaseHandler {
         return success;
     }
 
-    public boolean addPlaylist(Playlist playlist) {
+    public boolean addPlaylist(String playlistName) {
         boolean success = false;
         Connection conn = null;
         Statement statement = null;
         String sql = "INSERT INTO "+ playlistTableName +
-                "      VALUES ('" + playlist.getName() + "')";
+                "      VALUES ('" + playlistName + "')";
         System.out.println("[Database] sql executed: " + sql);
         try {
             conn = DriverManager.getConnection(createDatabaseURL);
