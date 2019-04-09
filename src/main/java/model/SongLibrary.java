@@ -116,7 +116,7 @@ public class SongLibrary extends ArrayList<Song>{
 
     /**
      * Delete a song from the library, if present.
-     * @param song to be removed from the list
+     * @param song the song to be removed from the list
      */
     public void deleteSong(Song song){
         //Check if the song is in the library before deleteSong()

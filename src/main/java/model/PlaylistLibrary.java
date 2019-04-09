@@ -10,20 +10,14 @@ import java.util.ArrayList;
 public class PlaylistLibrary extends ArrayList<Playlist> {
 
     private DatabaseHandler dbHandler;
+
     /**
-     * Construct an empty library
+     * Construct PlaylistLibrary instance
+     * from existing playlists stored in the database
      */
     public PlaylistLibrary(){
         this.dbHandler = DatabaseHandler.getInstance();
         this.addAll(dbHandler.getAllPlaylistsObjects());
-    }
-
-    /**
-     * Construct a library from an array of songs
-     */
-    public PlaylistLibrary(ArrayList<Playlist> playlistList){
-        this.dbHandler = DatabaseHandler.getInstance();
-        this.addAll(playlistList);
     }
 
     /**
@@ -47,12 +41,20 @@ public class PlaylistLibrary extends ArrayList<Playlist> {
      * @return the playlist with the name pName
      */
     public Playlist getPlaylistByName(String pName) {
-        if ( this.exists(pName) ) {
-            ArrayList<Song> songs = dbHandler.getSongsInPlaylist(pName);
-            return new Playlist(pName, songs);
-        } else {
-            return null;
+        for (Playlist playlist : this){
+            if (playlist.getName().equalsIgnoreCase(pName)){
+                return playlist;
+            }
         }
+        return null;
+
+        //TODO need to refactor this part!!
+//        if ( this.exists(pName) ) {
+//            ArrayList<Song> songs = dbHandler.getSongsInPlaylist(pName);
+//            return new Playlist(pName, songs);
+//        } else {
+//            return null;
+//        }
     }
 
     /**
