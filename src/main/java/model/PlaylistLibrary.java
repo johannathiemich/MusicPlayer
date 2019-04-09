@@ -121,5 +121,24 @@ public class PlaylistLibrary extends ArrayList<Playlist> {
         return true;
     }
 
+    /**
+     * Deletes a song from all playlists that contain the song.
+     * @param song the song to be deleted.
+     */
+    public void deleteSongFromAllPlaylists(Song song){
+        String msg = "";
+        int count = 0;
+        for (Playlist playlist : this) {
+            //if the playlist has the song
+            if(playlist.contains(song)) {
+                //delete it from the playlist.
+                playlist.deleteSong(song);
+                msg = msg + playlist.getName() + ", ";
+                count++;
+            }
+        }
+        System.out.println("[PlaylistLibrary] the song '"+song.getTitle()+"' is deleted from "+count+" playlists: "+msg+"\n");
+    }
+
 
 }

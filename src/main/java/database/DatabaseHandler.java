@@ -258,12 +258,12 @@ public class DatabaseHandler {
                 e.printStackTrace();
             }
         }
-        //TODO need to look into its behavior...
-        if (success) {
-            for (Playlist playlist : this.getAllPlaylistsObjects()) {
-                this.deleteSongFromPlaylist(playlist, song);
-            }
-        }
+//        //TODO This action should be handled in playlistLibrary
+//        if (success) {
+//            for (Playlist playlist : this.getAllPlaylistsObjects()) {
+//                this.deleteSongFromPlaylist(playlist, song);
+//            }
+//        }
         return success;
     }
 
@@ -369,50 +369,20 @@ public class DatabaseHandler {
         return list;
     }
 
-    //TODO better to reuse one of getSongsInPlaylist() methods.
+    /**
+     * Gets all songs in a playlist by a Playlist instance.
+     * This method reuses getSongsInPlayList(String playlistName){}
+     * @param playlist the playlist object
+     * @return an array list of songs
+     */
     public ArrayList<Song> getSongsInPlaylist(Playlist playlist) {
-        Connection conn = null;
-        Statement statement = null;
-        ArrayList<Song> list = new ArrayList<Song>();
-        String sql = "SELECT * FROM " + playlistSongsTableName + " INNER JOIN " + songsTableName + " ON " +
-                playlistSongsTableName + ".FILEPATH = " + songsTableName + ".FILEPATH " +
-                "WHERE " + playlistSongsTableName + ".NAME = '" + playlist.getName() + "'";
-        try {
-            conn = DriverManager.getConnection(createDatabaseURL);
-            statement = conn.createStatement();
-            ResultSet results = statement.executeQuery(sql);
-
-            while(results.next())
-            {
-                String file_path = results.getString(results.findColumn("FILEPATH"));
-                String title = results.getString(results.findColumn("TITLE"));
-                String artist = results.getString(results.findColumn("ARTIST"));
-                String album = results.getString(results.findColumn("ALBUM"));
-                String year = results.getString(results.findColumn("YEAR_PUBLISHED"));
-                String comment = results.getString(results.findColumn("COMMENT"));
-                String genre = results.getString(results.findColumn("GENRE"));
-                int time = results.getInt(results.findColumn("TIME"));
-
-                Song song = new Song(file_path, title, artist, album, year, comment, genre, time);
-                list.add(song);
-            }
-            results.close();
-            conn.close();
-
-        } catch (SQLException e) {
-            if (e.getSQLState().equals("XJ015")) {
-                System.out.println("Derby shutdown normally.");
-            } else {
-                e.printStackTrace();
-            }
-        }
-        return list;
+        return getSongsInPlaylist(playlist.getName());
     }
 
     /**
-     * This overloads the other method with the same name (see parameter difference)
-     * @param playlistName
-     * @return
+     * Gets all songs in a playlist by its name.
+     * @param playlistName the name of the playlist
+     * @return an array list of songs
      */
     public ArrayList<Song> getSongsInPlaylist(String playlistName) {
         Connection conn = null;
@@ -488,7 +458,6 @@ public class DatabaseHandler {
             return null;
         }
 
-        //TODO need to check this behavior...
         for (Playlist playlist : list) {
             ArrayList<Song> songList = getSongsInPlaylist(playlist);
             playlist.addMultipleSongs(songList);
@@ -497,7 +466,6 @@ public class DatabaseHandler {
         return list;
     }
 
-    //TODO redundant??
     public ArrayList<String> getAllPlaylistsStrings() {
         Connection conn = null;
         Statement statement = null;

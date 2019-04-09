@@ -242,7 +242,12 @@ public class MainController {
                 if ( isRowInbound ) {
                     Song selectedSong = library.get(selectedRow);
                     System.out.println("row:"+selectedRow+" is selected to delete.");
+
+                    //delete song from the library
                     library.deleteSong(selectedSong);
+                    //delete song from all playlists
+                    playlistLibrary.deleteSongFromAllPlaylists(selectedSong);
+                    //update the view
                     playerView.updateTableView(library);
                     playerControl.updateLibrary(library);
                 } else {
