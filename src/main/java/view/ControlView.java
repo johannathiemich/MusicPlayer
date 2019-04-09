@@ -96,7 +96,7 @@ public class ControlView extends JPanel {
 
     /**
      * Create all components for song info panel
-     * which contains song title, artist, progressbar, duration.
+     * which contains song title, artist, progressbar, time.
      */
     private void createSongInfoPanel() {
         songInfoPanel = new JPanel();
@@ -106,7 +106,7 @@ public class ControlView extends JPanel {
         songTitleLbl = new JLabel("Title");
         songDetailLbl = new JLabel("Artist");
         songTimePlayingLbl = new JLabel("0:00");
-        songTimeRemainingLbl = new JLabel("3:33");
+        songTimeRemainingLbl = new JLabel("9:99");
 
         //ui setup
         songTitleLbl.setPreferredSize(new Dimension(this.getWidth(),24));
@@ -143,7 +143,7 @@ public class ControlView extends JPanel {
 
     /**
      * Update the view of song info panel
-     * with title, artist, duration of currently playing song.
+     * with title, artist, time of currently playing song.
      * @param song currently playing song
      */
     public void updateCurrentPlayingView(Song song){
@@ -151,9 +151,9 @@ public class ControlView extends JPanel {
             songTitleLbl.setText(song.getTitle());
             songDetailLbl.setText(song.getArtist());
             songTimePlayingLbl.setText("0:00");
-            songTimeRemainingLbl.setText(song.getDurationMinSec());
+            songTimeRemainingLbl.setText(song.getTimeMinSec());
             songProgressBar.setMinimum(0);
-            songProgressBar.setMaximum(song.getDuration());
+            songProgressBar.setMaximum(song.getTime());
         }
     }
 

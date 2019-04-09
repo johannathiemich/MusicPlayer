@@ -13,7 +13,7 @@ public class Song {
     private String year;
     private String comment;
     private String genre;
-    private int duration;
+    private int time;
 
     /**
      * Construct an empty Song object
@@ -24,11 +24,11 @@ public class Song {
 
     /**
      * Construct a Song object from properties
-     * @param pDuration integer number in second
+     * @param pTime integer number in second
      */
     public Song(String pPath, String pTitle, String pArtist, String pAlbum,
-                String pYear, String pComment, String pGenre, int pDuration) {
-        setProperties(pPath, pTitle, pArtist, pAlbum, pYear, pComment, pGenre, pDuration);
+                String pYear, String pComment, String pGenre, int pTime) {
+        setProperties(pPath, pTitle, pArtist, pAlbum, pYear, pComment, pGenre, pTime);
     }
 
     /**
@@ -43,7 +43,7 @@ public class Song {
             Mp3File mp3file = new Mp3File(filePath);
 
             //Fetching mp3file info
-            duration = (int)mp3file.getLengthInSeconds();
+            time = (int)mp3file.getLengthInSeconds();
 
             //more info with ID3V1/ID3V2 tags
             if (mp3file.hasId3v1Tag()) {
@@ -52,14 +52,14 @@ public class Song {
                 setProperties( filePath,
                         id3v1Tag.getTitle(), id3v1Tag.getArtist(), id3v1Tag.getAlbum(),
                         id3v1Tag.getYear(),id3v1Tag.getComment(), id3v1Tag.getGenreDescription(),
-                        duration );
+                        time );
             } else if (mp3file.hasId3v2Tag()) {
                 System.out.println("\tMP3tag:Id3v2 ");
                 ID3v2 id3v2Tag = mp3file.getId3v2Tag();
                 setProperties( filePath,
                         id3v2Tag.getTitle(), id3v2Tag.getArtist(), id3v2Tag.getAlbum(),
                         id3v2Tag.getYear(),id3v2Tag.getComment(), id3v2Tag.getGenreDescription(),
-                        duration );
+                        time );
             }
         } catch (IOException e) {
             System.err.println("[Song_ERROR] File Not Found. filePath='"+filePath+"'");
@@ -97,15 +97,15 @@ public class Song {
     public String getYear() { return year; }
     public String getComment() { return comment; }
     public String getGenre() { return genre; }
-    public int getDuration() { return duration; }
+    public int getTime() { return time; }
 
     /**
-     * Get song duration in '0:00' form
+     * Get song time in '0:00' form
      * @return
      */
-    public String getDurationMinSec() {
-        int min = duration / 60;
-        int sec = duration % 60;
+    public String getTimeMinSec() {
+        int min = time / 60;
+        int sec = time % 60;
         String minSec;
         if (sec < 10) {
             minSec = min + ":0" + sec;
@@ -129,7 +129,7 @@ public class Song {
      * Title, Artist, Album fields with null or blank String are replaced to "unknown".
      */
     public void setProperties(String pPath, String pTitle, String pArtist, String pAlbum,
-                              String pYear, String pComment, String pGenre, int pDuration) {
+                              String pYear, String pComment, String pGenre, int pTime) {
         this.path = pPath;
         this.title = (pTitle==null || pTitle.equals("")) ? "unknown" : pTitle;
         this.artist = (pArtist==null || pArtist.equals("")) ? "unknown" : pArtist;
@@ -137,7 +137,7 @@ public class Song {
         this.year = (pYear==null) ? "" : pYear;
         this.comment = (pComment==null) ? "" : pComment;
         this.genre = (pGenre==null) ? "" : pGenre;
-        this.duration = pDuration;
+        this.time = pTime;
     }
 
 }
