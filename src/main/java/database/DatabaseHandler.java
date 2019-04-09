@@ -56,7 +56,7 @@ public class DatabaseHandler {
                 "YEAR_PUBLISHED VARCHAR(256), " +
                 "COMMENT VARCHAR(256), " +
                 "GENRE VARCHAR(256), " +
-                "DURATION INTEGER" +
+                "TIME INTEGER" +
                 " )";
         try {
             conn = DriverManager.getConnection(createDatabaseURL);
@@ -136,7 +136,7 @@ public class DatabaseHandler {
                 + song.getYear()    + "', '"
                 + song.getComment() + "', '"
                 + song.getGenre()   + "', "
-                + song.getDuration()    //this field is integer
+                + song.getTime()    //this field is integer
                 + ")";
         System.out.println("[Database] sql executed: " + sql);
         try {
@@ -351,15 +351,8 @@ public class DatabaseHandler {
                 String year = results.getString(results.findColumn("YEAR_PUBLISHED"));
                 String comment = results.getString(results.findColumn("COMMENT"));
                 String genre = results.getString(results.findColumn("GENRE"));
-
-                //TODO [3] Replace this try-catch to 'int duration = results.getInt(8);'.
-                int duration;
-                try {
-                    duration = results.getInt(8);
-                }catch(SQLException ex){
-                    duration = 0;
-                }
-                Song song = new Song(file_path, title, artist, album, year, comment, genre, duration);
+                int time = results.getInt(results.findColumn("TIME"));
+                Song song = new Song(file_path, title, artist, album, year, comment, genre, time);
                 list.add(song);
             }
             results.close();
@@ -398,15 +391,9 @@ public class DatabaseHandler {
                 String year = results.getString(results.findColumn("YEAR_PUBLISHED"));
                 String comment = results.getString(results.findColumn("COMMENT"));
                 String genre = results.getString(results.findColumn("GENRE"));
+                int time = results.getInt(results.findColumn("TIME"));
 
-                //TODO [3] Replace this try-catch to 'int duration = results.getInt(8);'.
-                int duration;
-                try {
-                    duration = results.getInt(8);
-                }catch(SQLException ex){
-                    duration = 0;
-                }
-                Song song = new Song(file_path, title, artist, album, year, comment, genre, duration);
+                Song song = new Song(file_path, title, artist, album, year, comment, genre, time);
                 list.add(song);
             }
             results.close();
@@ -453,17 +440,11 @@ public class DatabaseHandler {
                 String year = results.getString(results.findColumn("YEAR_PUBLISHED"));
                 String comment = results.getString(results.findColumn("COMMENT"));
                 String genre = results.getString(results.findColumn("GENRE"));
+                int time = results.getInt(results.findColumn("TIME"));
 
                 System.out.println("[Database] returning Song path " + file_path);
 
-                //TODO [3] Replace this try-catch to 'int duration = results.getInt(8);'.
-                int duration;
-                try {
-                    duration = results.getInt(8);
-                }catch(SQLException ex){
-                    duration = 0;
-                }
-                Song song = new Song(file_path, title, artist, album, year, comment, genre, duration);
+                Song song = new Song(file_path, title, artist, album, year, comment, genre, time);
                 list.add(song);
             }
             results.close();
@@ -516,6 +497,7 @@ public class DatabaseHandler {
         return list;
     }
 
+    //TODO redundant??
     public ArrayList<String> getAllPlaylistsStrings() {
         Connection conn = null;
         Statement statement = null;
