@@ -73,6 +73,21 @@ public class Playlist extends ArrayList<Song> {
     }
 
     /**
+     * Deletes a song from the playlist, if present.
+     * @param song the song to be deleted from this playlist
+     */
+    public void deleteSong(Song song){
+        if ( this.contains(song) ){
+            dbHandler.deleteSongFromPlaylist(this, song);
+            this.remove(song);
+            System.out.print("[Playlist: "+this.name+"] Deleted.\t");
+        }else{
+            System.out.print("[Playlist: "+this.name+"] Song does not exist in in this playlist.\t");
+        }
+        System.out.println("'"+song.getTitleAndArtist()+"'\n");
+    }
+
+    /**
      * This method returns the name of this playlist
      * @return the name of this playilst
      */
