@@ -1,5 +1,6 @@
 package controller;
 
+import database.DatabaseHandler;
 import javazoom.jlgui.basicplayer.BasicPlayer;
 import model.Playlist;
 import model.PlaylistLibrary;
@@ -171,6 +172,8 @@ public class MainController {
         }
     }
 
+
+
     /**
      * MenuItemListener class implements
      * the actions of menu items in menu bar and popup menu
@@ -266,6 +269,24 @@ public class MainController {
             } else if (menuName.equals("newPlaylist")) {
                 //Create a new playlist
                 System.out.println("[Menu] New Playlist is pressed.");
+
+
+                String playlistName = JOptionPane.showInputDialog(playerView, "Name the playlist", "Create Playlist", JOptionPane.PLAIN_MESSAGE);
+                if (playlistLibrary.exists(playlistName))
+                {
+                    playlistName = JOptionPane.showInputDialog(playerView, "Playlist already exists.\nName the playlist", "Create Playlist", JOptionPane.PLAIN_MESSAGE);
+                }
+
+
+
+                //name
+                playlistLibrary.addPlaylist(playlistName);
+
+
+                //update side panel
+                playerView.getSideView().updatePlaylistTree(playlistLibrary.getAllPlaylistNames());
+
+
 
             } else if (menuName.equals("exit")) {
             //[Exit] menu actions
