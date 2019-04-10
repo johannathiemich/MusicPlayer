@@ -54,7 +54,7 @@ public class SongListView extends JPanel {
         table.setRowHeight(tableRowHeight);
         table.setTransferHandler(handler);
         table.setDropMode(DropMode.INSERT_ROWS);
-        //table.setShowGrid(false);
+        table.setShowGrid(false);
 
 //        //change the look of the header
 //        DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer();

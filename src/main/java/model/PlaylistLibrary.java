@@ -41,6 +41,7 @@ public class PlaylistLibrary extends ArrayList<Playlist> {
      * @return the playlist with the name pName
      */
     public Playlist getPlaylistByName(String pName) {
+
         for (Playlist playlist : this){
             if (playlist.getName().equalsIgnoreCase(pName)){
                 return playlist;
