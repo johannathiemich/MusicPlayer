@@ -41,21 +41,14 @@ public class PlaylistLibrary extends ArrayList<Playlist> {
      * @return the playlist with the name pName
      */
     public Playlist getPlaylistByName(String pName) {
-
-        for (Playlist playlist : this){
-            if (playlist.getName().equalsIgnoreCase(pName)){
-                return playlist;
+        //TODO need to refactor this part!!
+        for (Playlist playlist : this) {
+            if ( this.exists(pName) ) {
+                ArrayList<Song> songs = dbHandler.getSongsInPlaylist(pName);
+                return new Playlist(pName, songs);
             }
         }
         return null;
-
-        //TODO need to refactor this part!!
-//        if ( this.exists(pName) ) {
-//            ArrayList<Song> songs = dbHandler.getSongsInPlaylist(pName);
-//            return new Playlist(pName, songs);
-//        } else {
-//            return null;
-//        }
     }
 
     /**

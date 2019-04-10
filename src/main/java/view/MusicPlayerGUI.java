@@ -140,6 +140,7 @@ public class MusicPlayerGUI extends JFrame {
         addSongMenuItem.setName("add");
         deleteSongMenuItem.setName("delete");
         aboutMenuItem.setName("about");
+        newPlaylistMenuItem.setName("newPlaylist");
         exitMenuItem.setName("exit");
         //add menu items to fileMenu
         fileMenu.add(openSongMenuItem);
