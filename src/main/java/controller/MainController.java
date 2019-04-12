@@ -272,7 +272,7 @@ public class MainController {
 
 
                 String playlistName = JOptionPane.showInputDialog(playerView, "Name the playlist", "Create Playlist", JOptionPane.PLAIN_MESSAGE);
-                if (playlistLibrary.exists(playlistName))
+                while (playlistLibrary.exists(playlistName))
                 {
                     playlistName = JOptionPane.showInputDialog(playerView, "Playlist already exists.\nName the playlist", "Create Playlist", JOptionPane.PLAIN_MESSAGE);
                 }
@@ -611,8 +611,10 @@ public class MainController {
                 System.out.println("[PopupMenu] Delete Playlist is pressed.");
 
                 //TODO Delete the selected playlist
+
                 //Ask user if they surely want to delete playlist via dialog
                 //JOptionPane.show....
+                System.out.println("Are you sure you want to delete this playlist?");
 
                 //delete the selected playlist by calling a method that works with database
                 //...
