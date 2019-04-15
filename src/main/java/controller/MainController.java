@@ -288,6 +288,14 @@ public class MainController {
                 playerView.getSideView().updatePlaylistTree(playlistLibrary.getAllPlaylistNames());
                 //update playlists in the popup menu
                 playerView.setAddToPlaylistPopupMenuItem(playlistLibrary.getAllPlaylistNames());
+                //select the playlist in the side panel tree
+                playerView.getSideView().getLibraryTree().clearSelection();
+                int lastRow = playerView.getSideView().getPlaylistTree().getRowCount() - 1;
+                playerView.getSideView().getPlaylistTree().setSelectionRow(lastRow);
+                //open it on the main window
+                Playlist playlist = playlistLibrary.getPlaylistByName(playlistName);
+                playerView.updateTableView(playlist);
+                playerControl.updateSongList(playlist);
 
             } else if (menuName.equals("exit")) {
             //[Exit] menu actions
