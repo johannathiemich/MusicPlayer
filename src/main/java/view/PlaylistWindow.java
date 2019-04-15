@@ -31,7 +31,7 @@ public class PlaylistWindow extends JDialog {
         playlistView = owner.getSongListView();
 
         //set the songListView (the table view)
-        playlistView.updateTableView(playlist);
+        playlistView.updateTableView(playlist.getSongList());
 
         //not show song info panel as a default for playlist window
         controlView.showSongInfoPanel(false);

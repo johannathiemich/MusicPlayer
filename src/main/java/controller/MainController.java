@@ -119,7 +119,7 @@ public class MainController {
         @Override
         public void actionPerformed(ActionEvent e) {
             // Get the name of event source component
-            btnName = ((JButton)e.getSource()).getName();
+            btnName = ((JButton) e.getSource()).getName();
             playerStatus = playerControl.getPlayerStatus();
 
             if (btnName.equals("play")) {
@@ -128,19 +128,19 @@ public class MainController {
 
                 switch (playerStatus) {
                     //Pause Action
-                    case BasicPlayer.PLAYING :
+                    case BasicPlayer.PLAYING:
                         playerControl.pauseSong();
                         updatePlayBtnTextInAllWindow(MusicPlayerGUI.BTNTEXT_PLAY);
                         break;
                     //Resume Action
-                    case BasicPlayer.PAUSED :
+                    case BasicPlayer.PAUSED:
                         playerControl.resumeSong();
                         updatePlayBtnTextInAllWindow(MusicPlayerGUI.BTNTEXT_PAUSE);
                         break;
                     //Play Action
-                    case BasicPlayer.STOPPED :
+                    case BasicPlayer.STOPPED:
                     default:
-                        if(focusedWindowName.equals("main")) {
+                        if (focusedWindowName.equals("main")) {
                             //main window
                             if (playerView.isAnyRowSelected()) {
                                 playerControl.setCurrentSong(selectedSong);
@@ -149,12 +149,12 @@ public class MainController {
                             }
                         } else {
                             //all playlist windows
-                            for(MusicPlayerGUI playlistWindow : playlistWindowArray){
-                                if(playlistWindow.getWindowName().equals(focusedWindowName)) {
-                                    if(playlistWindow.isAnyRowSelected()) {
+                            for (MusicPlayerGUI playlistWindow : playlistWindowArray) {
+                                if (playlistWindow.getWindowName().equals(focusedWindowName)) {
+                                    if (playlistWindow.isAnyRowSelected()) {
                                         playerControl.setCurrentSong(selectedSong);
                                     } else {
-                                        System.out.println("nothing selected on the "+focusedWindowName+" window, playing the first song in the library..");
+                                        System.out.println("nothing selected on the " + focusedWindowName + " window, playing the first song in the library..");
                                     }
                                 }
                             }
@@ -170,8 +170,7 @@ public class MainController {
                 System.out.println("[BUTTON] STOP button is pressed.");
                 playerControl.stopSong();
                 updatePlayBtnTextInAllWindow(MusicPlayerGUI.BTNTEXT_PLAY);
-            }
-            else if (btnName.equals("prev")) {
+            } else if (btnName.equals("prev")) {
                 //PREV button action
                 System.out.println("[BUTTON] PREV button is pressed.");
                 playerControl.playPrevSong();
@@ -179,8 +178,7 @@ public class MainController {
                 updatePlayBtnTextInAllWindow(MusicPlayerGUI.BTNTEXT_PAUSE);
                 //reflect to the view: change the row selection of the window
                 focusedWindow.changeTableRowSelection(playerControl.getSongList().indexOf(playerControl.getCurrentSong()));
-            }
-            else if (btnName.equals("next")) {
+            } else if (btnName.equals("next")) {
                 //NEXT button action
                 System.out.println("[BUTTON] NEXT button is pressed.");
 
@@ -189,8 +187,7 @@ public class MainController {
                 updatePlayBtnTextInAllWindow(MusicPlayerGUI.BTNTEXT_PAUSE);
                 //reflect to the view: change the row selection of the window
                 focusedWindow.changeTableRowSelection(playerControl.getSongList().indexOf(playerControl.getCurrentSong()));
-            }
-            else {
+            } else {
                 System.out.println("none of play/stop/prev/next buttons");
             }
         }
@@ -209,7 +206,6 @@ public class MainController {
     }
 
 
-
     /**
      * MenuItemListener class implements
      * the actions of menu items in menu bar and popup menu
@@ -224,10 +220,11 @@ public class MainController {
      */
     class MenuItemListener implements ActionListener {
         String menuName;
+
         @Override
         public void actionPerformed(ActionEvent e) {
             // Get the name of event source component
-            menuName = ((JMenuItem)e.getSource()).getName();
+            menuName = ((JMenuItem) e.getSource()).getName();
             System.out.println("menuName: " + menuName);
 
             if (menuName == null) {
@@ -235,7 +232,7 @@ public class MainController {
                 return;
             }
             if (menuName.equals("openSong")) {
-            //[Open Song] menu actions
+                //[Open Song] menu actions
                 System.out.println("[Menu] Open/Play Song not in library is pressed.");
                 JFileChooser chooser = new JFileChooser();
                 chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -252,10 +249,12 @@ public class MainController {
                 }
 
             } else if (menuName.equals("lib-addSong")) {
-            //[Add A Song To Library] menu actions
+                //[Add A Song To Library] menu actions
                 System.out.println("[Menu] Add Song is pressed.");
                 JFileChooser chooser = new JFileChooser();
                 chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                //save windowname in case loosing focus when choosing song
+                String windowName = focusedWindowName;
                 if (chooser.showOpenDialog(playerView) == JFileChooser.APPROVE_OPTION) {
                     String selectedPath = chooser.getSelectedFile().getAbsolutePath();
                     Song newSong = new Song(selectedPath);
@@ -265,38 +264,63 @@ public class MainController {
                         JOptionPane.showMessageDialog(null, "This file is not a valid " +
                                 "mp3 file.");
                     } else {
+                        if (!windowName.equals("main")) {
+                            playlistLibrary.getPlaylistByName(windowName).addSong(newSong);
+                            getPlaylistWindow(windowName).
+                                    updateTableView(playlistLibrary.getPlaylistByName(windowName).getSongList());
+                        }
                         library.addSong(newSong);
                         playerView.updateTableView(library);
                         playerControl.updateSongList(library);
                     }
+
                 }
 
             } else if (menuName.equals("lib-deleteSong")) {
-            //[Delete Song From Library] menu actions
-                System.out.println("[Menu] Delete Song is pressed.");
+                //[Delete Song From Library] menu actions
+                if (focusedWindowName.equals("main")) {
+                    System.out.println("[Menu] Delete Song is pressed.");
 
-                int selectedRow = playerView.getSongTable().getSelectedRow();
-                boolean isRowInbound = (selectedRow >= 0) && (selectedRow < library.size());
+                    int selectedRow = playerView.getSongTable().getSelectedRow();
+                    boolean isRowInbound = (selectedRow >= 0) && (selectedRow < library.size());
 
-                if ( isRowInbound ) {
-                    Song selectedSong = library.get(selectedRow);
-                    System.out.println("row:"+selectedRow+" is selected to delete.");
+                    if (isRowInbound) {
+                        Song selectedSong = library.get(selectedRow);
+                        System.out.println("row:" + selectedRow + " is selected to delete.");
 
-                    //delete song from the library
-                    library.deleteSong(selectedSong);
-                    //delete song from all playlists
-                    playlistLibrary.deleteSongFromAllPlaylists(selectedSong);
-                    //update the view
-                    playerView.updateTableView(library);
-                    playerControl.updateSongList(library);
-                    //TODO reflect deleted song to all opened playlist window
-                    //...
+                        //delete song from the library
+                        library.deleteSong(selectedSong);
+                        //delete song from all playlists
+                        playlistLibrary.deleteSongFromAllPlaylists(selectedSong);
+                        //update the view
+                        playerView.updateTableView(library);
+                        playerControl.updateSongList(library);
+                        //TODO reflect deleted song to all opened playlist window
+                        //...
+                    } else {
+                        System.out.println("row:" + selectedRow + ", nothing selected to delete.");
+                    }
                 } else {
-                    System.out.println("row:"+selectedRow+", nothing selected to delete.");
+                    System.out.println("[PlaylistWindow] Delete Song is pressed");
+                    int selectedRow = getPlaylistWindow(focusedWindowName).getSongTable().getSelectedRow();
+                    boolean isRowInbound = (selectedRow >= 0) &&
+                            (selectedRow < playlistLibrary.getPlaylistByName(focusedWindowName).getSongList().size());
+                    if (isRowInbound) {
+                        Song selectedSong =
+                                playlistLibrary.getPlaylistByName(focusedWindowName).getSongList().get(selectedRow);
+                        System.out.println("row: " + selectedRow + " is selected to delete.");
+
+                        //delete song from playlist
+                        playlistLibrary.getPlaylistByName(focusedWindowName).deleteSong(selectedSong);
+                        getPlaylistWindow(focusedWindowName).updateTableView(
+                                playlistLibrary.getPlaylistByName(focusedWindowName).getSongList());
+                    } else {
+                        System.out.println("[Playlist window] row: " + selectedRow + " nothing selected to delete.");
+                    }
                 }
 
             } else if (menuName.equals("about")) {
-            //[About] menu actions
+                //[About] menu actions
                 System.out.println("[Menu] About is pressed.");
                 String title = "About";
                 String appName = "MyTunes1.5";
@@ -306,7 +330,7 @@ public class MainController {
                 JOptionPane.showMessageDialog(playerView, msg, title, JOptionPane.PLAIN_MESSAGE);
 
             } else if (menuName.equals("newPlaylist")) {
-            //[New Playlist] menu actions
+                //[New Playlist] menu actions
                 System.out.println("[Menu] New Playlist is pressed.");
                 //ask user to name a new playlist
                 String title = "Create Playlist";
@@ -329,17 +353,17 @@ public class MainController {
                 playerView.getSideView().getPlaylistTree().setSelectionRow(lastRow);
                 //open it on the main window
                 Playlist playlist = playlistLibrary.getPlaylistByName(playlistName);
-                playerView.updateTableView(playlist);
-                playerControl.updateSongList(playlist);
+                playerView.updateTableView(playlist.getSongList());
+                playerControl.updateSongList(playlist.getSongList());
 
             } else if (menuName.equals("exit")) {
-            //[Exit] menu actions
+                //[Exit] menu actions
                 System.exit(0);
 
             } else if (menuName.equals("addToPlaylist")) {
-            //[Add To Playlist] menu actions
-                String playlistName = ((JMenuItem)e.getSource()).getText();
-                System.out.println("[PopupMenu] Add To Playlist \""+playlistName+"\" is clicked.");
+                //[Add To Playlist] menu actions
+                String playlistName = ((JMenuItem) e.getSource()).getText();
+                System.out.println("[PopupMenu] Add To Playlist \"" + playlistName + "\" is clicked.");
                 Playlist playlist = playlistLibrary.getPlaylistByName(playlistName);
                 if (playlist != null) {
                     int[] selectedRow = playerView.getSongTable().getSelectedRows();
@@ -352,7 +376,8 @@ public class MainController {
                             System.out.println("row:" + selectedRow[i] + " is selected to be added.");
                             playlist.addSong(selectedSong);
                             //update the opened playlist window view where the song was added
-                            getPlaylistWindow(playlistName).updateTableView(playlistLibrary.getPlaylistByName(playlistName));
+                            getPlaylistWindow(playlistName).
+                                    updateTableView(playlistLibrary.getPlaylistByName(playlistName).getSongList());
                         } else {
                             System.out.println("row:" + selectedRow[i] + ", nothing selected to add.");
                         }
@@ -385,17 +410,17 @@ public class MainController {
 
             if (menuName.equals("darkTheme")) {
                 //[Dark Theme] menu actions
-                if(checkMenu.getState()) {
+                if (checkMenu.getState()) {
                     System.out.println("[ViewMenu] Set Dark Theme.");
                     playerView.setColorTheme(ColorTheme.dark);
-                }else{
+                } else {
                     System.out.println("[ViewMenu] Unset Dark Theme.");
                     playerView.setColorTheme(ColorTheme.white);
                 }
 
             } else if (menuName.equals("songInfo")) {
                 //[Current Song Info] menu actions
-                if(checkMenu.getState()) {
+                if (checkMenu.getState()) {
                     System.out.println("[ViewMenu] Show Playing Song Info.");
                     playerView.getControlView().showSongInfoPanel(true);
                 } else {
@@ -421,9 +446,9 @@ public class MainController {
         public void valueChanged(ListSelectionEvent e) {
             if (!e.getValueIsAdjusting()) {
                 //get the table in the focused window
-                if(focusedWindowName.equals("main")) {
+                if (focusedWindowName.equals("main")) {
                     table = playerView.getSongTable();
-                }else{
+                } else {
                     table = getPlaylistWindow(focusedWindowName).getSongTable();
                 }
                 //check table row limit
@@ -431,7 +456,7 @@ public class MainController {
                 isRowInbound = row >= 0 && row < table.getRowCount();
                 if (isRowInbound) {
                     selectedSong = playerControl.getSongList().get(row);
-                    System.out.print("[Table] selectedRow:"+row);
+                    System.out.print("[Table] selectedRow:" + row);
                     System.out.println(", [" + selectedSong.getTitleAndArtist() + "]");
                 }
             }
@@ -453,15 +478,15 @@ public class MainController {
         @Override
         public void mousePressed(MouseEvent e) {
             // Get the mouse position in the table
-            source = (JTable)e.getSource();
+            source = (JTable) e.getSource();
             rowCount = source.getRowCount();
-            row = source.rowAtPoint( e.getPoint() );
-            col = source.columnAtPoint( e.getPoint() );
+            row = source.rowAtPoint(e.getPoint());
+            col = source.columnAtPoint(e.getPoint());
             isRowInbound = (row >= 0) && (row < rowCount);
             // Right-click Popup Trigger (for MacOS)
             if (e.isPopupTrigger() && library.size() > 0) {
-                if ( isRowInbound ) {   //right click in table
-                    System.out.println("right clicked in table. row:"+row);
+                if (isRowInbound) {   //right click in table
+                    System.out.println("right clicked in table. row:" + row);
                     //source.changeSelection(row, col, false, false);
                     playerView.getPopUpMenu().show(e.getComponent(), e.getX(), e.getY());
                 } else {                //right click out of table
@@ -470,17 +495,17 @@ public class MainController {
                 }
             }
             // Left-click outside of table to clear selection
-            if ( ! isRowInbound && ! e.isPopupTrigger()) {
+            if (!isRowInbound && !e.isPopupTrigger()) {
                 playerView.getSongTable().clearSelection();
                 System.out.println("Cleared row selections.");
             }
         }
+
         @Override
-        public void mouseReleased(MouseEvent e)
-        {
+        public void mouseReleased(MouseEvent e) {
             // Right-click Popup Trigger (for Windows)
             if (e.isPopupTrigger()) {
-                if ( isRowInbound ) {   //right click in table
+                if (isRowInbound) {   //right click in table
                     System.out.println("right clicked inside of the table");
                     //source.changeSelection(row, col, false, false);
                     playerView.getPopUpMenu().show(e.getComponent(), e.getX(), e.getY());
@@ -490,11 +515,12 @@ public class MainController {
                 }
             }
         }
+
         @Override
         public void mouseClicked(MouseEvent e) {
             // Double-click on a song to play
-            if ( isRowInbound ) {
-                if ( (e.getClickCount() == 2) && !e.isConsumed() && !e.isPopupTrigger()) {
+            if (isRowInbound) {
+                if ((e.getClickCount() == 2) && !e.isConsumed() && !e.isPopupTrigger()) {
                     System.out.println("[Table] double clicked");
                     selectedSong = playerControl.getSongList().get(row);
                     playerControl.playSong(selectedSong);
@@ -515,19 +541,19 @@ public class MainController {
             int draggedCount = 0;
             try {
                 evt.acceptDrop(DnDConstants.ACTION_COPY);
-                List<File> droppedFiles = (List<File>)evt.getTransferable()
+                List<File> droppedFiles = (List<File>) evt.getTransferable()
                         .getTransferData(DataFlavor.javaFileListFlavor);
                 draggedCount = droppedFiles.size();
                 for (File file : droppedFiles) {
                     filePath = file.getAbsolutePath();
                     Song newSong = new Song(filePath);
                     if (newSong.getPath() == null) {
-                        System.out.println("[DragDrop] Not a valid file. '"+filePath+"'\n");
+                        System.out.println("[DragDrop] Not a valid file. '" + filePath + "'\n");
                         invalidFilesFound = true;
                     } else {
                         //if library successfully adds the song
                         //which is valid mp3 and not present in library..
-                        if( library.addSong(newSong) ) {
+                        if (library.addSong(newSong)) {
                             successCount++;
                             playerView.updateTableView(library);
                             playerControl.updateSongList(library);
@@ -535,7 +561,7 @@ public class MainController {
                     }
                 }
                 if (invalidFilesFound) {
-                    System.out.println("[DragDrop] Added "+successCount+" songs out of "+draggedCount+" files.\n");
+                    System.out.println("[DragDrop] Added " + successCount + " songs out of " + draggedCount + " files.\n");
                     JOptionPane.showMessageDialog(playerView,
                             "Some files have not been added\n" +
                                     "since they are not valid mp3 files.");
@@ -560,14 +586,14 @@ public class MainController {
 
         @Override
         public void mousePressed(MouseEvent e) {
-            tree = (JTree)e.getSource();
+            tree = (JTree) e.getSource();
             // Get treePath of the selected tree node
             treePath = tree.getPathForLocation(e.getX(), e.getY());
             // initialize state variables
             isPlaylistSelected = false;
 
             // Check if the event is within trees
-            if ( treePath != null ) {
+            if (treePath != null) {
                 //clear highlight on the not selected tree.
                 if (tree.getName().equals("libraryTree")) {
                     playerView.getSideView().getPlaylistTree().clearSelection();
@@ -592,33 +618,34 @@ public class MainController {
                     tree.setSelectionPath(treePath);
                     //show playlist popup menu
                     JPopupMenu popupMenu = playerView.getSideView().getPlaylistPopupMenu();
-                    popupMenu.show(e.getComponent(),e.getX(),e.getY());
+                    popupMenu.show(e.getComponent(), e.getX(), e.getY());
                 }
             } else {
                 // [4] Clear any tree selections when left-clicking outside of tree
-                if ( ! e.isPopupTrigger()) {
+                if (!e.isPopupTrigger()) {
                     playerView.getSideView().getLibraryTree().clearSelection();
                     playerView.getSideView().getPlaylistTree().clearSelection();
                     System.out.println("cleared tree selections.");
                 }
             }
         }
+
         @Override
-        public void mouseReleased(MouseEvent e)
-        {
+        public void mouseReleased(MouseEvent e) {
             // [3] Right-click Popup Trigger (for Windows)
             if (e.isPopupTrigger() && isPlaylistSelected) {
                 System.out.println("[Playlist] right clicked: " + selectedPlaylistName);
                 tree.setSelectionPath(treePath);
                 //show popup menu
                 JPopupMenu popupMenu = playerView.getSideView().getPlaylistPopupMenu();
-                popupMenu.show(e.getComponent(),e.getX(),e.getY());
+                popupMenu.show(e.getComponent(), e.getX(), e.getY());
             }
         }
+
         @Override
         public void mouseClicked(MouseEvent e) {
             // Detect left-click event
-            if ( !e.isPopupTrigger() ) {
+            if (!e.isPopupTrigger()) {
 
                 // [1] Left-click on "Library"
                 if (tree.getName().equals("libraryTree")) {
@@ -631,9 +658,9 @@ public class MainController {
 
                 // [2] Left-click on a playlist name under "Playlist"
                 if (isPlaylistSelected) {
-                    System.out.println("[SideView] Playlist \""+selectedPlaylistName+"\" clicked");
+                    System.out.println("[SideView] Playlist \"" + selectedPlaylistName + "\" clicked");
                     Playlist playlist = playlistLibrary.getPlaylistByName(selectedPlaylistName);
-                    System.out.println("[Playlist:"+selectedPlaylistName+"] "+playlist.getSongList().size()+" songs\n");
+                    System.out.println("[Playlist:" + selectedPlaylistName + "] " + playlist.getSongList().size() + " songs\n");
                     //show the selected playlist on the main window
                     playerView.updateTableView(playlist.getSongList());
                     playerControl.updateSongList(playlist.getSongList());
@@ -644,15 +671,18 @@ public class MainController {
         /**
          * Extract only the playlist name from text in a tree node
          * e.g. "favorite (3)" to "favorite"
-         * @param text  the text in treeNode with song counts
+         *
+         * @param text the text in treeNode with song counts
          * @return the string of playlistName with counts removed
          */
-        private String extractPlaylistNameFromTreeNodeText(String text){
-            if(text == null) { return null; }
-            if(text.endsWith(")")){
+        private String extractPlaylistNameFromTreeNodeText(String text) {
+            if (text == null) {
+                return null;
+            }
+            if (text.endsWith(")")) {
                 int pos = text.lastIndexOf(" (");
-                return text.substring(0,pos);
-            }else{
+                return text.substring(0, pos);
+            } else {
                 return text;
             }
         }
@@ -668,10 +698,11 @@ public class MainController {
      */
     private class PopupMenuListenerForPlaylist implements ActionListener {
         String menuName;
+
         @Override
         public void actionPerformed(ActionEvent e) {
             // Get the name of event source component
-            menuName = ((JMenuItem)e.getSource()).getName();
+            menuName = ((JMenuItem) e.getSource()).getName();
 
             if (menuName.equals("playlist-newWindow")) {
                 //[Open in New Window] menu action
@@ -679,15 +710,15 @@ public class MainController {
 
                 Boolean isOpen = false;
                 //If the playlist is already opened in a new window
-                for(MusicPlayerGUI playlistWindow : playlistWindowArray){
-                    if(playlistWindow.getWindowName().equalsIgnoreCase(selectedPlaylistName)){
+                for (MusicPlayerGUI playlistWindow : playlistWindowArray) {
+                    if (playlistWindow.getWindowName().equalsIgnoreCase(selectedPlaylistName)) {
                         //show the opened window to the front
                         playlistWindow.toFront();
                         isOpen = true;
                     }
                 }
                 //If not opened
-                if(!isOpen) {
+                if (!isOpen) {
                     //open a new window for the selected playlist
                     MusicPlayerGUI newPlaylistWindow = createNewPlaylistWindow(selectedPlaylistName, playerView);
                     playlistWindowArray.add(newPlaylistWindow);
@@ -717,19 +748,15 @@ public class MainController {
                 //JOptionPane.showConfirmDialog(null,
                 //      "Delete Playlist " + selectedPlaylistName + "?", null, JOptionPane.YES_NO_OPTION);
                 if (JOptionPane.showConfirmDialog(null,
-                        "Delete Playlist " + "'" + selectedPlaylistName + "'?", null, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
-                {
+                        "Delete Playlist " + "'" + selectedPlaylistName + "'?", null, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                     System.out.println("[PopupMenu] Yes is pressed.");
                     //delete the selected playlist by calling a method that works with database
                     //...
                     playlistLibrary.deletePlaylist(selectedPlaylistName);
                     playerView.getSideView().updatePlaylistTree(playlistLibrary.getAllPlaylistNames());
-                }
-                else
-                {
+                } else {
                     System.out.println("[PopupMenu] No is pressed.");
                 }
-
 
 
                 //update the playlist tree view
@@ -745,45 +772,48 @@ public class MainController {
     public class FocusListenerForWindow implements WindowFocusListener {
         @Override
         public void windowGainedFocus(WindowEvent e) {
-            focusedWindow = (MusicPlayerGUI)e.getWindow();
+            focusedWindow = (MusicPlayerGUI) e.getWindow();
             focusedWindowName = focusedWindow.getWindowName();
 
             //if the main window has the focus
-            if(focusedWindowName.equals("main")){
+            if (focusedWindowName.equals("main")) {
                 System.out.println("\nFocus on the main window.");
                 //TODO might need to check if playlist is on the main window table... or it can work fine without it.
                 playerControl.updateSongList(library);
             }
             //if a playlist window has the focus
             else {
-                System.out.println("\nFocus on playlist window \""+focusedWindowName+"\".");
-                playerControl.updateSongList(playlistLibrary.getPlaylistByName(focusedWindowName));
+                System.out.println("\nFocus on playlist window \"" + focusedWindowName + "\".");
+                playerControl.updateSongList(playlistLibrary.getPlaylistByName(focusedWindowName).getSongList());
                 selectedPlaylistName = focusedWindowName;
             }
         }
+
         @Override
         public void windowLostFocus(WindowEvent e) {
             //clear any row selection on the table when losing focus
-            ((MusicPlayerGUI)e.getWindow()).getSongTable().clearSelection();
+            ((MusicPlayerGUI) e.getWindow()).getSongTable().clearSelection();
         }
+
     }
 
     /**
      * Creates a new window for a playlist.
      * This new window reuses the same class MusicPlayerGUI that the main window used.
+     *
      * @param playlistName the name of the playlist to be represented on a new window
-     * @param parentView the MusicPlayerGUI instance of main window
+     * @param parentView   the MusicPlayerGUI instance of main window
      */
-    private MusicPlayerGUI createNewPlaylistWindow (String playlistName, MusicPlayerGUI parentView) {
+    private MusicPlayerGUI createNewPlaylistWindow(String playlistName, MusicPlayerGUI parentView) {
         //Create a new window for a playlist
-        MusicPlayerGUI playlistWindow = new MusicPlayerGUI("Playlist: "+playlistName,500,300, playlistName);
+        MusicPlayerGUI playlistWindow = new MusicPlayerGUI("Playlist: " + playlistName, 500, 300, playlistName);
         //Closing action of playlist window
         playlistWindow.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
         playlistWindow.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 super.windowClosing(e);
-                System.out.println("Playlist window \""+playlistName+"\" is closing.");
+                System.out.println("Playlist window \"" + playlistName + "\" is closing.");
                 playlistWindowArray.remove(playlistWindow);
             }
         });
@@ -823,7 +853,7 @@ public class MainController {
         );
 
         playlistWindow.setVisible(true);
-        System.out.println("Playlist \""+playlistName+"\" is opened in a new window.\n");
+        System.out.println("Playlist \"" + playlistName + "\" is opened in a new window.\n");
 
         return playlistWindow;
     }
@@ -831,23 +861,25 @@ public class MainController {
 
     /**
      * Updates play buttons in all window
+     *
      * @param btnText
      */
-    public void updatePlayBtnTextInAllWindow(String btnText){
+    public void updatePlayBtnTextInAllWindow(String btnText) {
         playerView.setPlayBtnText(btnText);
-        for(MusicPlayerGUI playlistWindow : playlistWindowArray) {
+        for (MusicPlayerGUI playlistWindow : playlistWindowArray) {
             playlistWindow.setPlayBtnText(btnText);
         }
     }
 
     /**
      * Gets playlistWindow by playlist name, if opened.
+     *
      * @param playlistName the name of the playlist to check if a new window is opened.
      * @return MusicPlayerGUI window
      */
     public MusicPlayerGUI getPlaylistWindow(String playlistName) {
-        for(MusicPlayerGUI playlistWindow : playlistWindowArray) {
-            if(playlistWindow.getWindowName().equalsIgnoreCase(playlistName)) {
+        for (MusicPlayerGUI playlistWindow : playlistWindowArray) {
+            if (playlistWindow.getWindowName().equalsIgnoreCase(playlistName)) {
                 return playlistWindow;
             }
         }
