@@ -7,7 +7,6 @@ import model.Song;
 import model.SongLibrary;
 import view.ColorTheme;
 import view.MusicPlayerGUI;
-import view.PlaylistWindow;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -24,6 +23,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -38,6 +38,8 @@ public class MainController {
 
     //View
     private MusicPlayerGUI playerView;
+    private ArrayList<MusicPlayerGUI> playlistWindowArray;
+
     //Models
     private SongLibrary library;
     private PlaylistLibrary playlistLibrary;
@@ -53,12 +55,14 @@ public class MainController {
      */
     public MainController() {
         //assign modules
-        playerView = new MusicPlayerGUI("MyTunes1.5");
+        playerView = new MusicPlayerGUI("MyTunes 2.0", 800, 600, "main");
         library = new SongLibrary(); //should always be up-to-date with db
         playlistLibrary = new PlaylistLibrary(); //should always be up-to-date with db
 
         playerControl = new PlayerController(library, playerView);
         selectedSong = null;
+
+        playlistWindowArray = new ArrayList<MusicPlayerGUI>();
         selectedPlaylistName = null;
 
         //setup presentation
@@ -614,17 +618,33 @@ public class MainController {
             menuName = ((JMenuItem)e.getSource()).getName();
 
             if (menuName.equals("playlist-newWindow")) {
-                //Open in New Window menu action
+                //[Open in New Window] menu action
                 System.out.println("[PopupMenu] Open in New Window is pressed.");
 
-                //TODO check if the playlist is already opened in a new window
-                PlaylistWindow playlistWindow = new PlaylistWindow(selectedPlaylistName, ColorTheme.dark);
-                //update the table view of the playlist window
-                playlistWindow.getTableView().setSongLPlaylistL(playlistLibrary, library);
-                playlistWindow.getTableView().updateTableView(playlistLibrary.getPlaylistByName(selectedPlaylistName));
+                Boolean isOpen = false;
+                //If the playlist is already opened in a new window
+                for(MusicPlayerGUI playlistWindow : playlistWindowArray){
+                    if(playlistWindow.getWindowName().equalsIgnoreCase(selectedPlaylistName)){
+                        //show the opened window to the front
+                        playlistWindow.toFront();
+                        isOpen = true;
+                    }
+                }
+                //If not opened
+                if(!isOpen) {
+                    MusicPlayerGUI newPlaylistWindow = createNewPlaylistWindow(selectedPlaylistName, playerView);
+                    playlistWindowArray.add(newPlaylistWindow);
+                }
+
+//                //create a new playlist window
+//                PlaylistWindow playlistWindow = new PlaylistWindow(selectedPlaylistName, ColorTheme.dark);
+//                //set transferable
+//                playlistWindow.getTableView().setSongLPlaylistL(playlistLibrary, library);
+//                //update the table view of the playlist window
+//                playlistWindow.getTableView().updateTableView(playlistLibrary.getPlaylistByName(selectedPlaylistName));
 
             } else if (menuName.equals("playlist-delete")) {
-                //Delete Playlist menu action
+                //[Delete Playlist] menu action
                 System.out.println("[PopupMenu] Delete Playlist is pressed.");
 
                 //TODO Delete the selected playlist
@@ -656,5 +676,52 @@ public class MainController {
 
             }
         }
+    }
+
+    /**
+     * Creates a new window for a playlist.
+     * This new window reuses the same class MusicPlayerGUI that the main window used.
+     * @param playlistName the name of the playlist to be represented on a new window
+     * @param parentView the MusicPlayerGUI instance of main window
+     */
+    private MusicPlayerGUI createNewPlaylistWindow (String playlistName, MusicPlayerGUI parentView) {
+        //Create a new window for a playlist
+        MusicPlayerGUI playlistWindow = new MusicPlayerGUI("Playlist: "+playlistName,500,300, playlistName);
+        playlistWindow.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+
+
+        //TODO better way to add event listeners and sync the control panel??
+        //Set the same components from the parent (the main window)
+//        playlistWindow.setFileMenu(parentView.getFileMenu());
+//        playlistWindow.setSongListView(parentView.getSongListView());
+//        playlistWindow.setControlView(parentView.getControlView());
+
+        //Set songs on the view
+        playlistWindow.getSongListView().updateTableView(playlistLibrary.getPlaylistByName(playlistName));
+
+        //Disable the unnecessary componets
+        playlistWindow.getSideView().setVisible(false);
+        playlistWindow.getJMenuBar().getMenu(1).setVisible(false);  //hide view menu
+
+        //Add listeners for the new window
+        //menu
+        playlistWindow.addMenuItemListener(new MenuItemListener());
+        //controls
+        playlistWindow.addPlayerControlButtonListener(new PlayerControlButtonListener());
+        playlistWindow.addVolumeSliderListener(new VolumeSliderListener());
+        //table
+        playlistWindow.addSelectionListenerForTable(new SelectionListenerForTable());
+        playlistWindow.addMouseListenerForTable(new MouseListenerForTable());
+        //drop target to scroll pane
+        playlistWindow.addDragDropToScrollPane(new DragDropToScrollPane());
+        //transfer handler
+        playlistWindow.getSongListView().getSongTable().setTransferHandler(
+                new TableRowTransferHandler(library, playlistLibrary)
+        );
+
+        playlistWindow.setVisible(true);
+        System.out.println("Playlist \""+playlistName+"\" is opened in a new window.\n");
+
+        return playlistWindow;
     }
 }

@@ -17,9 +17,8 @@ import java.util.ArrayList;
  * for displaying the data from the model and delegating user interactions to the controller.
  */
 public class MusicPlayerGUI extends JFrame {
-    //panel size dimensions
-    private Dimension frameSize = new Dimension(800,600);
-    private Dimension frameMinSize = new Dimension(600,400);
+    //the name of what this window represents
+    private String windowName;
 
     //font of the app
     public static Font FONT = new Font("Helvetica",Font.PLAIN,14);
@@ -54,13 +53,18 @@ public class MusicPlayerGUI extends JFrame {
 
     /**
      * This constructor initializes all necessary components.
-     * @param frameTitle title of our application
+     * @param frameTitle the title shown on the frame
+     * @param width the width of the window
+     * @param height the height of the window
+     * @param windowName the name of what this window represents
      */
-    public MusicPlayerGUI(String frameTitle) {
+    public MusicPlayerGUI(String frameTitle, int width, int height, String windowName) {
         super(frameTitle);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        this.setPreferredSize(frameSize);
-        this.setMinimumSize(frameMinSize);
+        this.setPreferredSize(new Dimension(width,height));
+        this.setMinimumSize(new Dimension(width,height));
+
+        this.windowName = windowName;
 
         // table view of a list of songs
         songListView = new SongListView();
@@ -69,10 +73,10 @@ public class MusicPlayerGUI extends JFrame {
         // tree view of library/playlist
         sideView = new SidePanelView();
 
-        //Set a new look of the view @sellabae
+        // Set color theme of the window
         setColorTheme(ColorTheme.dark);
 
-        // Standard Menu setup
+        // Menu bar setup
         createMenu();
 
         // PopUp Menu setup
@@ -189,6 +193,14 @@ public class MusicPlayerGUI extends JFrame {
     }
 
     /**
+     * Gets the window name of this window. (different from frame title)
+     * This can be "main" for the main window
+     * or a playlist name for the playlist window.
+     * @return the String of the window name
+     */
+    public String getWindowName(){ return this.windowName; }
+
+    /**
      * Returns the songTable.
      * @return JTable containing songs in the library
      */
@@ -234,6 +246,13 @@ public class MusicPlayerGUI extends JFrame {
         return popUpMenu;
     }
 
+    public void setSongListView(SongListView songListView) {
+        this.songListView = songListView;
+    }
+
+    public void setControlView(ControlView controlView) {
+        this.controlView = controlView;
+    }
 
     /**
      * This method sets the text for the play button in order to switch between 'Play'<->'Pause' text change.
