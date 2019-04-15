@@ -302,7 +302,7 @@ public class MainController {
                                         updateTableView(playlistLibrary.getPlaylistByName(plistName).getSongList());
                             }
                         }
-                        
+
                     } else {
                         System.out.println("row:" + selectedRow + ", nothing selected to delete.");
                     }
