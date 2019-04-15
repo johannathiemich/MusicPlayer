@@ -631,13 +631,29 @@ public class MainController {
 
                 //Ask user if they surely want to delete playlist via dialog
                 //JOptionPane.show....
-                System.out.println("Are you sure you want to delete this playlist?");
+                //System.out.println("Are you sure you want to delete this playlist?");
 
-                //delete the selected playlist by calling a method that works with database
-                //...
+                //JOptionPane.showConfirmDialog(null,
+                  //      "Delete Playlist " + selectedPlaylistName + "?", null, JOptionPane.YES_NO_OPTION);
+                if (JOptionPane.showConfirmDialog(null,
+                        "Delete Playlist " + "'" + selectedPlaylistName + "'?", null, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
+                {
+                    System.out.println("[PopupMenu] Yes is pressed.");
+                    //delete the selected playlist by calling a method that works with database
+                    //...
+                    playlistLibrary.deletePlaylist(selectedPlaylistName);
+                    playerView.getSideView().updatePlaylistTree(playlistLibrary.getAllPlaylistNames());
+                }
+                else
+                {
+                    System.out.println("[PopupMenu] No is pressed.");
+                }
+
+
 
                 //update the playlist tree view
                 //...
+
             }
         }
     }
