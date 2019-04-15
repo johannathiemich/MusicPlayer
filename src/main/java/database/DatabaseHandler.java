@@ -79,8 +79,7 @@ public class DatabaseHandler {
         Statement statement = null;
         String sql = "CREATE TABLE " + playlistSongsTableName + "( " +
                 "NAME VARCHAR(512), " +
-                "FILEPATH VARCHAR(512), " +
-                "PRIMARY KEY (NAME, FILEPATH) )";
+                "FILEPATH VARCHAR(512) )";
         try {
             conn = DriverManager.getConnection(createDatabaseURL);
             statement = conn.createStatement();
@@ -258,12 +257,11 @@ public class DatabaseHandler {
                 e.printStackTrace();
             }
         }
-//        //TODO This action should be handled in playlistLibrary
-//        if (success) {
-//            for (Playlist playlist : this.getAllPlaylistsObjects()) {
-//                this.deleteSongFromPlaylist(playlist, song);
-//            }
-//        }
+        if (success) {
+            for (Playlist playlist : this.getAllPlaylistsObjects()) {
+                this.deleteSongFromPlaylist(playlist, song);
+            }
+        }
         return success;
     }
 
