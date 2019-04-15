@@ -525,8 +525,8 @@ public class MainController {
 
     /**
      * MouseListenerForTree covers:
-     * [1] double-click on "Library" to show it on the main window
-     * [2] double-click on a playlist node to show it on the main window
+     * [1] left-click on "Library" to show it on the main window
+     * [2] left-click on a playlist node to show it on the main window
      * [3] popup trigger for right-click on a playlist node
      * [4] clear selections for left-click outside of trees
      */
@@ -547,11 +547,12 @@ public class MainController {
             if ( treePath != null ) {
                 //clear highlight on the not selected tree.
                 if (tree.getName().equals("libraryTree")) {
-                    //when library is selected
+                    playerView.getSideView().getPlaylistTree().clearSelection();
                     selectedPlaylistName = null;
                     isPlaylistSelected = false;
-                    playerView.getSideView().getPlaylistTree().clearSelection();
+
                 } else if (tree.getName().equals("playlistTree")) {
+                    //when Playlist tree is selected including the root node
                     playerView.getSideView().getLibraryTree().clearSelection();
                 }
 
@@ -593,21 +594,21 @@ public class MainController {
         }
         @Override
         public void mouseClicked(MouseEvent e) {
-            // Detect double-click event
-            if ( (e.getClickCount() == 2) && !e.isConsumed() && !e.isPopupTrigger()) {
+            // Detect left-click event
+            if ( !e.isPopupTrigger()) {
 
-                // [1] Double-click on "Library"
+                // [1] Left-click on "Library"
                 if (tree.getName().equals("libraryTree")) {
-                    System.out.println("[Library] double clicked\n");
+                    System.out.println("[SideView] Library clicked\n");
                     //show library on the main window
                     selectedPlaylistName = null;
                     playerView.updateTableView(library);
                     playerControl.updateSongList(library);
                 }
 
-                // [2] Double-click on a playlist name under "Playlist"
+                // [2] Left-click on a playlist name under "Playlist"
                 if (isPlaylistSelected) {
-                    System.out.println("[Playlist:"+selectedPlaylistName+"] double clicked");
+                    System.out.println("[SideView] Playlist \""+selectedPlaylistName+"\" clicked");
                     Playlist playlist = playlistLibrary.getPlaylistByName(selectedPlaylistName);
                     System.out.println("[Playlist:"+selectedPlaylistName+"] "+playlist.size()+" songs\n");
                     //show the selected playlist on the main window
