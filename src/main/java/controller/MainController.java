@@ -630,7 +630,7 @@ public class MainController {
                 //JOptionPane.showConfirmDialog(null,
                   //      "Delete Playlist " + selectedPlaylistName + "?", null, JOptionPane.YES_NO_OPTION);
                 if (JOptionPane.showConfirmDialog(null,
-                        "Delete Playlist " + selectedPlaylistName + "?", null, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
+                        "Delete Playlist " + "'" + selectedPlaylistName + "'?", null, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
                 {
                     System.out.println("[PopupMenu] Yes is pressed.");
                     //delete the selected playlist by calling a method that works with database
