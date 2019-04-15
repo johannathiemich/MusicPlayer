@@ -104,8 +104,6 @@ public class PlayerController {
                 e.printStackTrace();
             }
             //reflect to the view
-            //TODO changing row selection should be handled in MainController depend on the focused Window
-            //playerView.changeTableRowSelection(songList.indexOf(currentSong));
             playerView.updateCurrentPlayingView(currentSong);
             System.out.println("[PlayerControl] Play Song '"+currentSong.getTitleAndArtist()+"'\n");
         }

@@ -417,22 +417,15 @@ public class MainController {
         @Override
         public void valueChanged(ListSelectionEvent e) {
             if (!e.getValueIsAdjusting()) {
-                //TODO NEED TO REFACTOR!!!!! BUGGY ACTIONS ARE GOING ON....
-                //when table is showing the main window
-                table = playerView.getSongTable();
-                //when table is showing a new playlist window
-                for(MusicPlayerGUI playlistWindow : playlistWindowArray){
-                    if (playlistWindow.getWindowName().equalsIgnoreCase(selectedPlaylistName)) {
-                        if(playlistWindow.isFocused()) {
-                            table = playlistWindow.getSongTable();
-                            //change the song list loaded on the player
-                            //playerControl.setSongList(playlistLibrary.getPlaylistByName(selectedPlaylistName));
-                        }
-                    }
+                //get the table in the focused window
+                if(focusedWindowName.equals("main")) {
+                    table = playerView.getSongTable();
+                }else{
+                    table = getPlaylistWindow(focusedWindowName).getSongTable();
                 }
+                //check table row limit
                 row = table.getSelectedRow();
                 isRowInbound = row >= 0 && row < table.getRowCount();
-
                 if (isRowInbound) {
                     selectedSong = playerControl.getSongList().get(row);
                     System.out.print("[Table] selectedRow:"+row);
