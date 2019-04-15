@@ -24,6 +24,10 @@ public class MusicPlayerGUI extends JFrame {
     //font of the app
     public static Font FONT = new Font("Helvetica",Font.PLAIN,14);
 
+    //Play button text
+    public static final String BTNTEXT_PLAY = "▶";
+    public static final String BTNTEXT_PAUSE = "||";
+
     //complete SongListView panel in the center
     private SongListView songListView;
     //complete ControlView panel at the bottom

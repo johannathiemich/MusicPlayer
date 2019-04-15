@@ -18,7 +18,7 @@ public class PlayerController {
     private BasicPlayer player;
     private Song currentSong;            //the song currently loaded on the BasicPlayer
     private ArrayList<Song> songList;    //can be either a library or a playlist
-    private MusicPlayerGUI playerView;
+    private MusicPlayerGUI playerView; //to reflect player's action to the view
 
     /**
      * Constructor for this class
@@ -81,7 +81,6 @@ public class PlayerController {
         return player.getStatus();
     }
 
-
     //------------- Music player control --------------
 
     /**
@@ -104,8 +103,9 @@ public class PlayerController {
             } catch(BasicPlayerException e) {
                 e.printStackTrace();
             }
-            playerView.setPlayBtnText("||");
-            playerView.changeTableRowSelection(songList.indexOf(currentSong));
+            //reflect to the view
+            //TODO changing row selection should be handled in MainController depend on the focused Window
+            //playerView.changeTableRowSelection(songList.indexOf(currentSong));
             playerView.updateCurrentPlayingView(currentSong);
             System.out.println("[PlayerControl] Play Song '"+currentSong.getTitleAndArtist()+"'\n");
         }
@@ -120,7 +120,6 @@ public class PlayerController {
         } catch (BasicPlayerException e) {
             e.printStackTrace();
         }
-        playerView.setPlayBtnText("▶");
         System.out.println("[PlayerControl] Stop Song\n");
     }
 
@@ -134,7 +133,6 @@ public class PlayerController {
             } catch (BasicPlayerException e) {
                 e.printStackTrace();
             }
-            playerView.setPlayBtnText("▶");
             System.out.println("[PlayerControl] Pause Song\n");
         }
     }
@@ -150,7 +148,6 @@ public class PlayerController {
             } catch (BasicPlayerException e) {
                 e.printStackTrace();
             }
-            playerView.setPlayBtnText("||");
             System.out.println("[PlayerControl] Resume Song '"+currentSong.getTitleAndArtist()+"'\n");
         }
     }
@@ -161,7 +158,7 @@ public class PlayerController {
     public void playPrevSong(){
         int prevRow;
         int selectedRow = songList.indexOf(currentSong);
-        int lastRow = playerView.getSongTable().getRowCount() - 1;
+        int lastRow = songList.size() - 1;
 
         //selected row is negative if no row is selected --> play last song then
         if(selectedRow <= 0) {
@@ -182,7 +179,7 @@ public class PlayerController {
 
         int nextRow;
         int selectedRow = songList.indexOf(currentSong);
-        int lastRow = playerView.getSongTable().getRowCount() - 1;
+        int lastRow = songList.size() - 1;
 
         if(selectedRow == lastRow) {
             nextRow = 0;    //nextRow goes to the top
