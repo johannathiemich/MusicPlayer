@@ -80,9 +80,9 @@ public class MusicPlayerGUI extends JFrame {
         deleteSongMenuItemPopup = new JMenuItem("Delete Song");
         addSongMenuItemPopup = new JMenuItem("Add New Song");
         addToPlaylistPopupMenu = new JMenu("Add To Playlist");
-        deleteSongMenuItemPopup.setName("delete");
-        addSongMenuItemPopup.setName("add");
-        addToPlaylistPopupMenu.setName("add playlist");
+        deleteSongMenuItemPopup.setName("lib-deleteSong");
+        addSongMenuItemPopup.setName("lib-addSong");
+        addToPlaylistPopupMenu.setName("addToPlaylist");
 
         popUpMenu.add(deleteSongMenuItemPopup);
         popUpMenu.add(addToPlaylistPopupMenu);
@@ -136,9 +136,9 @@ public class MusicPlayerGUI extends JFrame {
         aboutMenuItem = new JMenuItem("About");
         exitMenuItem = new JMenuItem("Exit");
         //setting name(key) of menu item components
-        openSongMenuItem.setName("open");
-        addSongMenuItem.setName("add");
-        deleteSongMenuItem.setName("delete");
+        openSongMenuItem.setName("openSong");
+        addSongMenuItem.setName("lib-addSong");
+        deleteSongMenuItem.setName("lib-deleteSong");
         aboutMenuItem.setName("about");
         newPlaylistMenuItem.setName("newPlaylist");
         exitMenuItem.setName("exit");

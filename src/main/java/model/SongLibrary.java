@@ -61,22 +61,6 @@ public class SongLibrary extends ArrayList<Song>{
     }
 
     /**
-     * Return the index number of the song in the library.
-     * If the song doesn't exist, returns -1.
-     * @param song to find index number in the library
-     * @return index of the song
-     */
-    public int getIndex(Song song) {
-        for (int i = 0; i < this.size(); i++) {
-            String comparedPath = this.get(i).getPath();
-            if (comparedPath.equals(song.getPath())) {
-                return i;   //index of the song in the library
-            }
-        }
-        return -1;  //song not found in the library
-    }
-
-    /**
      * Add a Song to the library, if not present.
      * Should use addSong(Song) instead of add(Song) which is Array's inherited method.
      * @param song to be added to the list
