@@ -295,8 +295,14 @@ public class MainController {
                         //update the view
                         playerView.updateTableView(library);
                         playerControl.updateSongList(library);
-                        //TODO reflect deleted song to all opened playlist window
-                        //...
+                        //reflect deleted song to all opened playlist window
+                        for (String plistName : playlistLibrary.getAllPlaylistNames()) {
+                            if (getPlaylistWindow(plistName) != null) {
+                                getPlaylistWindow(plistName).
+                                        updateTableView(playlistLibrary.getPlaylistByName(plistName).getSongList());
+                            }
+                        }
+                        
                     } else {
                         System.out.println("row:" + selectedRow + ", nothing selected to delete.");
                     }
