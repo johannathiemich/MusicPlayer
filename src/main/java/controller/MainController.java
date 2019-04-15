@@ -59,6 +59,7 @@ public class MainController {
         library = new SongLibrary(); //should always be up-to-date with db
         playlistLibrary = new PlaylistLibrary(); //should always be up-to-date with db
 
+
         playerControl = new PlayerController(library, playerView);
         selectedSong = null;
 
@@ -87,9 +88,6 @@ public class MainController {
         //Add WindowFocusListener
         playerView.addFocusListener(new FocusListenerForWindow());
 
-        //Add drop target to scroll pane
-        playerView.addDragDropToScrollPane(new DragDropToScrollPane());
-
         //Extra feature, add listener to extra menus on menu bar
         playerView.addViewMenuListener(new ViewMenuListener());
 
@@ -97,8 +95,11 @@ public class MainController {
         playerView.getSideView().addMouseListener(new MouseListenerForSideView());
         playerView.getSideView().addMenuListener(new PopupMenuListenerForPlaylist());
 
-        playerView.getSongListView().getSongTable().setTransferHandler(
-                new TableRowTransferHandler(library, playlistLibrary));
+        //playerView.getSongListView().getSongTable().setTransferHandler(
+        //        new TableRowTransferHandler(library, playlistLibrary));
+
+        //Add drop target to scroll pane
+        playerView.addDragDropToScrollPane(new DragDropToScrollPane());
 
         //COMMENTED OUT FROM MERGE CONFLICT for Drag&Drop function
         //playerView.getSongListView().setTransferHandlerLibrary(library);
@@ -712,7 +713,7 @@ public class MainController {
                 //System.out.println("Are you sure you want to delete this playlist?");
 
                 //JOptionPane.showConfirmDialog(null,
-                  //      "Delete Playlist " + selectedPlaylistName + "?", null, JOptionPane.YES_NO_OPTION);
+                //      "Delete Playlist " + selectedPlaylistName + "?", null, JOptionPane.YES_NO_OPTION);
                 if (JOptionPane.showConfirmDialog(null,
                         "Delete Playlist " + "'" + selectedPlaylistName + "'?", null, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
                 {
@@ -731,7 +732,6 @@ public class MainController {
 
                 //update the playlist tree view
                 //...
-
             }
         }
     }
