@@ -1,9 +1,11 @@
 package view;
 
+import model.Playlist;
+
 import javax.swing.*;
 import java.awt.*;
 
-public class PlaylistWindow extends JFrame {
+public class PlaylistWindow extends JDialog {
 
     private String playlistName;
     private SongListView playlistView;
@@ -13,25 +15,30 @@ public class PlaylistWindow extends JFrame {
      * Constructs a new window to display songs in a playlist.
      * This contains a table view of songs in the playlist
      * and a control view at the bottom.
-     * @param playlistName name of the playlist
+     * @param owner the owner of this playlist window
+     * @param playlist the playlist to be displayed in the new window
      * @param theme ColorTheme to apply to this playlist window
      */
-    public PlaylistWindow(String playlistName, ColorTheme theme){
-        super("Playlist: "+playlistName);
+    public PlaylistWindow(MusicPlayerGUI owner, Playlist playlist, ColorTheme theme){
+        super(owner, "Playlist: "+playlist.getName(), false);
         //this.setDefaultCloseOperation();
         this.setPreferredSize(new Dimension(500,300));
         this.setMinimumSize(new Dimension(500,300));
 
         //initialize variables
-        this.playlistName = playlistName;
-        controlView = new ControlView();
-        playlistView = new SongListView();
+        this.playlistName = playlist.getName();
+        controlView = owner.getControlView();
+        playlistView = owner.getSongListView();
 
-        //TODO call updateTableView(playlist)
-        //playlistView.updateTableView(/*somehow playlist*/);
+        //set the songListView (the table view)
+        playlistView.updateTableView(playlist);
 
-        //not show song info as a default for playlist window
+        //not show song info panel as a default for playlist window
         controlView.showSongInfoPanel(false);
+
+        //menu bar setting
+        this.setJMenuBar(owner.getJMenuBar());
+        this.getJMenuBar().getMenu(1).setVisible(false);
 
         //apply theme to the views
         playlistView.setColorTheme(theme);
@@ -43,13 +50,16 @@ public class PlaylistWindow extends JFrame {
         this.add(controlView, BorderLayout.SOUTH);
         this.pack();
         this.setVisible(true);
+
+        //connects listeners to the window
+        //...
     }
 
     /**
      * Gets the table view of the playlist from this window
      * @return SongListView
      */
-    public SongListView getTableView(){
+    public SongListView getSongListView(){
         return playlistView;
     }
 
