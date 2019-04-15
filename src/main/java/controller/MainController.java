@@ -289,6 +289,8 @@ public class MainController {
                     //update the view
                     playerView.updateTableView(library);
                     playerControl.updateSongList(library);
+                    //TODO reflect deleted song to all opened playlist window
+                    //...
                 } else {
                     System.out.println("row:"+selectedRow+", nothing selected to delete.");
                 }
