@@ -348,7 +348,8 @@ public class MainController {
                             Song selectedSong = library.get(selectedRow[i]);
                             System.out.println("row:" + selectedRow[i] + " is selected to be added.");
                             playlist.addSong(selectedSong);
-                            //TODO update playlist window view where the song was added
+                            //update the opened playlist window view where the song was added
+                            getPlaylistWindow(playlistName).updateTableView(playlistLibrary.getPlaylistByName(playlistName));
                         } else {
                             System.out.println("row:" + selectedRow[i] + ", nothing selected to add.");
                         }
@@ -754,13 +755,13 @@ public class MainController {
 
             //if the main window has the focus
             if(focusedWindowName.equals("main")){
-                System.out.println("Focus on the main window.");
+                System.out.println("\nFocus on the main window.");
                 //TODO might need to check if playlist is on the main window table... or it can work fine without it.
                 playerControl.updateSongList(library);
             }
             //if a playlist window has the focus
             else {
-                System.out.println("Focus on playlist window \""+focusedWindowName+"\".");
+                System.out.println("\nFocus on playlist window \""+focusedWindowName+"\".");
                 playerControl.updateSongList(playlistLibrary.getPlaylistByName(focusedWindowName));
                 selectedPlaylistName = focusedWindowName;
             }
@@ -842,5 +843,19 @@ public class MainController {
         for(MusicPlayerGUI playlistWindow : playlistWindowArray) {
             playlistWindow.setPlayBtnText(btnText);
         }
+    }
+
+    /**
+     * Gets playlistWindow by playlist name, if opened.
+     * @param playlistName the name of the playlist to check if a new window is opened.
+     * @return MusicPlayerGUI window
+     */
+    public MusicPlayerGUI getPlaylistWindow(String playlistName) {
+        for(MusicPlayerGUI playlistWindow : playlistWindowArray) {
+            if(playlistWindow.getWindowName().equalsIgnoreCase(playlistName)) {
+                return playlistWindow;
+            }
+        }
+        return null;
     }
 }
