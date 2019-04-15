@@ -265,27 +265,19 @@ public class MainController {
                 String year = "2019";
                 String msg = appName + "\n" + year + "\n\n" + teamInfo;
                 JOptionPane.showMessageDialog(playerView, msg, title, JOptionPane.PLAIN_MESSAGE);
+
             } else if (menuName.equals("newPlaylist")) {
             //[Create Playlist] menu actions
                 System.out.println("[Menu] New Playlist is pressed.");
-
-
+                //dialog to ask a new playlist name
                 String playlistName = JOptionPane.showInputDialog(playerView, "Name the playlist", "Create Playlist", JOptionPane.PLAIN_MESSAGE);
-                while (playlistLibrary.exists(playlistName))
-                {
+                while (playlistLibrary.exists(playlistName)) {
                     playlistName = JOptionPane.showInputDialog(playerView, "Playlist already exists.\nName the playlist", "Create Playlist", JOptionPane.PLAIN_MESSAGE);
                 }
-
-
-
                 //name
                 playlistLibrary.addPlaylist(playlistName);
-
-
                 //update side panel
                 playerView.getSideView().updatePlaylistTree(playlistLibrary.getAllPlaylistNames());
-
-
 
             } else if (menuName.equals("exit")) {
             //[Exit] menu actions
@@ -306,7 +298,7 @@ public class MainController {
                             Song selectedSong = library.get(selectedRow[i]);
                             System.out.println("row:" + selectedRow[i] + " is selected to be added.");
                             playlist.addSong(selectedSong);
-                            //TODO update playlist view where the song was added
+                            //TODO update playlist window view where the song was added
                         } else {
                             System.out.println("row:" + selectedRow[i] + ", nothing selected to add.");
                         }
