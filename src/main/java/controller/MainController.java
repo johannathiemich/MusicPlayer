@@ -18,10 +18,7 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetDropEvent;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -83,6 +80,9 @@ public class MainController {
         //Add listener to table
         playerView.addSelectionListenerForTable(new SelectionListenerForTable());
         playerView.addMouseListenerForTable(new MouseListenerForTable());
+
+        //Add WindowFocusListener
+        playerView.addFocusListener(new FocusListenerForWindow());
 
         //Add drop target to scroll pane
         playerView.addDragDropToScrollPane(new DragDropToScrollPane());
@@ -368,7 +368,7 @@ public class MainController {
      * either by mouse or keyboard arrows
      */
     class SelectionListenerForTable implements ListSelectionListener {
-        private JTable table = playerView.getSongTable();
+        private JTable table;
         private int row;
         private boolean isRowInbound;
 
@@ -376,11 +376,31 @@ public class MainController {
         @Override
         public void valueChanged(ListSelectionEvent e) {
             if (!e.getValueIsAdjusting()) {
+                //TODO NEED TO REFACTOR!!!!! BUGGY ACTIONS ARE GOING ON....
+                //when table is showing the main window
+                table = playerView.getSongTable();
+                //when table is showing a new playlist window
+                for(MusicPlayerGUI playlistWindow : playlistWindowArray){
+                    if (playlistWindow.getWindowName().equalsIgnoreCase(selectedPlaylistName)) {
+                        if(playlistWindow.isFocused()) {
+                            table = playlistWindow.getSongTable();
+                            //change the song list loaded on the player
+                            playerControl.setSongList(playlistLibrary.getPlaylistByName(selectedPlaylistName));
+                        }
+                    }
+                }
                 row = table.getSelectedRow();
                 isRowInbound = row >= 0 && row < table.getRowCount();
 
                 if (isRowInbound) {
-                    selectedSong = library.get(row);
+                    //TODO check if it's library or playlist
+                    if(selectedPlaylistName == null) {
+                    //If library is shown on the table of the main window
+                        selectedSong = library.get(row);
+                    } else {
+                    //If playlist is shown on the main window or in a new window
+                        selectedSong = playlistLibrary.getPlaylistByName(selectedPlaylistName).get(row);
+                    }
                     System.out.print("[Table] selectedRow:"+row);
                     System.out.println(", [" + selectedSong.getTitleAndArtist() + "]");
                 }
@@ -446,7 +466,7 @@ public class MainController {
             if ( isRowInbound ) {
                 if ( (e.getClickCount() == 2) && !e.isConsumed() && !e.isPopupTrigger()) {
                     System.out.println("[Table] double clicked");
-                    Song selectedSong = playerControl.getSongList().get(row);
+                    selectedSong = playerControl.getSongList().get(row);
                     playerControl.playSong(selectedSong);
                 }
             }
@@ -519,6 +539,9 @@ public class MainController {
             if ( treePath != null ) {
                 //clear highlight on the not selected tree.
                 if (tree.getName().equals("libraryTree")) {
+                    //when library is selected
+                    selectedPlaylistName = null;
+                    isPlaylistSelected = false;
                     playerView.getSideView().getPlaylistTree().clearSelection();
                 } else if (tree.getName().equals("playlistTree")) {
                     playerView.getSideView().getLibraryTree().clearSelection();
@@ -569,6 +592,7 @@ public class MainController {
                 if (tree.getName().equals("libraryTree")) {
                     System.out.println("[Library] double clicked\n");
                     //show library on the main window
+                    selectedPlaylistName = null;
                     playerView.updateTableView(library);
                     playerControl.updateSongList(library);
                 }
@@ -679,6 +703,34 @@ public class MainController {
     }
 
     /**
+     * FocusListenerForWindow class implements the actions when a window is focused.
+     * This changes the song lists loaded on the BasicPlayer
+     */
+    public class FocusListenerForWindow implements WindowFocusListener {
+        MusicPlayerGUI window = null;
+
+        @Override
+        public void windowGainedFocus(WindowEvent e) {
+            window = (MusicPlayerGUI)e.getSource();
+
+            //if the main window has the focus
+            if(window.getWindowName().equals("main")){
+                System.out.println("Focus on the main window.");
+                //TODO might need to check if playlist is on the main window table... or it can work fine without it.
+                playerControl.updateSongList(library);
+            }
+            //if a playlist window has the focus
+            else {
+                System.out.println("Focus on playlist window \""+window.getWindowName()+"\".");
+                selectedPlaylistName = window.getWindowName();
+                playerControl.updateSongList(playlistLibrary.getPlaylistByName(selectedPlaylistName));
+            }
+        }
+        @Override
+        public void windowLostFocus(WindowEvent e) { }
+    }
+
+    /**
      * Creates a new window for a playlist.
      * This new window reuses the same class MusicPlayerGUI that the main window used.
      * @param playlistName the name of the playlist to be represented on a new window
@@ -687,8 +739,16 @@ public class MainController {
     private MusicPlayerGUI createNewPlaylistWindow (String playlistName, MusicPlayerGUI parentView) {
         //Create a new window for a playlist
         MusicPlayerGUI playlistWindow = new MusicPlayerGUI("Playlist: "+playlistName,500,300, playlistName);
+        //Closing action of playlist window
         playlistWindow.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
-
+        playlistWindow.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                super.windowClosing(e);
+                System.out.println("Playlist window \""+playlistName+"\" is closing.");
+                playlistWindowArray.remove(playlistWindow);
+            }
+        });
 
         //TODO better way to add event listeners and sync the control panel??
         //Set the same components from the parent (the main window)
@@ -712,6 +772,8 @@ public class MainController {
         //table
         playlistWindow.addSelectionListenerForTable(new SelectionListenerForTable());
         playlistWindow.addMouseListenerForTable(new MouseListenerForTable());
+        //window focus
+        playlistWindow.addFocusListener(new FocusListenerForWindow());
         //drop target to scroll pane
         playlistWindow.addDragDropToScrollPane(new DragDropToScrollPane());
         //transfer handler

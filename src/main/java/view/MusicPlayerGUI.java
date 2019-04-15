@@ -9,6 +9,7 @@ import java.awt.*;
 import java.awt.dnd.DropTarget;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
+import java.awt.event.WindowFocusListener;
 import java.util.ArrayList;
 
 /**
@@ -64,6 +65,8 @@ public class MusicPlayerGUI extends JFrame {
         this.setPreferredSize(new Dimension(width,height));
         this.setMinimumSize(new Dimension(width,height));
 
+        //to detect which window is focused
+        //this.setFocusable(true);
         this.windowName = windowName;
 
         // table view of a list of songs
@@ -271,6 +274,15 @@ public class MusicPlayerGUI extends JFrame {
 
 
 // Add listeners ---------------------------------------------
+
+    /**
+     * Attach a window focus listener to this window
+     * to check which whether the main window or a playlist window is focused
+     * @param l WindowAdapter with
+     */
+    public void addFocusListener(WindowFocusListener l) {
+        this.addWindowFocusListener(l);
+    }
 
     /**
      * Attach a listener to all menu items in menu bar and popup menu
