@@ -67,7 +67,7 @@ public class MainController {
         playerView.setVisible(true);
 
         //create menu items under [Add To Playlist] popup menu
-        playerView.createAddToPlaylistPopupMenuItem(playlistLibrary.getAllPlaylistNames());
+        playerView.setAddToPlaylistPopupMenuItem(playlistLibrary.getAllPlaylistNames());
 
         //Add listeners to buttons and slider
         playerView.addPlayerControlButtonListener(new PlayerControlButtonListener());
@@ -267,17 +267,23 @@ public class MainController {
                 JOptionPane.showMessageDialog(playerView, msg, title, JOptionPane.PLAIN_MESSAGE);
 
             } else if (menuName.equals("newPlaylist")) {
-            //[Create Playlist] menu actions
+            //[New Playlist] menu actions
                 System.out.println("[Menu] New Playlist is pressed.");
-                //dialog to ask a new playlist name
-                String playlistName = JOptionPane.showInputDialog(playerView, "Name the playlist", "Create Playlist", JOptionPane.PLAIN_MESSAGE);
-                while (playlistLibrary.exists(playlistName)) {
-                    playlistName = JOptionPane.showInputDialog(playerView, "Playlist already exists.\nName the playlist", "Create Playlist", JOptionPane.PLAIN_MESSAGE);
+                //ask user to name a new playlist
+                String title = "Create Playlist";
+                String msg = "Name the Playlist";
+                String playlistName = JOptionPane.showInputDialog(playerView, msg, title, JOptionPane.PLAIN_MESSAGE);
+                //ask again if the name exists
+                while (playlistLibrary.exists(playlistName) || playlistName.equalsIgnoreCase("library")) {
+                    msg = "Playlist \"" + playlistName + "\" already exists.\nName the Playlist";
+                    playlistName = JOptionPane.showInputDialog(playerView, msg, title, JOptionPane.PLAIN_MESSAGE);
                 }
                 //name
                 playlistLibrary.addPlaylist(playlistName);
                 //update side panel
                 playerView.getSideView().updatePlaylistTree(playlistLibrary.getAllPlaylistNames());
+                //update playlists in the popup menu
+                playerView.setAddToPlaylistPopupMenuItem(playlistLibrary.getAllPlaylistNames());
 
             } else if (menuName.equals("exit")) {
             //[Exit] menu actions
