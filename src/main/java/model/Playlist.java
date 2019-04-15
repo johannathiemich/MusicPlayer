@@ -8,23 +8,27 @@ import java.util.ArrayList;
  * Playlist class contains Songs by extending ArrayList Song.
  * This class represents a playlist
  */
-public class Playlist extends ArrayList<Song> {
+public class Playlist { //extends ArrayList<Song> {
 
     private String name;
     private static DatabaseHandler dbHandler = DatabaseHandler.getInstance();
     //this needs to be instantiated just once at the very start of the application
     private static SongLibrary library;
 
+    private ArrayList<Song> songList;
+
     //private constructor since we only instantiate this class using the static factory method in order to keep track
     //of all the playlists already instantiated
     public Playlist(String name) {
         this.name = name;
         library = new SongLibrary(dbHandler.getSongLibrary());
+        songList = new ArrayList<Song>();
     }
 
     public Playlist (String name, ArrayList<Song> songArray) {
         this.name = name;
-        this.addAll(songArray);
+        //this.addAll(songArray);
+        songList = songArray;
         library = new SongLibrary(dbHandler.getSongLibrary());
     }
 
@@ -65,7 +69,7 @@ public class Playlist extends ArrayList<Song> {
         } else {
             //add song to Playlist the database
             success = success && dbHandler.addSongToPlaylist(this, song);
-            this.add(song);
+            songList.add(song);
             System.out.print("[Playlist: "+this.name+"] Added a song. \t");
         }
         System.out.println("'"+song.getTitleAndArtist()+"'\n");
@@ -77,9 +81,9 @@ public class Playlist extends ArrayList<Song> {
      * @param song the song to be deleted from this playlist
      */
     public void deleteSong(Song song){
-        if ( this.contains(song) ){
+        if ( songList.contains(song) ){
             dbHandler.deleteSongFromPlaylist(this, song);
-            this.remove(song);
+            songList.remove(song);
             System.out.print("[Playlist: "+this.name+"] Deleted.\t");
         }else{
             System.out.print("[Playlist: "+this.name+"] Song does not exist in in this playlist.\t");
@@ -141,5 +145,24 @@ public class Playlist extends ArrayList<Song> {
      */
     public static void setLibrary(SongLibrary plibrary) {
         library = plibrary;
+    }
+
+    public void setSongList(ArrayList<Song> songList) {
+        this.songList = songList;
+    }
+
+    public ArrayList<Song> getSongList() {
+        return this.songList;
+    }
+
+    @Override
+    public int hashCode() {
+        return 0;
+    }
+
+    @Override
+    public boolean equals(java.lang.Object plist1) {
+        Playlist playlist  = (Playlist) plist1;
+        return this.getName().equals(playlist.getName());
     }
 }

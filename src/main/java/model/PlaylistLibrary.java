@@ -41,6 +41,14 @@ public class PlaylistLibrary extends ArrayList<Playlist> {
      * @return the playlist with the name pName
      */
     public Playlist getPlaylistByName(String pName) {
+        for (Playlist playlist : this) {
+            if (playlist.getName().equals(pName)) {
+                playlist.setSongList(dbHandler.getSongsInPlaylist(pName));
+                return playlist;
+            }
+        }
+        return null;
+/**
         //TODO need to refactor this part!!
         for (Playlist playlist : this) {
             if ( this.exists(pName) ) {
@@ -48,7 +56,7 @@ public class PlaylistLibrary extends ArrayList<Playlist> {
                 return new Playlist(pName, songs);
             }
         }
-        return null;
+        return null;**/
     }
 
     /**
@@ -109,6 +117,7 @@ public class PlaylistLibrary extends ArrayList<Playlist> {
         // Delete playlist from the database
         if ( !dbHandler.deletePlaylist(playlistName) ) { return false; }
         // Delete playlist from this playlist library
+        Playlist playlist = this.getPlaylistByName(playlistName);
         this.remove(this.getPlaylistByName(playlistName));
         System.out.print("[PlaylistLibrary] Deleted the playlist \""+playlistName+"\".\n");
 
@@ -124,7 +133,7 @@ public class PlaylistLibrary extends ArrayList<Playlist> {
         int count = 0;
         for (Playlist playlist : this) {
             //if the playlist has the song
-            if(playlist.contains(song)) {
+            if(playlist.getSongList().contains(song)) {
                 //delete it from the playlist.
                 playlist.deleteSong(song);
                 msg = msg + playlist.getName() + ", ";

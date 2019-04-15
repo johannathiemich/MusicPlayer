@@ -583,10 +583,10 @@ public class MainController {
                 if (isPlaylistSelected) {
                     System.out.println("[Playlist:"+selectedPlaylistName+"] double clicked");
                     Playlist playlist = playlistLibrary.getPlaylistByName(selectedPlaylistName);
-                    System.out.println("[Playlist:"+selectedPlaylistName+"] "+playlist.size()+" songs\n");
+                    System.out.println("[Playlist:"+selectedPlaylistName+"] "+playlist.getSongList().size()+" songs\n");
                     //show the selected playlist on the main window
-                    playerView.updateTableView(playlist);
-                    playerControl.updateSongList(playlist);
+                    playerView.updateTableView(playlist.getSongList());
+                    playerControl.updateSongList(playlist.getSongList());
                 }
             }
         }
@@ -702,7 +702,7 @@ public class MainController {
 //        playlistWindow.setControlView(parentView.getControlView());
 
         //Set songs on the view
-        playlistWindow.getSongListView().updateTableView(playlistLibrary.getPlaylistByName(playlistName));
+        playlistWindow.getSongListView().updateTableView(playlistLibrary.getPlaylistByName(playlistName).getSongList());
 
         //Disable the unnecessary componets
         playlistWindow.getSideView().setVisible(false);

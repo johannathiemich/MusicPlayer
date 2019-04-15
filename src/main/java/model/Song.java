@@ -140,4 +140,10 @@ public class Song {
         this.time = pTime;
     }
 
+    @Override
+    public boolean equals(java.lang.Object song1) {
+        Song song = (Song) song1;
+        return this.getPath().equals(song.getPath());
+    }
+
 }
