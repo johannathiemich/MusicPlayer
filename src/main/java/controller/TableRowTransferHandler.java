@@ -1,3 +1,4 @@
+
 /**
  * This class was largely copied from here:
  * https://github.com/aterai/java-swing-tips/blob/master/DragRowsAnotherTable/src/java/example/MainPanel.java
@@ -36,20 +37,23 @@ public class TableRowTransferHandler extends TransferHandler {
         super();
         localObjectFlavor = new DataFlavor(Object[].class, "Array of items");
     }
+
     public TableRowTransferHandler(SongLibrary songL, PlaylistLibrary playlistL) {
         super();
         this.songLibrary = songL;
         this.playlistLibrary = playlistL;
         localObjectFlavor = new DataFlavor(Object[].class, "Array of items");
     }
-    @Override protected Transferable createTransferable(JComponent c) {
+
+    @Override
+    protected Transferable createTransferable(JComponent c) {
         source = c;
         JTable table = (JTable) c;
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         indices = table.getSelectedRows();
         List<Object> list = new ArrayList<>();
         indices = table.getSelectedRows();
-        for (int i: indices) {
+        for (int i : indices) {
             list.add(model.getDataVector().get(i));
         }
         Object[] transferData = list.toArray();
@@ -58,13 +62,18 @@ public class TableRowTransferHandler extends TransferHandler {
         }
         final Object[] transferedObjects = list.toArray();
         return new Transferable() {
-            @Override public DataFlavor[] getTransferDataFlavors() {
-                return new DataFlavor[] {localObjectFlavor};
+            @Override
+            public DataFlavor[] getTransferDataFlavors() {
+                return new DataFlavor[]{localObjectFlavor};
             }
-            @Override public boolean isDataFlavorSupported(DataFlavor flavor) {
+
+            @Override
+            public boolean isDataFlavorSupported(DataFlavor flavor) {
                 return Objects.equals(localObjectFlavor, flavor);
             }
-            @Override public Object getTransferData(DataFlavor flavor)
+
+            @Override
+            public Object getTransferData(DataFlavor flavor)
                     throws UnsupportedFlavorException, IOException {
                 if (isDataFlavorSupported(flavor)) {
                     return transferData;
@@ -74,19 +83,25 @@ public class TableRowTransferHandler extends TransferHandler {
             }
         };
     }
-    @Override public boolean canImport(TransferSupport info) {
+
+    @Override
+    public boolean canImport(TransferSupport info) {
         JTable table = (JTable) info.getComponent();
         boolean isDroppable = info.isDrop()
                 && info.isDataFlavorSupported(localObjectFlavor);
         //XXX bug?
-        table.setCursor(isDroppable ? DragSource.DefaultCopyDrop
-                : DragSource.DefaultCopyNoDrop);
+        //table.setCursor(isDroppable ? DragSource.DefaultCopyDrop
+        //        : DragSource.DefaultCopyNoDrop);
         return isDroppable;
     }
-    @Override public int getSourceActions(JComponent c) {
+
+    @Override
+    public int getSourceActions(JComponent c) {
         return TransferHandler.COPY; //TransferHandler.COPY_OR_MOVE;
     }
-    @Override public boolean importData(TransferSupport info) {
+
+    @Override
+    public boolean importData(TransferSupport info) {
         if (!canImport(info)) {
             return false;
         }
@@ -142,10 +157,13 @@ public class TableRowTransferHandler extends TransferHandler {
         }
         return false;
     }
-    @Override protected void exportDone(
+
+    @Override
+    protected void exportDone(
             JComponent c, Transferable data, int action) {
         cleanup(c, action == COPY);
     }
+
     private void cleanup(JComponent c, boolean remove) {
         if (remove && indices != null) {
             c.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
@@ -157,9 +175,9 @@ public class TableRowTransferHandler extends TransferHandler {
                     }
                 }
             }
-           // for (int i = indices.length - 1; i >= 0; i--) {
-                //model.removeRow(indices[i]);
-           // }
+            // for (int i = indices.length - 1; i >= 0; i--) {
+            //model.removeRow(indices[i]);
+            // }
         }
         indices = null;
         addCount = 0;

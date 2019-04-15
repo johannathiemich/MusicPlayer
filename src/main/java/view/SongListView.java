@@ -1,9 +1,10 @@
 package view;
 
+import controller.TableRowTransferHandler;
 import model.PlaylistLibrary;
 import model.Song;
 import model.SongLibrary;
-import controller.TableRowTransferHandler;
+//import controller.TableRowTransferHandler;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -22,14 +23,14 @@ public class SongListView extends JPanel {
     private DefaultTableModel tableModel;
     private String[] columnHeader;
     private int tableRowHeight = 24;
-    private final TransferHandler handler;
+    //private final TransferHandler handler;
 
     /**
      * Constructs a panel to show a list of songs
      * with an empty table view.
      */
     public SongListView(){
-        handler = new TableRowTransferHandler();
+        //handler = new TableRowTransferHandler();
         // Table setup
         columnHeader = new String[]{"Path", "Title", "Artist", "Album", "Year", "Comment", "Genre"};
         table = new JTable(){
@@ -52,9 +53,11 @@ public class SongListView extends JPanel {
         table.setFont(MusicPlayerGUI.FONT);
         table.getTableHeader().setFont(MusicPlayerGUI.FONT);
         table.setRowHeight(tableRowHeight);
-        table.setTransferHandler(handler);
-        table.setDropMode(DropMode.INSERT_ROWS);
         table.setShowGrid(false);
+
+        //new drag and drop functionality
+        //table.setTransferHandler(handler);
+        //table.setDropMode(DropMode.INSERT_ROWS);
 
 //        //change the look of the header
 //        DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer();

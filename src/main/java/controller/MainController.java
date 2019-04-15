@@ -1,6 +1,7 @@
 package controller;
 
 import database.DatabaseHandler;
+import javafx.scene.text.Text;
 import javazoom.jlgui.basicplayer.BasicPlayer;
 import model.Playlist;
 import model.PlaylistLibrary;
@@ -16,6 +17,7 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.tree.TreePath;
+import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
@@ -24,6 +26,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.beans.EventHandler;
 import java.io.File;
 import java.util.List;
 
@@ -58,6 +61,7 @@ public class MainController {
         library = new SongLibrary(); //should always be up-to-date with db
         playlistLibrary = new PlaylistLibrary(); //should always be up-to-date with db
 
+
         playerControl = new PlayerController(library, playerView);
         selectedSong = null;
         selectedPlaylistName = null;
@@ -81,9 +85,6 @@ public class MainController {
         playerView.addSelectionListenerForTable(new SelectionListenerForTable());
         playerView.addMouseListenerForTable(new MouseListenerForTable());
 
-        //Add drop target to scroll pane
-        playerView.addDragDropToScrollPane(new DragDropToScrollPane());
-
         //Extra feature, add listener to extra menus on menu bar
         playerView.addViewMenuListener(new ViewMenuListener());
 
@@ -91,8 +92,11 @@ public class MainController {
         playerView.getSideView().addMouseListener(new MouseListenerForSideView());
         playerView.getSideView().addMenuListener(new PopupMenuListenerForPlaylist());
 
-        playerView.getSongListView().getSongTable().setTransferHandler(
-                new TableRowTransferHandler(library, playlistLibrary));
+        //playerView.getSongListView().getSongTable().setTransferHandler(
+        //        new TableRowTransferHandler(library, playlistLibrary));
+
+        //Add drop target to scroll pane
+        playerView.addDragDropToScrollPane(new DragDropToScrollPane());
 
         //COMMENTED OUT FROM MERGE CONFLICT for Drag&Drop function
         //playerView.getSongListView().setTransferHandlerLibrary(library);
@@ -603,8 +607,9 @@ public class MainController {
                 //TODO check if the playlist is already open in a new window
                 PlaylistWindow playlistWindow = new PlaylistWindow(selectedPlaylistName, ColorTheme.dark);
                 //update the table view of the playlist window
-                playlistWindow.getTableView().setSongLPlaylistL(playlistLibrary, library);
+                //playlistWindow.getTableView().setSongLPlaylistL(playlistLibrary, library);
                 playlistWindow.getTableView().updateTableView(playlistLibrary.getPlaylistByName(selectedPlaylistName));
+                playlistWindow.getTableView().setDropTarget(new DropTarget());
 
             } else if (menuName.equals("playlist-delete")) {
                 //Delete Playlist menu action
