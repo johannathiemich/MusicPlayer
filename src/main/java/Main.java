@@ -8,9 +8,9 @@ public class Main {
         DatabaseHandler handler = DatabaseHandler.getInstance();
         //test code for playlist
         //handler.clearPlaylists();
-        handler.addPlaylist("Favorite");
-        handler.addPlaylist("Party");
-        handler.addPlaylist("Jazz");
+//        handler.addPlaylist("Favorite");
+//        handler.addPlaylist("Party");
+//        handler.addPlaylist("Jazz");
 
         MainController controller = new MainController();
 

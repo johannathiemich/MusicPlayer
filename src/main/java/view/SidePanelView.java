@@ -93,7 +93,7 @@ public class SidePanelView extends JPanel {
         playlistPopupMenu = new JPopupMenu();
         openNewWindowMenuItem = new JMenuItem("Open in New Window");
         deletePlaylistMenuItem = new JMenuItem("Delete Playlist");
-        openNewWindowMenuItem.setName("playlist-openNewWindow");
+        openNewWindowMenuItem.setName("playlist-newWindow");
         deletePlaylistMenuItem.setName("playlist-delete");
         playlistPopupMenu.add(openNewWindowMenuItem);
         playlistPopupMenu.add(deletePlaylistMenuItem);

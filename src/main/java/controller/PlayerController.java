@@ -1,34 +1,34 @@
 package controller;
 
-import model.Song;
-import model.SongLibrary;
 import javazoom.jlgui.basicplayer.BasicPlayer;
 import javazoom.jlgui.basicplayer.BasicPlayerException;
+import model.Song;
 import view.MusicPlayerGUI;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import static java.lang.Math.abs;
 
 /**
- * This Controller has reusable player control functions:
+ * PlayerController manages actions related to playing songs
  * Play, Stop, Pause, Resume, Previous, Next.
  */
 public class PlayerController {
     private BasicPlayer player;
-    private Song currentSong;       //different from selectedSong
-    private SongLibrary library;    //for skipping to prev/next song
+    private Song currentSong;            //the song currently loaded on the BasicPlayer
+    private ArrayList<Song> songList;    //can be either a library or a playlist
     private MusicPlayerGUI playerView;
 
     /**
      * Constructor for this class
-     * @param library a list of all songs currently contained in the library
+     * @param songList a list of all songs currently contained in the songList
      */
-    public PlayerController(SongLibrary library, MusicPlayerGUI playerView){
+    public PlayerController(ArrayList<Song> songList, MusicPlayerGUI playerView){
         player = new BasicPlayer();
-        this.library = library;
-        if (library.size() > 0) {
-            currentSong = library.get(0);   //first song in the library by default
+        this.songList = songList;
+        if (songList.size() > 0) {
+            currentSong = songList.get(0);   //first song in the songList by default
         }
         this.playerView = playerView;
     }
@@ -42,11 +42,27 @@ public class PlayerController {
     }
 
     /**
-     * This method updates the library
-     * @param library
+     * Gets the list of songs that the player is playing on.
+     * @return ArrayList Song
      */
-    public void updateLibrary(SongLibrary library) {
-        this.library = library;
+    public ArrayList<Song> getSongList(){
+        return songList;
+    }
+
+    /**
+     * Sets the list of songs that the player plays on.
+     * @param songList either Library or Playlist
+     */
+    public void setSongList(ArrayList<Song> songList) {
+        this.songList = songList;
+    }
+
+    /**
+     * Updates the list of songs that the player plays on.
+     * @param songList either Library or Playlist
+     */
+    public void updateSongList(ArrayList<Song> songList) {
+        this.songList = songList;
     }
 
     /**
@@ -89,7 +105,7 @@ public class PlayerController {
                 e.printStackTrace();
             }
             playerView.setPlayBtnText("||");
-            playerView.changeTableRowSelection(library.getIndex(currentSong));
+            playerView.changeTableRowSelection(songList.indexOf(currentSong));
             playerView.updateCurrentPlayingView(currentSong);
             System.out.println("[PlayerControl] Play Song '"+currentSong.getTitleAndArtist()+"'\n");
         }
@@ -140,11 +156,11 @@ public class PlayerController {
     }
 
     /**
-     * Play the song that comes before the currently playing song in the library
+     * Play the song that comes before the currently playing song in the songList
      */
     public void playPrevSong(){
         int prevRow;
-        int selectedRow = library.getIndex(currentSong);
+        int selectedRow = songList.indexOf(currentSong);
         int lastRow = playerView.getSongTable().getRowCount() - 1;
 
         //selected row is negative if no row is selected --> play last song then
@@ -154,18 +170,18 @@ public class PlayerController {
             prevRow = selectedRow - 1;
         }
 
-        // Get the previous song in the library and play it
-        Song prevSong = library.get(prevRow);
+        // Get the previous song in the songList and play it
+        Song prevSong = songList.get(prevRow);
         this.playSong(prevSong);
     }
 
     /**
-     * Play the song that comes after the currently playing song in the library
+     * Play the song that comes after the currently playing song in the songList
      */
     public void playNextSong(){
 
         int nextRow;
-        int selectedRow = library.getIndex(currentSong);
+        int selectedRow = songList.indexOf(currentSong);
         int lastRow = playerView.getSongTable().getRowCount() - 1;
 
         if(selectedRow == lastRow) {
@@ -174,8 +190,8 @@ public class PlayerController {
             nextRow = selectedRow + 1;
         }
 
-        // Get the next song in the library and play it
-        Song nextSong = library.get(nextRow);
+        // Get the next song in the songList and play it
+        Song nextSong = songList.get(nextRow);
         this.playSong(nextSong);
     }
 

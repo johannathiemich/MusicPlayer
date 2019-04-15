@@ -17,9 +17,8 @@ import java.util.ArrayList;
  * for displaying the data from the model and delegating user interactions to the controller.
  */
 public class MusicPlayerGUI extends JFrame {
-    //panel size dimensions
-    private Dimension frameSize = new Dimension(800,600);
-    private Dimension frameMinSize = new Dimension(600,400);
+    //the name of what this window represents
+    private String windowName;
 
     //font of the app
     public static Font FONT = new Font("Helvetica",Font.PLAIN,14);
@@ -54,13 +53,18 @@ public class MusicPlayerGUI extends JFrame {
 
     /**
      * This constructor initializes all necessary components.
-     * @param frameTitle title of our application
+     * @param frameTitle the title shown on the frame
+     * @param width the width of the window
+     * @param height the height of the window
+     * @param windowName the name of what this window represents
      */
-    public MusicPlayerGUI(String frameTitle) {
+    public MusicPlayerGUI(String frameTitle, int width, int height, String windowName) {
         super(frameTitle);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        this.setPreferredSize(frameSize);
-        this.setMinimumSize(frameMinSize);
+        this.setPreferredSize(new Dimension(width,height));
+        this.setMinimumSize(new Dimension(width,height));
+
+        this.windowName = windowName;
 
         // table view of a list of songs
         songListView = new SongListView();
@@ -69,10 +73,10 @@ public class MusicPlayerGUI extends JFrame {
         // tree view of library/playlist
         sideView = new SidePanelView();
 
-        //Set a new look of the view @sellabae
+        // Set color theme of the window
         setColorTheme(ColorTheme.dark);
 
-        // Standard Menu setup
+        // Menu bar setup
         createMenu();
 
         // PopUp Menu setup
@@ -80,9 +84,9 @@ public class MusicPlayerGUI extends JFrame {
         deleteSongMenuItemPopup = new JMenuItem("Delete Song");
         addSongMenuItemPopup = new JMenuItem("Add New Song");
         addToPlaylistPopupMenu = new JMenu("Add To Playlist");
-        deleteSongMenuItemPopup.setName("delete");
-        addSongMenuItemPopup.setName("add");
-        addToPlaylistPopupMenu.setName("add playlist");
+        deleteSongMenuItemPopup.setName("lib-deleteSong");
+        addSongMenuItemPopup.setName("lib-addSong");
+        addToPlaylistPopupMenu.setName("addToPlaylist");
 
         popUpMenu.add(deleteSongMenuItemPopup);
         popUpMenu.add(addToPlaylistPopupMenu);
@@ -136,9 +140,9 @@ public class MusicPlayerGUI extends JFrame {
         aboutMenuItem = new JMenuItem("About");
         exitMenuItem = new JMenuItem("Exit");
         //setting name(key) of menu item components
-        openSongMenuItem.setName("open");
-        addSongMenuItem.setName("add");
-        deleteSongMenuItem.setName("delete");
+        openSongMenuItem.setName("openSong");
+        addSongMenuItem.setName("lib-addSong");
+        deleteSongMenuItem.setName("lib-deleteSong");
         aboutMenuItem.setName("about");
         newPlaylistMenuItem.setName("newPlaylist");
         exitMenuItem.setName("exit");
@@ -189,6 +193,14 @@ public class MusicPlayerGUI extends JFrame {
     }
 
     /**
+     * Gets the window name of this window. (different from frame title)
+     * This can be "main" for the main window
+     * or a playlist name for the playlist window.
+     * @return the String of the window name
+     */
+    public String getWindowName(){ return this.windowName; }
+
+    /**
      * Returns the songTable.
      * @return JTable containing songs in the library
      */
@@ -234,6 +246,13 @@ public class MusicPlayerGUI extends JFrame {
         return popUpMenu;
     }
 
+    public void setSongListView(SongListView songListView) {
+        this.songListView = songListView;
+    }
+
+    public void setControlView(ControlView controlView) {
+        this.controlView = controlView;
+    }
 
     /**
      * This method sets the text for the play button in order to switch between 'Play'<->'Pause' text change.
@@ -262,6 +281,7 @@ public class MusicPlayerGUI extends JFrame {
         openSongMenuItem.addActionListener(listener);
         addSongMenuItem.addActionListener(listener);
         deleteSongMenuItem.addActionListener(listener);
+        newPlaylistMenuItem.addActionListener(listener);
         aboutMenuItem.addActionListener(listener);
         exitMenuItem.addActionListener(listener);
 
@@ -332,12 +352,15 @@ public class MusicPlayerGUI extends JFrame {
     }
 
     /**
-     * Creates menu items from an array of playlist names
+     * Sets menu items from an array of playlist names
      * add them to [Add To Playlist] popup menu.
      * All menu item components are named as "addToPlaylist" to distinguish menu item types.
      * @param playlistName the string array of all playlist names
      */
-    public void createAddToPlaylistPopupMenuItem(ArrayList<String> playlistName){
+    public void setAddToPlaylistPopupMenuItem(ArrayList<String> playlistName){
+        //initialize the sub menu
+        addToPlaylistPopupMenu.removeAll();
+        //add menu items of playlist names
         for (int i=0; i<playlistName.size(); i++){
             JMenuItem playlistItem = new JMenuItem(playlistName.get(i));
             playlistItem.setName("addToPlaylist");
