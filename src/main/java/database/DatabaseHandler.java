@@ -307,12 +307,29 @@ public class DatabaseHandler {
         boolean success = true;
         Connection conn = null;
         Statement statement = null;
-        String sql = "DELETE FROM " + playlistSongsTableName +
+        String sql = "SELECT * FROM " + playlistSongsTableName +
                 "      WHERE FILEPATH = '" + song.getPath() + "' AND NAME = '" + playlist.getName() + "'";
+
+        //String sql = "DELETE FROM " + playlistSongsTableName +
+        //        "      WHERE FILEPATH = '" + song.getPath() + "' AND NAME = '" + playlist.getName() + "'";
         try {
             conn = DriverManager.getConnection(createDatabaseURL);
-            statement = conn.createStatement();
-            statement.execute(sql);
+            statement = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_UPDATABLE);
+            //statement.execute(sql);
+            ResultSet results = statement.executeQuery(sql);
+
+            int size = results.getFetchSize();
+            int counter = 0;
+            while(results.next()) {
+                if (counter == results.getFetchSize() - 1)  {
+                    System.out.println("[Database] Deleting song at counter " + counter  + " out of size " + size );
+                    results.deleteRow();
+                    break;
+                }
+                counter++;
+            }
+            results.close();
             conn.close();
             System.out.println("[Database] Deleted song from playlist.");
         } catch (SQLException e) {
@@ -456,10 +473,10 @@ public class DatabaseHandler {
             return null;
         }
 
-        for (Playlist playlist : list) {
-            ArrayList<Song> songList = getSongsInPlaylist(playlist);
-            playlist.addMultipleSongs(songList);
-        }
+ //       for (Playlist playlist : list) {
+ //           ArrayList<Song> songList = getSongsInPlaylist(playlist);
+ //           playlist.addMultipleSongs(songList);
+ //       }
 
         return list;
     }
