@@ -656,8 +656,13 @@ public class MainController {
                 }
                 //If not opened
                 if(!isOpen) {
+                    //open a new window for the selected playlist
                     MusicPlayerGUI newPlaylistWindow = createNewPlaylistWindow(selectedPlaylistName, playerView);
                     playlistWindowArray.add(newPlaylistWindow);
+                    //main window shows library
+                    playerView.updateTableView(library);
+                    playerView.getSideView().getLibraryTree().setSelectionRow(0);
+                    playerView.getSideView().getPlaylistTree().clearSelection();
                 }
 
 //                //create a new playlist window
