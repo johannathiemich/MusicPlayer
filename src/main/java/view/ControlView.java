@@ -44,10 +44,10 @@ public class ControlView extends JPanel {
         sliderPanel.setLayout(new BorderLayout());
 
         //Buttons setup
-        stopBtn = new JButton("◼");
-        prevBtn = new JButton("⦉⦉");
-        playBtn = new JButton("▶");
-        nextBtn = new JButton("⦊⦊");
+        stopBtn = new JButton(MusicPlayerGUI.BTNTEXT_STOP);
+        prevBtn = new JButton(MusicPlayerGUI.BTNTEXT_PREV);
+        playBtn = new JButton(MusicPlayerGUI.BTNTEXT_PLAY);
+        nextBtn = new JButton(MusicPlayerGUI.BTNTEXT_NEXT);
         stopBtn.setPreferredSize(buttonSize);
         prevBtn.setPreferredSize(buttonSize);
         playBtn.setPreferredSize(buttonSize);

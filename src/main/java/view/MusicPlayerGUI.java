@@ -30,6 +30,9 @@ public class MusicPlayerGUI extends JFrame {
     //Play button text
     public static final String BTNTEXT_PLAY = "▶";
     public static final String BTNTEXT_PAUSE = "||";
+    public static final String BTNTEXT_STOP = "◼";
+    public static final String BTNTEXT_PREV = "⦉⦉";
+    public static final String BTNTEXT_NEXT = "⦊⦊";
 
     //complete SongListView panel in the center
     private SongListView songListView;

@@ -297,6 +297,7 @@ public class MainController {
                 //[Delete Song From Library] menu actions
                 if (focusedWindowName.equals("main")) {
                     if (playerView.getDisplayingListName().equals("library")) {
+                    //library is displaying on the main window
                         System.out.println("[Menu] Delete Song is pressed.");
                         int counterDeletedSongs = 0;
                         int[] selectedRows = playerView.getSongTable().getSelectedRows();
@@ -329,6 +330,7 @@ public class MainController {
                             }
                         }
                     } else {
+                    //playlist is displaying on the main window
                         int[] selectedRows = playerView.getSongTable().getSelectedRows();
                         String playlistName = playerView.getDisplayingListName();
                         int counterDeletedSongs = 0;
@@ -337,17 +339,21 @@ public class MainController {
                             boolean isRowInbound = (selectedRows[i] >= 0) &&
                                     (selectedRows[i] < playlistLibrary.getPlaylistByName(playlistName).
                                             getSongList().size());
-
                             if (isRowInbound) {
                                 counterDeletedSongs++;
                                 Song selectedSong = playlistLibrary.getPlaylistByName(playlistName).
                                         getSongList().get(selectedRows[i]);
                                 playlistLibrary.getPlaylistByName(playlistName).deleteSong(selectedSong);
-                                playerView.updateTableView(playlistLibrary.getPlaylistByName(playlistName));
+
                             }
                         }
+                        //TODO refactoring point
+                        playerView.updateTableView(playlistLibrary.getPlaylistByName(playlistName));
+                        getPlaylistWindow(playlistName).updateTableView(
+                                playlistLibrary.getPlaylistByName(playlistName));
                     }
                 } else {
+                //[Delete Song] menu actions on the playlist window
                     //TODO Delete Song from Playlist should be separated (from delete song from library) for playlist in main window or playlist window
                     System.out.println("[PlaylistWindow] Delete Song is pressed");
                     int counterDeletedSongs = 0;
@@ -364,12 +370,15 @@ public class MainController {
 
                             //delete song from playlist
                             playlistLibrary.getPlaylistByName(focusedWindowName).deleteSong(selectedSong);
-                            getPlaylistWindow(focusedWindowName).updateTableView(
-                                    playlistLibrary.getPlaylistByName(focusedWindowName));
+
                         } else {
                             System.out.println("[PlaylistWindow] row: " + selectedRows[i] + " nothing selected to delete.");
                         }
                     }
+                    //TODO refactoring point
+                    getPlaylistWindow(focusedWindowName).updateTableView(
+                            playlistLibrary.getPlaylistByName(focusedWindowName));
+                    playerView.updateTableView(playlistLibrary.getPlaylistByName(focusedWindowName));
                 }
 
             } else if (menuName.equals("about")) {
@@ -664,9 +673,13 @@ public class MainController {
                                         //also update the view of the main window
                                         playerView.updateTableView(library);
                                     } else {
-                                        //if playlist is opened in main window
-                                        playerView.updateTableView(playlistLibrary.getPlaylistByName(displaying));
+                                    //if playlist is opened in main window
+                                        playerView.updateTableView(playlist);
                                     }
+
+                                    //update a playlist window if the playlist is also opened in a window
+                                    getPlaylistWindow(displaying).updateTableView(playlist);
+
                                 } else {
                                 //if displaying library on the targetWindow
                                     //update the view and the player control
@@ -705,6 +718,11 @@ public class MainController {
                                 System.out.println("Song was added to the playlist" + displaying);
                                 //update the view
                                 targetWindow.updateTableView(playlist);
+                                //TODO refactoring point for the update
+                                if(playerView.getDisplayingListName().equals(displaying)) {
+                                    //if the main window is showing the same playlist
+                                    playerView.updateTableView(playlist);
+                                }
                                 playerControl.updateSongList(playlist.getSongList());
                             }
                         }
@@ -726,7 +744,7 @@ public class MainController {
 
         @Override
         public void dragGestureRecognized(DragGestureEvent dge) {
-            //TODO is it executed? don't see any print msg on runtime log...
+            //TODO dragGestureRecognized() is never executed.
             //get the source window of the DragGestureEvent
             MusicPlayerGUI sourceWindow = (MusicPlayerGUI)SwingUtilities.getWindowAncestor(dge.getComponent());
             String displaying = sourceWindow.getDisplayingListName();
@@ -760,127 +778,6 @@ public class MainController {
             dge.startDrag(cursor, t);
         }
     }
-
-/**
- * DragDropToScrollPanePlWindow
- * everything works without this redundant class.
- * GOING TO REMOVE THIS CLASS SOON!
- */
-//    class DragDropToScrollPanePlWindow
-//            extends DropTarget implements DragGestureListener {
-//
-//        private DataFlavor[] supportedFlavors = new DataFlavor[1];
-//
-//        public DragDropToScrollPanePlWindow() {
-//            supportedFlavors[0] = DataFlavor.stringFlavor;
-//        }
-//
-//        public synchronized void drop(DropTargetDropEvent evt) {
-//            //get the target window of drop event
-//            MusicPlayerGUI targetWindow = (MusicPlayerGUI)((DropTarget)evt.getSource()).getComponent();
-//            String displaying = targetWindow.getDisplayingListName();
-//            System.out.println("[DragDrop] drop targetWindow: "
-//                    +targetWindow.getWindowName()+" displaying: "+displaying
-//            );
-//            //bring the target window to the front
-//            targetWindow.toFront();
-//
-//            boolean invalidFilesFound = false;
-//            String filePath;
-//            int successCount = 0;
-//            int draggedCount = 0;
-//            int draggedStringCount = 0;
-//
-//            evt.acceptDrop(DnDConstants.ACTION_COPY);
-//            List<File> droppedFiles = null;
-//            String droppedSongs = null;
-//            try {
-//                if (evt.getTransferable().isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
-//                //Drag-and-Drop mp3 files to the app
-//                    droppedFiles = (List<File>) evt.getTransferable()
-//                            .getTransferData(DataFlavor.javaFileListFlavor);
-//                    draggedCount = droppedFiles.size();
-//                    for (File file : droppedFiles) {
-//                        filePath = file.getAbsolutePath();
-//                        Song newSong = new Song(filePath);
-//                        if (newSong.getPath() == null) {
-//                            //not a valid song file
-//                            System.out.println("[DragDrop] Not a valid file. '" + filePath + "'\n");
-//                            invalidFilesFound = true;
-//                        } else {
-//                            playlistLibrary.getPlaylistByName(displaying).addSong(newSong);
-//                            /**
-//                             if (library.addSong(newSong) != SongLibrary.ADDSONG_FILEPATH_NULL) {
-//                                 successCount++;
-//                                 playerView.updateTableView(library);
-//                                 playerControl.updateSongList(library);
-//                             } else {
-//                                //drop in playlist window
-//                             }**/
-//                        }
-//                    }
-//                } else if (evt.getTransferable().isDataFlavorSupported(DataFlavor.stringFlavor)){
-//                //Drag-and-Drop inter windows
-//                    droppedSongs = (String) evt.getTransferable().
-//                            getTransferData(DataFlavor.stringFlavor);
-//                    System.out.println(droppedSongs);
-//                    draggedCount = droppedSongs.split(";").length;
-//
-//                    for (String song : droppedSongs.split(";")) {
-//                        String songPath = song.split("\t")[0];
-//                        System.out.println("[DragDrop] song name is " + songPath);
-//                        Song addedSong = new Song(songPath);
-//                        if (addedSong.getPath() == null) {
-//                            invalidFilesFound = true;
-//                        } else {
-//                            //to playlist
-//                            Playlist playlist = playlistLibrary.getPlaylistByName(displaying);
-//                            playlist.addSong(addedSong);
-//                            //update the view
-//                            targetWindow.updateTableView(playlist);
-//                            playerControl.updateSongList(playlist.getSongList());
-//                        }
-//                    }
-//                }
-//                if (invalidFilesFound) {
-//                    System.out.println("[DragDrop] Added " + successCount + " songs out of " + draggedCount + " files.\n");
-//                    String msg = "Some files have not been added\nsince they are not valid mp3 files.";
-//                    JOptionPane.showMessageDialog(playerView, msg, "Notice", JOptionPane.PLAIN_MESSAGE);
-//                }
-//
-//            } catch (UnsupportedFlavorException e) {
-//                e.printStackTrace();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//
-//        @Override
-//        public void dragGestureRecognized(DragGestureEvent dge) {
-//            //get the source window of the DragGestureEvent
-//            MusicPlayerGUI sourceWindow = (MusicPlayerGUI)SwingUtilities.getWindowAncestor(dge.getComponent());
-//            String displaying = sourceWindow.getDisplayingListName();
-//            System.out.println("[DragDrop] drag sourceWindow: "
-//                    +sourceWindow.getWindowName()+" displaying: "+displaying
-//            );
-//
-//            Cursor cursor = Cursor.getDefaultCursor();
-//            int[] songIndices = sourceWindow.getSongTable().getSelectedRows();
-//            String songNames = "";
-//            //from playlist
-//            Playlist playlist = playlistLibrary.getPlaylistByName(displaying);
-//            for (int i = 0; i < songIndices.length; i++) {
-//                songNames = songNames + ";"
-//                        + playlist.getSongList().get(songIndices[i]).getPath();
-//            }
-//            System.out.println("Song name dragged: " + songNames);
-//            Transferable t = new StringSelection(songNames);
-//            if (dge.getDragAction() == DnDConstants.ACTION_COPY) {
-//                cursor = DragSource.DefaultCopyDrop;
-//            }
-//            dge.startDrag(cursor, t);
-//        }
-//    }
 
     /**
      * MouseListenerForTree covers:
