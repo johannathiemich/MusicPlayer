@@ -104,6 +104,10 @@ public class MainController {
         //Add drop target to scroll pane
         playerView.addDragDropToScrollPane(new DragDropToScrollPane());
 
+        //initializing only in the beginning because otherwise I got NullPointerExceptions in the beginning
+        focusedWindow = playerView;
+        focusedWindowName = "main";
+
         //COMMENTED OUT FROM MERGE CONFLICT for Drag&Drop function
         //playerView.getSongListView().setTransferHandlerLibrary(library);
     }
@@ -178,22 +182,25 @@ public class MainController {
             } else if (btnName.equals("prev")) {
                 //PREV button action
                 System.out.println("[BUTTON] PREV button is pressed.");
+                //reflect to the view: change the row selection of the window
+                playerControl.setSongTable(focusedWindow.getSongTable());
+
                 playerControl.playPrevSong();
                 //reflect to the view: update all playBtnText
                 updatePlayBtnTextInAllWindow(MusicPlayerGUI.BTNTEXT_PAUSE);
-                //reflect to the view: change the row selection of the window
-                playerControl.setSongTable(focusedWindow.getSongTable());
+
                 focusedWindow.changeTableRowSelection(playerControl.getCurrSongIndex());
                 //focusedWindow.changeTableRowSelection(playerControl.getSongList().indexOf(playerControl.getCurrentSong()));
             } else if (btnName.equals("next")) {
                 //NEXT button action
                 System.out.println("[BUTTON] NEXT button is pressed.");
+                //reflect to the view: change the row selection of the window
+                playerControl.setSongTable(focusedWindow.getSongTable());
 
                 playerControl.playNextSong();
                 //reflect to the view: update all playBtnText
                 updatePlayBtnTextInAllWindow(MusicPlayerGUI.BTNTEXT_PAUSE);
-                //reflect to the view: change the row selection of the window
-                playerControl.setSongTable(focusedWindow.getSongTable());
+
                 System.out.println("current song index is: " + playerControl.getCurrSongIndex());
                 focusedWindow.changeTableRowSelection(playerControl.getCurrSongIndex());
             } else {
@@ -291,12 +298,14 @@ public class MainController {
                 if (focusedWindowName.equals("main")) {
                     if (playerView.getDisplayingListName().equals("library")) {
                         System.out.println("[Menu] Delete Song is pressed.");
-
+                        int counterDeletedSongs = 0;
                         int[] selectedRows = playerView.getSongTable().getSelectedRows();
                         for (int i = 0; i < selectedRows.length; i++) {
+                            selectedRows[i] = selectedRows[i] - counterDeletedSongs;
                             boolean isRowInbound = (selectedRows[i] >= 0) && (selectedRows[i] < library.size());
 
                             if (isRowInbound) {
+                                counterDeletedSongs++;
                                 Song selectedSong = library.get(selectedRows[i]);
                                 System.out.println("row:" + selectedRows[i] + " is selected to delete.");
 
@@ -322,11 +331,15 @@ public class MainController {
                     } else {
                         int[] selectedRows = playerView.getSongTable().getSelectedRows();
                         String playlistName = playerView.getDisplayingListName();
+                        int counterDeletedSongs = 0;
                         for (int i = 0; i < selectedRows.length; i++) {
+                            selectedRows[i] = selectedRows[i]-counterDeletedSongs;
                             boolean isRowInbound = (selectedRows[i] >= 0) &&
-                                    (selectedRows[i] < playlistLibrary.getPlaylistByName(playlistName).getSongList().size());
+                                    (selectedRows[i] < playlistLibrary.getPlaylistByName(playlistName).
+                                            getSongList().size());
 
                             if (isRowInbound) {
+                                counterDeletedSongs++;
                                 Song selectedSong = playlistLibrary.getPlaylistByName(playlistName).
                                         getSongList().get(selectedRows[i]);
                                 playlistLibrary.getPlaylistByName(playlistName).deleteSong(selectedSong);
@@ -337,20 +350,25 @@ public class MainController {
                 } else {
                     //TODO Delete Song from Playlist should be separated (from delete song from library) for playlist in main window or playlist window
                     System.out.println("[PlaylistWindow] Delete Song is pressed");
-                    int selectedRow = getPlaylistWindow(focusedWindowName).getSongTable().getSelectedRow();
-                    boolean isRowInbound = (selectedRow >= 0) &&
-                            (selectedRow < playlistLibrary.getPlaylistByName(focusedWindowName).getSongList().size());
-                    if (isRowInbound) {
-                        Song selectedSong =
-                                playlistLibrary.getPlaylistByName(focusedWindowName).getSongList().get(selectedRow);
-                        System.out.println("row: " + selectedRow + " is selected to delete.");
+                    int counterDeletedSongs = 0;
+                    int[] selectedRows = getPlaylistWindow(focusedWindowName).getSongTable().getSelectedRows();
+                    for (int i = 0; i < selectedRows.length; i++) {
+                        selectedRows[i] = selectedRows[i] - counterDeletedSongs;
+                        boolean isRowInbound = (selectedRows[i] >= 0) &&
+                                (selectedRows[i] < playlistLibrary.getPlaylistByName(focusedWindowName).getSongList().size());
+                        if (isRowInbound) {
+                            counterDeletedSongs++;
+                            Song selectedSong =
+                                    playlistLibrary.getPlaylistByName(focusedWindowName).getSongList().get(selectedRows[i]);
+                            System.out.println("[PlaylistWindow] row: " + selectedRows[i] + " is selected to delete.");
 
-                        //delete song from playlist
-                        playlistLibrary.getPlaylistByName(focusedWindowName).deleteSong(selectedSong);
-                        getPlaylistWindow(focusedWindowName).updateTableView(
-                                playlistLibrary.getPlaylistByName(focusedWindowName));
-                    } else {
-                        System.out.println("[Playlist window] row: " + selectedRow + " nothing selected to delete.");
+                            //delete song from playlist
+                            playlistLibrary.getPlaylistByName(focusedWindowName).deleteSong(selectedSong);
+                            getPlaylistWindow(focusedWindowName).updateTableView(
+                                    playlistLibrary.getPlaylistByName(focusedWindowName));
+                        } else {
+                            System.out.println("[PlaylistWindow] row: " + selectedRows[i] + " nothing selected to delete.");
+                        }
                     }
                 }
 
@@ -645,6 +663,9 @@ public class MainController {
                                     if(playerView.getDisplayingListName().equals("library")) {
                                         //also update the view of the main window
                                         playerView.updateTableView(library);
+                                    } else {
+                                        //if playlist is opened in main window
+                                        playerView.updateTableView(playlistLibrary.getPlaylistByName(displaying));
                                     }
                                 } else {
                                 //if displaying library on the targetWindow
@@ -660,10 +681,11 @@ public class MainController {
                 //Drag-and-Drop inter windows
                     droppedSongs = (String) evt.getTransferable().
                             getTransferData(DataFlavor.stringFlavor);
-                    System.out.println(droppedSongs);
-                    draggedCount = droppedSongs.split(";").length;
 
-                    for (String song : droppedSongs.split(";")) {
+                    System.out.println("[DragDrop] string transferable" + droppedSongs);
+                    draggedCount = droppedSongs.split("\n").length;
+
+                    for (String song : droppedSongs.split("\n")) {
                         String songPath = song.split("\t")[0];
                         System.out.println("[DragDrop] song name is " + songPath);
                         Song addedSong = new Song(songPath);

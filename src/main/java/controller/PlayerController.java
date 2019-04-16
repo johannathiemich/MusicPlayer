@@ -157,10 +157,11 @@ public class PlayerController {
      * Play the song that comes before the currently playing song in the songList
      */
     public void playPrevSong(){
-        currSongIndex = playerView.getSongTable().getSelectedRow();
-        if (currSongIndex == -1 ) {
-            currSongIndex = table.getSelectedRow();
-        }
+        currSongIndex = table.getSelectedRow();
+        //currSongIndex = playerView.getSongTable().getSelectedRow();
+        //if (currSongIndex == -1 ) {
+        //    currSongIndex = table.getSelectedRow();
+        //}
         int prevRow;
         //int selectedRow = songList.indexOf(currentSong);
         int selectedRow = currSongIndex;
@@ -183,10 +184,11 @@ public class PlayerController {
      * Play the song that comes after the currently playing song in the songList
      */
     public void playNextSong(){
-        currSongIndex = playerView.getSongTable().getSelectedRow();
-        if (currSongIndex == -1) {
-            currSongIndex = table.getSelectedRow();
-        }
+        currSongIndex = table.getSelectedRow();
+        //currSongIndex = playerView.getSongTable().getSelectedRow();
+        //if (currSongIndex == -1 ) {
+        //    currSongIndex = table.getSelectedRow();
+        //
         System.out.println("before currently selected row: " + currSongIndex);
         int nextRow;
         //int selectedRow = songList.indexOf(currentSong);
