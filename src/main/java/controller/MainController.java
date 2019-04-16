@@ -55,7 +55,7 @@ public class MainController {
      */
     public MainController() {
         //assign modules
-        playerView = new MusicPlayerGUI("MyTunes 2.0", 800, 600, "main");
+        playerView = new MusicPlayerGUI("MyTunes 2.0", 800, 600, "main","library");
         library = new SongLibrary(); //should always be up-to-date with db
         playlistLibrary = new PlaylistLibrary(); //should always be up-to-date with db
 
@@ -267,7 +267,7 @@ public class MainController {
                         if (!windowName.equals("main")) {
                             playlistLibrary.getPlaylistByName(windowName).addSong(newSong);
                             getPlaylistWindow(windowName).
-                                    updateTableView(playlistLibrary.getPlaylistByName(windowName).getSongList());
+                                    updateTableView(playlistLibrary.getPlaylistByName(windowName));
                         }
                         library.addSong(newSong);
                         playerView.updateTableView(library);
@@ -299,7 +299,7 @@ public class MainController {
                         for (String plistName : playlistLibrary.getAllPlaylistNames()) {
                             if (getPlaylistWindow(plistName) != null) {
                                 getPlaylistWindow(plistName).
-                                        updateTableView(playlistLibrary.getPlaylistByName(plistName).getSongList());
+                                        updateTableView(playlistLibrary.getPlaylistByName(plistName));
                             }
                         }
 
@@ -319,7 +319,7 @@ public class MainController {
                         //delete song from playlist
                         playlistLibrary.getPlaylistByName(focusedWindowName).deleteSong(selectedSong);
                         getPlaylistWindow(focusedWindowName).updateTableView(
-                                playlistLibrary.getPlaylistByName(focusedWindowName).getSongList());
+                                playlistLibrary.getPlaylistByName(focusedWindowName));
                     } else {
                         System.out.println("[Playlist window] row: " + selectedRow + " nothing selected to delete.");
                     }
@@ -359,7 +359,7 @@ public class MainController {
                 playerView.getSideView().getPlaylistTree().setSelectionRow(lastRow);
                 //open it on the main window
                 Playlist playlist = playlistLibrary.getPlaylistByName(playlistName);
-                playerView.updateTableView(playlist.getSongList());
+                playerView.updateTableView(playlist);
                 playerControl.updateSongList(playlist.getSongList());
 
             } else if (menuName.equals("exit")) {
@@ -383,7 +383,7 @@ public class MainController {
                             playlist.addSong(selectedSong);
                             //update the opened playlist window view where the song was added
                             getPlaylistWindow(playlistName).
-                                    updateTableView(playlistLibrary.getPlaylistByName(playlistName).getSongList());
+                                    updateTableView(playlistLibrary.getPlaylistByName(playlistName));
                         } else {
                             System.out.println("row:" + selectedRow[i] + ", nothing selected to add.");
                         }
@@ -668,7 +668,7 @@ public class MainController {
                     Playlist playlist = playlistLibrary.getPlaylistByName(selectedPlaylistName);
                     System.out.println("[Playlist:" + selectedPlaylistName + "] " + playlist.getSongList().size() + " songs\n");
                     //show the selected playlist on the main window
-                    playerView.updateTableView(playlist.getSongList());
+                    playerView.updateTableView(playlist);
                     playerControl.updateSongList(playlist.getSongList());
                 }
             }
@@ -812,7 +812,7 @@ public class MainController {
      */
     private MusicPlayerGUI createNewPlaylistWindow(String playlistName, MusicPlayerGUI parentView) {
         //Create a new window for a playlist
-        MusicPlayerGUI playlistWindow = new MusicPlayerGUI("Playlist: " + playlistName, 500, 300, playlistName);
+        MusicPlayerGUI playlistWindow = new MusicPlayerGUI("Playlist: " + playlistName, 500, 300, playlistName, playlistName);
         //Closing action of playlist window
         playlistWindow.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
         playlistWindow.addWindowListener(new WindowAdapter() {

@@ -1,6 +1,8 @@
 package view;
 
+import model.Playlist;
 import model.Song;
+import model.SongLibrary;
 
 import javax.swing.*;
 import javax.swing.event.ChangeListener;
@@ -20,6 +22,7 @@ import java.util.ArrayList;
 public class MusicPlayerGUI extends JFrame {
     //the name of what this window represents
     private String windowName;
+    private String displayingListName;
 
     //font of the app
     public static Font FONT = new Font("Helvetica",Font.PLAIN,14);
@@ -63,7 +66,7 @@ public class MusicPlayerGUI extends JFrame {
      * @param height the height of the window
      * @param windowName the name of what this window represents
      */
-    public MusicPlayerGUI(String frameTitle, int width, int height, String windowName) {
+    public MusicPlayerGUI(String frameTitle, int width, int height, String windowName, String displayingListName) {
         super(frameTitle);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setPreferredSize(new Dimension(width,height));
@@ -72,6 +75,7 @@ public class MusicPlayerGUI extends JFrame {
         //to detect which window is focused
         //this.setFocusable(true);
         this.windowName = windowName;
+        this.displayingListName = displayingListName;
 
         // table view of a list of songs
         songListView = new SongListView();
@@ -177,9 +181,21 @@ public class MusicPlayerGUI extends JFrame {
         //add menu bar to main frame
         this.setJMenuBar(menuBar);
     }
+//
+//    public void updateTableView(ArrayList<Song> songList){
+//        songListView.updateTableView(songList);
+//    }
 
-    public void updateTableView(ArrayList<Song> songList){
-        songListView.updateTableView(songList);
+    public void updateTableView(SongLibrary library){
+        songListView.updateTableView(library);
+        //update displayingListName
+        setDisplayingListName("library");
+    }
+
+    public void updateTableView(Playlist playlist){
+        songListView.updateTableView(playlist.getSongList());
+        //update displayingListName
+        setDisplayingListName(playlist.getName());
     }
 
     /**
@@ -384,4 +400,20 @@ public class MusicPlayerGUI extends JFrame {
         }
     }
 
+    /**
+     * Gets what's being displayed on the table view of the window
+     * @return "library" if it's displaying library, playlist name if it's displaying a playlist
+     */
+    public String getDisplayingListName() {
+        return displayingListName;
+    }
+
+    /**
+     * Sets what's being displayed on the table view of the window
+     * @param displayingListName "library" if it displays library, playlist name if it displays a playlist
+     */
+    public void setDisplayingListName(String displayingListName) {
+        this.displayingListName = displayingListName;
+        System.out.println("the \""+windowName+"\" window is now displaying \""+displayingListName+"\"");
+    }
 }
