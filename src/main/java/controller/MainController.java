@@ -599,7 +599,9 @@ public class MainController {
                             getTransferData(DataFlavor.stringFlavor);
                     System.out.println(droppedSongs);
                     draggedCount = droppedSongs.split(";").length;
-                    for (String songPath : droppedSongs.split(";")) {
+                    for (String song : droppedSongs.split(";")) {
+                        String songPath = song.split("\t")[0];
+                        System.out.println("[] song name is " + songPath);
                         Song addedSong = new Song(songPath);
                         if (addedSong == null) {
                             invalidFilesFound = true;
@@ -696,7 +698,9 @@ class DragDropToScrollPanePlWindow extends DropTarget implements
             } else if (evt.getTransferable().isDataFlavorSupported(DataFlavor.stringFlavor)){
                 droppedSongs = (String) evt.getTransferable().getTransferData(DataFlavor.stringFlavor);
                 draggedCount = droppedSongs.split(";").length;
-                for (String songPath : droppedSongs.split(";")) {
+                for (String song : droppedSongs.split(";")) {
+                    String songPath = song.split("\t")[0];
+                    System.out.println("[] song name is " + songPath);
                     Song addedSong = new Song(songPath);
                     if (addedSong.getPath() == null) {
                         invalidFilesFound = true;
@@ -736,19 +740,6 @@ class DragDropToScrollPanePlWindow extends DropTarget implements
         }
         dge.startDrag(cursor, t);
     }
-
-    /**      @Override public DataFlavor[] getTransferDataFlavors() {
-    return supportedFlavors;
-    }
-
-     @Override public boolean isDataFlavorSupported(DataFlavor flavor) {
-     return supportedFlavors[0].equals(flavor);
-     }
-
-     @Override public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
-     return null;
-     }**/
-
 }
 
 /**
