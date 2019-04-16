@@ -65,7 +65,10 @@ public class Playlist { //extends ArrayList<Song> {
         }
         if (!songInLibrary(song)) {
             System.out.println("Song " + song.getPath() + "is not in library yet. Adding it now.");
-            success = success && library.addSong(song);
+            int flag = library.addSong(song);
+            if(flag != SongLibrary.ADDSONG_FILEPATH_NULL){
+                success = true;
+            }
         }
         // Check if the song already exists in the playlist
         /**if (songInPlaylist(song)) {

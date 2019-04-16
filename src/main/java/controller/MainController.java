@@ -309,6 +309,7 @@ public class MainController {
                         System.out.println("row:" + selectedRow + ", nothing selected to delete.");
                     }
                 } else {
+                    //TODO Delete Song from Playlist should be separated (from delete song from library) for playlist in main window or playlist window
                     System.out.println("[PlaylistWindow] Delete Song is pressed");
                     int selectedRow = getPlaylistWindow(focusedWindowName).getSongTable().getSelectedRow();
                     boolean isRowInbound = (selectedRow >= 0) &&
@@ -565,14 +566,14 @@ public class MainController {
                         //add the song to the library
                         //if library successfully adds the song
                         //which is valid mp3 and not present in library..
-                        if (library.addSong(newSong)) {
+                        int flag = library.addSong(newSong);
+                        if(flag != SongLibrary.ADDSONG_FILEPATH_NULL) {
                             successCount++;
 
                             String displaying = focusedWindow.getDisplayingListName();
                             System.out.println("focusedWindow: "+focusedWindow.getWindowName()+"\tfocusedWindow.getDisplayingListName(): "+displaying);
                             if (!displaying.equals("library")) {
                             //if displaying a playlist on the focused window
-                                //TODO handle drag&drop files that exits in the library to playlist in the main window situation
                                 //add the song also to the playlist
                                 Playlist playlist = playlistLibrary.getPlaylistByName(displaying);
                                 playlist.addSong(newSong);
