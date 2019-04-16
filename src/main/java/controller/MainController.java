@@ -637,7 +637,7 @@ public class MainController {
                      }**/
                 }
             }
-            focusedWindow.updateTableView(playlistLibrary.getPlaylistByName(focusedWindowName).getSongList());
+            focusedWindow.updateTableView(playlistLibrary.getPlaylistByName(focusedWindowName));
             if (invalidFilesFound) {
                 System.out.println("[DragDrop] Added " + successCount + " songs out of " + draggedCount + " files.\n");
                 JOptionPane.showMessageDialog(playerView,
