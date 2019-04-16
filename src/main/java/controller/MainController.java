@@ -15,11 +15,12 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.tree.TreePath;
 import java.awt.datatransfer.DataFlavor;
-import java.awt.dnd.DnDConstants;
-import java.awt.dnd.DropTarget;
-import java.awt.dnd.DropTargetDropEvent;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.dnd.*;
 import java.awt.event.*;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -579,6 +580,79 @@ public class MainController {
     }
 
     /**
+     * User can drag and drop mp3 files from their directory into the playlist.
+     */
+    class DragDropToScrollPanePlWindow extends DropTarget implements
+            DragGestureListener, Transferable {
+        public synchronized void drop(DropTargetDropEvent evt) {
+            boolean invalidFilesFound = false;
+            String filePath;
+            int successCount = 0;
+            int draggedCount = 0;
+            try {
+                evt.acceptDrop(DnDConstants.ACTION_COPY);
+                List<File> droppedFiles = null;
+                try {
+                    droppedFiles = (List<File>) evt.getTransferable()
+                            .getTransferData(DataFlavor.javaFileListFlavor);
+                } catch (UnsupportedFlavorException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                draggedCount = droppedFiles.size();
+                for (File file : droppedFiles) {
+                    filePath = file.getAbsolutePath();
+                    Song newSong = new Song(filePath);
+                    if (newSong.getPath() == null) {
+                        System.out.println("[DragDrop] Not a valid file. '" + filePath + "'\n");
+                        invalidFilesFound = true;
+                    } else {
+                        //TODO implement adding to playlist here
+                        /**
+                            if (library.addSong(newSong)) {
+                                successCount++;
+                                playerView.updateTableView(library);
+                                playerControl.updateSongList(library);
+                            } else {
+                                //drop in playlist window
+                            }**/
+                        }
+                    }
+                }
+                if (invalidFilesFound) {
+                    System.out.println("[DragDrop] Added " + successCount + " songs out of " + draggedCount + " files.\n");
+                    JOptionPane.showMessageDialog(playerView,
+                            "Some files have not been added\n" +
+                                    "since they are not valid mp3 files.");
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
+        @Override
+        public void dragGestureRecognized(DragGestureEvent dge) {
+
+        }
+
+        @Override
+        public DataFlavor[] getTransferDataFlavors() {
+            return new DataFlavor[0];
+        }
+
+        @Override
+        public boolean isDataFlavorSupported(DataFlavor flavor) {
+            return false;
+        }
+
+        @Override
+        public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
+            return null;
+        }
+
+    }
+
+    /**
      * MouseListenerForTree covers:
      * [1] left-click on "Library" to show it on the main window
      * [2] left-click on a playlist node to show it on the main window
@@ -732,6 +806,7 @@ public class MainController {
                     playerView.updateTableView(library);
                     playerView.getSideView().getLibraryTree().setSelectionRow(0);
                     playerView.getSideView().getPlaylistTree().clearSelection();
+                    newPlaylistWindow.getSongListView().setDropTarget(new DragDropToScrollPane());
                 }
 
 //                //create a new playlist window
@@ -744,8 +819,6 @@ public class MainController {
             } else if (menuName.equals("playlist-delete")) {
                 //[Delete Playlist] menu action
                 System.out.println("[PopupMenu] Delete Playlist is pressed.");
-
-                //TODO Delete the selected playlist
 
                 //Ask user if they surely want to delete playlist via dialog
                 //JOptionPane.show....
@@ -812,7 +885,8 @@ public class MainController {
      */
     private MusicPlayerGUI createNewPlaylistWindow(String playlistName, MusicPlayerGUI parentView) {
         //Create a new window for a playlist
-        MusicPlayerGUI playlistWindow = new MusicPlayerGUI("Playlist: " + playlistName, 500, 300, playlistName);
+        MusicPlayerGUI playlistWindow = new MusicPlayerGUI("Playlist: " + playlistName, 500,
+                300, playlistName);
         //Closing action of playlist window
         playlistWindow.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
         playlistWindow.addWindowListener(new WindowAdapter() {
