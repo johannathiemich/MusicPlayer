@@ -13,6 +13,12 @@ import java.util.ArrayList;
 public class SongLibrary extends ArrayList<Song>{
 
     private DatabaseHandler dbHandler;
+
+    //TODO better to return return codes FILEPATH_NULL=0, SUCCESS=1, ALREADY_EXIST=2
+    public static final int     ADDSONG_FILEPATH_NULL = 0;
+    public static final int     ADDSONG_SUCCESS = 1;
+    public static final int     ADDSONG_ALREADY_EXIST = 2;
+
     /**
      * Construct an empty library
      */
@@ -64,28 +70,27 @@ public class SongLibrary extends ArrayList<Song>{
      * Add a Song to the library, if not present.
      * Should use addSong(Song) instead of add(Song) which is Array's inherited method.
      * @param song to be added to the list
-     * @return whether adding Song to library succeeds.
+     * @return return code (ADDSONG_FILEPATH_NULL = 0, ADDSONG_SUCCESS = 1, ADDSONG_SONG_EXIST = 2)
      */
-    public boolean addSong(Song song){
-        boolean success = false;
+    public int addSong(Song song){
+        //TODO better to return return codes FILEPATH_NULL=0, SUCCESS=1, SONG_EXIST=2
+        //boolean success = false;
         if(song.getPath() == null) {
             System.out.println("[Library_ERROR] Not added. filePath: null\n");
-            success = false;
+            return ADDSONG_FILEPATH_NULL;
         } else {
             // Check if the song already exists in the library
             if ( exists(song) ) {
-                System.out.print("[Library] Not added. Already in the library.\t");
-                success = false;
+                System.out.println("[Library] Not added. Already in the library.\t"+song.getTitleAndArtist());
+                return ADDSONG_ALREADY_EXIST;
             }else{
                 //add song to the database
                 dbHandler.addSong(song);
                 this.add(song);
-                System.out.print("[Library] Added a new song.\t");
-                success = true;
+                System.out.println("[Library] Added a new song.\t"+song.getTitleAndArtist());
+                return ADDSONG_SUCCESS;
             }
-            System.out.println("'"+song.getTitleAndArtist()+"'\n");
         }
-        return success;
     }
 
     /**
