@@ -8,6 +8,7 @@ import java.util.ArrayList;
  * Playlist class contains Songs by extending ArrayList Song.
  * This class represents a playlist
  */
+//TODO why not extend ArrayList<Song>??
 public class Playlist { //extends ArrayList<Song> {
 
     private String name;
