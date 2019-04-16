@@ -875,6 +875,7 @@ public class MainController {
                 System.out.println("\nFocus on the main window.");
                 //TODO might need to check if playlist is on the main window table... or it can work fine without it.
                 playerControl.updateSongList(library);
+                System.out.println("main window - displayingListName: "+focusedWindow.getDisplayingListName());
             }
             //if a playlist window has the focus
             else {
@@ -888,6 +889,10 @@ public class MainController {
         public void windowLostFocus(WindowEvent e) {
             //clear any row selection on the table when losing focus
             ((MusicPlayerGUI) e.getWindow()).getSongTable().clearSelection();
+            //remember the last focused window in case no window is focused.
+            focusedWindow = (MusicPlayerGUI) e.getWindow();
+            focusedWindowName = focusedWindow.getWindowName();
+            System.out.println(focusedWindowName+" window lost the focus.");
         }
 
     }
