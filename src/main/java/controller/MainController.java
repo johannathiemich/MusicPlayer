@@ -822,7 +822,7 @@ public class MainController {
                     playerView.updateTableView(library);
                     playerView.getSideView().getLibraryTree().setSelectionRow(0);
                     playerView.getSideView().getPlaylistTree().clearSelection();
-                    newPlaylistWindow.getSongListView().setDropTarget(new DragDropToScrollPane());
+                    newPlaylistWindow.getSongTable().setDropTarget(new DragDropToScrollPanePlWindow());
                 }
 
 //                //create a new playlist window
