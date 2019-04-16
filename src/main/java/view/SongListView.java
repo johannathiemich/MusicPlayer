@@ -59,11 +59,6 @@ public class SongListView extends JPanel {
         //table.setTransferHandler(handler);
         //table.setDropMode(DropMode.INSERT_ROWS);
 
-//        //change the look of the header
-//        DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer();
-//        renderer.setBorder(BorderFactory.createEmptyBorder());
-//        table.getTableHeader().setDefaultRenderer(renderer);
-
         //put table in place
         tableScrollPane = new JScrollPane(table);
         tableScrollPane.setBorder(BorderFactory.createEmptyBorder());
