@@ -389,6 +389,24 @@ public class MusicPlayerGUI extends JFrame {
      * All menu item components are named as "addToPlaylist" to distinguish menu item types.
      * @param playlistName the string array of all playlist names
      */
+    public void setAddToPlaylistPopupMenuItem(ArrayList<String> playlistName, ActionListener listener){
+        //initialize the sub menu
+        addToPlaylistPopupMenu.removeAll();
+        //add menu items of playlist names
+        for (int i=0; i<playlistName.size(); i++){
+            JMenuItem playlistItem = new JMenuItem(playlistName.get(i));
+            playlistItem.setName("addToPlaylist");
+            playlistItem.addActionListener(listener);
+            addToPlaylistPopupMenu.add(playlistItem);
+        }
+    }
+
+    /**
+     * Sets menu items from an array of playlist names
+     * add them to [Add To Playlist] popup menu.
+     * All menu item components are named as "addToPlaylist" to distinguish menu item types.
+     * @param playlistName the string array of all playlist names
+     */
     public void setAddToPlaylistPopupMenuItem(ArrayList<String> playlistName){
         //initialize the sub menu
         addToPlaylistPopupMenu.removeAll();
