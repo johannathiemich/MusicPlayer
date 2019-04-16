@@ -5,6 +5,7 @@ import javazoom.jlgui.basicplayer.BasicPlayerException;
 import model.Song;
 import view.MusicPlayerGUI;
 
+import javax.swing.*;
 import java.io.File;
 import java.util.ArrayList;
 
@@ -19,7 +20,9 @@ public class PlayerController {
     private Song currentSong;            //the song currently loaded on the BasicPlayer
     private ArrayList<Song> songList;    //can be either a library or a playlist
     private MusicPlayerGUI playerView; //to reflect player's action to the view
+    private JTable table;
 
+    private int currSongIndex;
     /**
      * Constructor for this class
      * @param songList a list of all songs currently contained in the songList
@@ -154,8 +157,13 @@ public class PlayerController {
      * Play the song that comes before the currently playing song in the songList
      */
     public void playPrevSong(){
+        currSongIndex = playerView.getSongTable().getSelectedRow();
+        if (currSongIndex == -1 ) {
+            currSongIndex = table.getSelectedRow();
+        }
         int prevRow;
-        int selectedRow = songList.indexOf(currentSong);
+        //int selectedRow = songList.indexOf(currentSong);
+        int selectedRow = currSongIndex;
         int lastRow = songList.size() - 1;
 
         //selected row is negative if no row is selected --> play last song then
@@ -167,6 +175,7 @@ public class PlayerController {
 
         // Get the previous song in the songList and play it
         Song prevSong = songList.get(prevRow);
+        currSongIndex = prevRow;
         this.playSong(prevSong);
     }
 
@@ -174,9 +183,14 @@ public class PlayerController {
      * Play the song that comes after the currently playing song in the songList
      */
     public void playNextSong(){
-
+        currSongIndex = playerView.getSongTable().getSelectedRow();
+        if (currSongIndex == -1) {
+            currSongIndex = table.getSelectedRow();
+        }
+        System.out.println("before currently selected row: " + currSongIndex);
         int nextRow;
-        int selectedRow = songList.indexOf(currentSong);
+        //int selectedRow = songList.indexOf(currentSong);
+        int selectedRow = currSongIndex;
         int lastRow = songList.size() - 1;
 
         if(selectedRow == lastRow) {
@@ -187,6 +201,9 @@ public class PlayerController {
 
         // Get the next song in the songList and play it
         Song nextSong = songList.get(nextRow);
+        currSongIndex = nextRow;
+        System.out.println("after currently selected row: " + currSongIndex);
+
         this.playSong(nextSong);
     }
 
@@ -211,5 +228,13 @@ public class PlayerController {
      */
     private double convertVolume(double value) {
         return value / abs(this.player.getMaximumGain() - this.player.getMinimumGain());
+    }
+
+    public int getCurrSongIndex() {
+        return this.currSongIndex;
+    }
+
+    public void setSongTable(JTable table) {
+        this.table = table;
     }
 }

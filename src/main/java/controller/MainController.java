@@ -50,7 +50,7 @@ public class MainController {
     private String selectedPlaylistName;
 
     private ArrayList<MusicPlayerGUI> playlistWindowArray;
-    private String focusedWindowName;
+    private String focusedWindowName = "main";
     private MusicPlayerGUI focusedWindow;
 
     /**
@@ -148,7 +148,8 @@ public class MainController {
                             if (playerView.isAnyRowSelected()) {
                                 playerControl.setCurrentSong(selectedSong);
                             } else {
-                                System.out.println("nothing selected on the main window, playing the first song in the library..");
+                                System.out.println("nothing selected on the main window, playing the first song in " +
+                                        "the library..");
                             }
                         } else {
                             //all playlist windows
@@ -157,7 +158,8 @@ public class MainController {
                                     if (playlistWindow.isAnyRowSelected()) {
                                         playerControl.setCurrentSong(selectedSong);
                                     } else {
-                                        System.out.println("nothing selected on the " + focusedWindowName + " window, playing the first song in the library..");
+                                        System.out.println("nothing selected on the " + focusedWindowName +
+                                                " window, playing the first song in the library..");
                                     }
                                 }
                             }
@@ -180,7 +182,9 @@ public class MainController {
                 //reflect to the view: update all playBtnText
                 updatePlayBtnTextInAllWindow(MusicPlayerGUI.BTNTEXT_PAUSE);
                 //reflect to the view: change the row selection of the window
-                focusedWindow.changeTableRowSelection(playerControl.getSongList().indexOf(playerControl.getCurrentSong()));
+                playerControl.setSongTable(focusedWindow.getSongTable());
+                focusedWindow.changeTableRowSelection(playerControl.getCurrSongIndex());
+                //focusedWindow.changeTableRowSelection(playerControl.getSongList().indexOf(playerControl.getCurrentSong()));
             } else if (btnName.equals("next")) {
                 //NEXT button action
                 System.out.println("[BUTTON] NEXT button is pressed.");
@@ -189,7 +193,9 @@ public class MainController {
                 //reflect to the view: update all playBtnText
                 updatePlayBtnTextInAllWindow(MusicPlayerGUI.BTNTEXT_PAUSE);
                 //reflect to the view: change the row selection of the window
-                focusedWindow.changeTableRowSelection(playerControl.getSongList().indexOf(playerControl.getCurrentSong()));
+                playerControl.setSongTable(focusedWindow.getSongTable());
+                System.out.println("current song index is: " + playerControl.getCurrSongIndex());
+                focusedWindow.changeTableRowSelection(playerControl.getCurrSongIndex());
             } else {
                 System.out.println("none of play/stop/prev/next buttons");
             }
@@ -283,32 +289,50 @@ public class MainController {
             } else if (menuName.equals("lib-deleteSong")) {
                 //[Delete Song From Library] menu actions
                 if (focusedWindowName.equals("main")) {
-                    System.out.println("[Menu] Delete Song is pressed.");
+                    if (playerView.getDisplayingListName().equals("library")) {
+                        System.out.println("[Menu] Delete Song is pressed.");
 
-                    int selectedRow = playerView.getSongTable().getSelectedRow();
-                    boolean isRowInbound = (selectedRow >= 0) && (selectedRow < library.size());
+                        int[] selectedRows = playerView.getSongTable().getSelectedRows();
+                        for (int i = 0; i < selectedRows.length; i++) {
+                            boolean isRowInbound = (selectedRows[i] >= 0) && (selectedRows[i] < library.size());
 
-                    if (isRowInbound) {
-                        Song selectedSong = library.get(selectedRow);
-                        System.out.println("row:" + selectedRow + " is selected to delete.");
+                            if (isRowInbound) {
+                                Song selectedSong = library.get(selectedRows[i]);
+                                System.out.println("row:" + selectedRows[i] + " is selected to delete.");
 
-                        //delete song from the library
-                        library.deleteSong(selectedSong);
-                        //delete song from all playlists
-                        playlistLibrary.deleteSongFromAllPlaylists(selectedSong);
-                        //update the view
-                        playerView.updateTableView(library);
-                        playerControl.updateSongList(library);
-                        //reflect deleted song to all opened playlist window
-                        for (String plistName : playlistLibrary.getAllPlaylistNames()) {
-                            if (getPlaylistWindow(plistName) != null) {
-                                getPlaylistWindow(plistName).
-                                        updateTableView(playlistLibrary.getPlaylistByName(plistName));
+                                //delete song from the library
+                                library.deleteSong(selectedSong);
+                                //delete song from all playlists
+                                playlistLibrary.deleteSongFromAllPlaylists(selectedSong);
+                                //update the view
+                                playerView.updateTableView(library);
+                                playerControl.updateSongList(library);
+                                //reflect deleted song to all opened playlist window
+                                for (String plistName : playlistLibrary.getAllPlaylistNames()) {
+                                    if (getPlaylistWindow(plistName) != null) {
+                                        getPlaylistWindow(plistName).
+                                                updateTableView(playlistLibrary.getPlaylistByName(plistName));
+                                    }
+                                }
+
+                            } else {
+                                System.out.println("row:" + selectedRows[i] + ", nothing selected to delete.");
                             }
                         }
-
                     } else {
-                        System.out.println("row:" + selectedRow + ", nothing selected to delete.");
+                        int[] selectedRows = playerView.getSongTable().getSelectedRows();
+                        String playlistName = playerView.getDisplayingListName();
+                        for (int i = 0; i < selectedRows.length; i++) {
+                            boolean isRowInbound = (selectedRows[i] >= 0) &&
+                                    (selectedRows[i] < playlistLibrary.getPlaylistByName(playlistName).getSongList().size());
+
+                            if (isRowInbound) {
+                                Song selectedSong = playlistLibrary.getPlaylistByName(playlistName).
+                                        getSongList().get(selectedRows[i]);
+                                playlistLibrary.getPlaylistByName(playlistName).deleteSong(selectedSong);
+                                playerView.updateTableView(playlistLibrary.getPlaylistByName(playlistName));
+                            }
+                        }
                     }
                 } else {
                     //TODO Delete Song from Playlist should be separated (from delete song from library) for playlist in main window or playlist window
@@ -357,7 +381,7 @@ public class MainController {
                 //update side panel
                 playerView.getSideView().updatePlaylistTree(playlistLibrary.getAllPlaylistNames());
                 //update playlists in the popup menu
-                playerView.setAddToPlaylistPopupMenuItem(playlistLibrary.getAllPlaylistNames());
+                playerView.setAddToPlaylistPopupMenuItem(playlistLibrary.getAllPlaylistNames(), this);
                 //select the playlist in the side panel tree
                 playerView.getSideView().getLibraryTree().clearSelection();
                 int lastRow = playerView.getSideView().getPlaylistTree().getRowCount() - 1;
@@ -984,8 +1008,6 @@ public class MainController {
                     playlistWindowArray.add(newPlaylistWindow);
                     //main window shows library
                     playerView.updateTableView(library);
-                    //TODO this duplicates with ## line1028, but this is overriding
-                    //newPlaylistWindow.addDragDropToScrollPane(new DragDropToScrollPanePlWindow());
                     System.out.println("[NewWindow] playlist \""+selectedPlaylistName+"\" is opened in a new window. "
                             + "("+playlistWindowArray.size()+" playlist windows in total)"
                     );
@@ -1076,12 +1098,6 @@ public class MainController {
             }
         });
 
-        //TODO better way to add event listeners and sync the control panel??
-        //Set the same components from the parent (the main window)
-//        playlistWindow.setFileMenu(parentView.getFileMenu());
-//        playlistWindow.setSongListView(parentView.getSongListView());
-//        playlistWindow.setControlView(parentView.getControlView());
-
         //Set songs on the view
         playlistWindow.getSongListView().updateTableView(playlistLibrary.getPlaylistByName(playlistName).getSongList());
 
@@ -1104,7 +1120,6 @@ public class MainController {
         //window focus
         playlistWindow.addFocusListener(new FocusListenerForWindow());
         //drop target to scroll pane
-        //TODO this duplicates with ## line908
         playlistWindow.addDragDropToScrollPane(new DragDropToScrollPane());
         //transfer handler
         //playlistWindow.getSongListView().getSongTable().setTransferHandler(
