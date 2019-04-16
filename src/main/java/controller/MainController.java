@@ -631,336 +631,336 @@ public class MainController {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+
+        @Override
+        public void dragGestureRecognized(DragGestureEvent dge) {
+            Cursor cursor = Cursor.getDefaultCursor();
+            int[] songIndices = playerView.getSongTable().getSelectedRows();
+            String songNames = "";
+            for (int i = 0; i < songIndices.length; i++) {
+                songNames = songNames + ";" + library.get(songIndices[i]).getPath();
+                System.out.println("Song name dragged: " + songNames);
+            }
+            Transferable t = new StringSelection(songNames);
+
+            if (dge.getDragAction() == DnDConstants.ACTION_COPY) {
+                cursor = DragSource.DefaultCopyDrop;
+            }
+            dge.startDrag(cursor, t);
+        }
     }
 
-    @Override
-    public void dragGestureRecognized(DragGestureEvent dge) {
-        Cursor cursor = Cursor.getDefaultCursor();
-        int[] songIndices = playerView.getSongTable().getSelectedRows();
-        String songNames = "";
-        for (int i = 0; i < songIndices.length; i++) {
-            songNames = songNames + ";" + library.get(songIndices[i]).getPath();
+    /**
+     * User can drag and drop mp3 files from their directory into the playlist.
+     */
+    class DragDropToScrollPanePlWindow extends DropTarget implements
+            DragGestureListener {
+
+        private DataFlavor[] supportedFlavors = new DataFlavor[1];
+
+        public DragDropToScrollPanePlWindow() {
+            supportedFlavors[0] = DataFlavor.stringFlavor;
+        }
+
+        public synchronized void drop(DropTargetDropEvent evt) {
+            boolean invalidFilesFound = false;
+            String filePath;
+            int successCount = 0;
+            int draggedCount = 0;
+            int draggedStringCount = 0;
+            evt.acceptDrop(DnDConstants.ACTION_COPY);
+            List<File> droppedFiles = null;
+            String droppedSongs = null;
+            try {
+                if (evt.getTransferable().isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
+                    droppedFiles = (List<File>) evt.getTransferable()
+                            .getTransferData(DataFlavor.javaFileListFlavor);
+                    draggedCount = droppedFiles.size();
+                    for (File file : droppedFiles) {
+                        filePath = file.getAbsolutePath();
+                        Song newSong = new Song(filePath);
+                        if (newSong.getPath() == null) {
+                            System.out.println("[DragDrop] Not a valid file. '" + filePath + "'\n");
+                            invalidFilesFound = true;
+                        } else {
+                            playlistLibrary.getPlaylistByName(focusedWindowName).addSong(newSong);
+                            /**
+                             if (library.addSong(newSong) != SongLibrary.ADDSONG_FILEPATH_NULL) {
+                             successCount++;
+                             playerView.updateTableView(library);
+                             playerControl.updateSongList(library);
+                             } else {
+                             //drop in playlist window
+                             }**/
+                        }
+                    }
+                } else if (evt.getTransferable().isDataFlavorSupported(DataFlavor.stringFlavor)){
+                    droppedSongs = (String) evt.getTransferable().getTransferData(DataFlavor.stringFlavor);
+                    draggedCount = droppedSongs.split(";").length;
+                    for (String song : droppedSongs.split(";")) {
+                        String songPath = song.split("\t")[0];
+                        System.out.println("[DragDrop] song name is " + songPath);
+                        Song addedSong = new Song(songPath);
+                        if (addedSong.getPath() == null) {
+                            invalidFilesFound = true;
+                        } else {
+                            playlistLibrary.getPlaylistByName(focusedWindowName).addSong(addedSong);
+                        }
+                    }
+                }
+                if (invalidFilesFound) {
+                    System.out.println("[DragDrop] Added " + successCount + " songs out of " + draggedCount + " files.\n");
+                    JOptionPane.showMessageDialog(playerView,
+                            "Some files have not been added\n" +
+                                    "since they are not valid mp3 files.");
+                }
+                focusedWindow.updateTableView(playlistLibrary.getPlaylistByName(focusedWindowName));
+            } catch (UnsupportedFlavorException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public void dragGestureRecognized(DragGestureEvent dge) {
+            Cursor cursor = Cursor.getDefaultCursor();
+            int[] songIndices = getPlaylistWindow(focusedWindowName).getSongTable().getSelectedRows();
+            String songNames = "";
+            for (int i = 0; i < songIndices.length; i++) {
+                songNames = songNames + ";" + playlistLibrary.getPlaylistByName(focusedWindowName).
+                        getSongList().get(songIndices[i]).getPath();
+            }
             System.out.println("Song name dragged: " + songNames);
+            Transferable t = new StringSelection(songNames);
+
+            if (dge.getDragAction() == DnDConstants.ACTION_COPY) {
+                cursor = DragSource.DefaultCopyDrop;
+            }
+            dge.startDrag(cursor, t);
         }
-        Transferable t = new StringSelection(songNames);
-
-        if (dge.getDragAction() == DnDConstants.ACTION_COPY) {
-            cursor = DragSource.DefaultCopyDrop;
-        }
-        dge.startDrag(cursor, t);
-    }
-}
-
-/**
- * User can drag and drop mp3 files from their directory into the playlist.
- */
-class DragDropToScrollPanePlWindow extends DropTarget implements
-        DragGestureListener {
-
-    private DataFlavor[] supportedFlavors = new DataFlavor[1];
-
-    public DragDropToScrollPanePlWindow() {
-        supportedFlavors[0] = DataFlavor.stringFlavor;
     }
 
-    public synchronized void drop(DropTargetDropEvent evt) {
-        boolean invalidFilesFound = false;
-        String filePath;
-        int successCount = 0;
-        int draggedCount = 0;
-        int draggedStringCount = 0;
-        evt.acceptDrop(DnDConstants.ACTION_COPY);
-        List<File> droppedFiles = null;
-        String droppedSongs = null;
-        try {
-            if (evt.getTransferable().isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
-                droppedFiles = (List<File>) evt.getTransferable()
-                        .getTransferData(DataFlavor.javaFileListFlavor);
-                draggedCount = droppedFiles.size();
-                for (File file : droppedFiles) {
-                    filePath = file.getAbsolutePath();
-                    Song newSong = new Song(filePath);
-                    if (newSong.getPath() == null) {
-                        System.out.println("[DragDrop] Not a valid file. '" + filePath + "'\n");
-                        invalidFilesFound = true;
-                    } else {
-                        playlistLibrary.getPlaylistByName(focusedWindowName).addSong(newSong);
-                        /**
-                         if (library.addSong(newSong)) {
-                         successCount++;
-                         playerView.updateTableView(library);
-                         playerControl.updateSongList(library);
-                         } else {
-                         //drop in playlist window
-                         }**/
-                    }
+    /**
+     * MouseListenerForTree covers:
+     * [1] left-click on "Library" to show it on the main window
+     * [2] left-click on a playlist node to show it on the main window
+     * [3] popup trigger for right-click on a playlist node
+     * [4] clear selections for left-click outside of trees
+     */
+    class MouseListenerForSideView extends MouseAdapter {
+        private JTree tree;
+        private TreePath treePath;
+        private boolean isPlaylistSelected;
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            tree = (JTree) e.getSource();
+            // Get treePath of the selected tree node
+            treePath = tree.getPathForLocation(e.getX(), e.getY());
+            // initialize state variables
+            isPlaylistSelected = false;
+
+            // Check if the event is within trees
+            if (treePath != null) {
+                //clear highlight on the not selected tree.
+                if (tree.getName().equals("libraryTree")) {
+                    playerView.getSideView().getPlaylistTree().clearSelection();
+                    selectedPlaylistName = null;
+                    isPlaylistSelected = false;
+
+                } else if (tree.getName().equals("playlistTree")) {
+                    //when Playlist tree is selected including the root node
+                    playerView.getSideView().getLibraryTree().clearSelection();
                 }
-            } else if (evt.getTransferable().isDataFlavorSupported(DataFlavor.stringFlavor)){
-                droppedSongs = (String) evt.getTransferable().getTransferData(DataFlavor.stringFlavor);
-                draggedCount = droppedSongs.split(";").length;
-                for (String song : droppedSongs.split(";")) {
-                    String songPath = song.split("\t")[0];
-                    System.out.println("[] song name is " + songPath);
-                    Song addedSong = new Song(songPath);
-                    if (addedSong.getPath() == null) {
-                        invalidFilesFound = true;
-                    } else {
-                        playlistLibrary.getPlaylistByName(focusedWindowName).addSong(addedSong);
-                    }
+
+                // Get the playlist name if a playlist is selected
+                if ((tree.getName().equals("playlistTree")) && (treePath.getParentPath() != null)) {
+                    isPlaylistSelected = true;
+                    String text = treePath.getLastPathComponent().toString();
+                    selectedPlaylistName = extractPlaylistNameFromTreeNodeText(text);
+                }
+
+                // [3] Right-click Popup Trigger (for MacOS)
+                if (e.isPopupTrigger() && isPlaylistSelected) {
+                    System.out.println("[Playlist] right clicked: " + selectedPlaylistName);
+                    tree.setSelectionPath(treePath);
+                    //show playlist popup menu
+                    JPopupMenu popupMenu = playerView.getSideView().getPlaylistPopupMenu();
+                    popupMenu.show(e.getComponent(), e.getX(), e.getY());
+                }
+            } else {
+                // [4] Clear any tree selections when left-clicking outside of tree
+                if (!e.isPopupTrigger()) {
+                    playerView.getSideView().getLibraryTree().clearSelection();
+                    playerView.getSideView().getPlaylistTree().clearSelection();
+                    System.out.println("cleared tree selections.");
                 }
             }
-            if (invalidFilesFound) {
-                System.out.println("[DragDrop] Added " + successCount + " songs out of " + draggedCount + " files.\n");
-                JOptionPane.showMessageDialog(playerView,
-                        "Some files have not been added\n" +
-                                "since they are not valid mp3 files.");
-            }
-            focusedWindow.updateTableView(playlistLibrary.getPlaylistByName(focusedWindowName));
-        } catch (UnsupportedFlavorException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-    }
 
-    @Override
-    public void dragGestureRecognized(DragGestureEvent dge) {
-        Cursor cursor = Cursor.getDefaultCursor();
-        int[] songIndices = getPlaylistWindow(focusedWindowName).getSongTable().getSelectedRows();
-        String songNames = "";
-        for (int i = 0; i < songIndices.length; i++) {
-            songNames = songNames + ";" + playlistLibrary.getPlaylistByName(focusedWindowName).
-                    getSongList().get(songIndices[i]).getPath();
-        }
-        System.out.println("Song name dragged: " + songNames);
-        Transferable t = new StringSelection(songNames);
-
-        if (dge.getDragAction() == DnDConstants.ACTION_COPY) {
-            cursor = DragSource.DefaultCopyDrop;
-        }
-        dge.startDrag(cursor, t);
-    }
-}
-
-/**
- * MouseListenerForTree covers:
- * [1] left-click on "Library" to show it on the main window
- * [2] left-click on a playlist node to show it on the main window
- * [3] popup trigger for right-click on a playlist node
- * [4] clear selections for left-click outside of trees
- */
-class MouseListenerForSideView extends MouseAdapter {
-    private JTree tree;
-    private TreePath treePath;
-    private boolean isPlaylistSelected;
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-        tree = (JTree) e.getSource();
-        // Get treePath of the selected tree node
-        treePath = tree.getPathForLocation(e.getX(), e.getY());
-        // initialize state variables
-        isPlaylistSelected = false;
-
-        // Check if the event is within trees
-        if (treePath != null) {
-            //clear highlight on the not selected tree.
-            if (tree.getName().equals("libraryTree")) {
-                playerView.getSideView().getPlaylistTree().clearSelection();
-                selectedPlaylistName = null;
-                isPlaylistSelected = false;
-
-            } else if (tree.getName().equals("playlistTree")) {
-                //when Playlist tree is selected including the root node
-                playerView.getSideView().getLibraryTree().clearSelection();
-            }
-
-            // Get the playlist name if a playlist is selected
-            if ((tree.getName().equals("playlistTree")) && (treePath.getParentPath() != null)) {
-                isPlaylistSelected = true;
-                String text = treePath.getLastPathComponent().toString();
-                selectedPlaylistName = extractPlaylistNameFromTreeNodeText(text);
-            }
-
-            // [3] Right-click Popup Trigger (for MacOS)
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            // [3] Right-click Popup Trigger (for Windows)
             if (e.isPopupTrigger() && isPlaylistSelected) {
                 System.out.println("[Playlist] right clicked: " + selectedPlaylistName);
                 tree.setSelectionPath(treePath);
-                //show playlist popup menu
+                //show popup menu
                 JPopupMenu popupMenu = playerView.getSideView().getPlaylistPopupMenu();
                 popupMenu.show(e.getComponent(), e.getX(), e.getY());
             }
-        } else {
-            // [4] Clear any tree selections when left-clicking outside of tree
+        }
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            // Detect left-click event
             if (!e.isPopupTrigger()) {
-                playerView.getSideView().getLibraryTree().clearSelection();
-                playerView.getSideView().getPlaylistTree().clearSelection();
-                System.out.println("cleared tree selections.");
+
+                // [1] Left-click on "Library"
+                if (tree.getName().equals("libraryTree")) {
+                    System.out.println("[SideView] Library clicked\n");
+                    //show library on the main window
+                    selectedPlaylistName = null;
+                    playerView.updateTableView(library);
+                    playerControl.updateSongList(library);
+                }
+
+                // [2] Left-click on a playlist name under "Playlist"
+                if (isPlaylistSelected) {
+                    System.out.println("[SideView] Playlist \"" + selectedPlaylistName + "\" clicked");
+                    Playlist playlist = playlistLibrary.getPlaylistByName(selectedPlaylistName);
+                    System.out.println("[Playlist:" + selectedPlaylistName + "] " + playlist.getSongList().size() + " songs\n");
+                    //show the selected playlist on the main window
+                    playerView.updateTableView(playlist);
+                    playerControl.updateSongList(playlist.getSongList());
+                }
             }
         }
-    }
 
-    @Override
-    public void mouseReleased(MouseEvent e) {
-        // [3] Right-click Popup Trigger (for Windows)
-        if (e.isPopupTrigger() && isPlaylistSelected) {
-            System.out.println("[Playlist] right clicked: " + selectedPlaylistName);
-            tree.setSelectionPath(treePath);
-            //show popup menu
-            JPopupMenu popupMenu = playerView.getSideView().getPlaylistPopupMenu();
-            popupMenu.show(e.getComponent(), e.getX(), e.getY());
-        }
-    }
-
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        // Detect left-click event
-        if (!e.isPopupTrigger()) {
-
-            // [1] Left-click on "Library"
-            if (tree.getName().equals("libraryTree")) {
-                System.out.println("[SideView] Library clicked\n");
-                //show library on the main window
-                selectedPlaylistName = null;
-                playerView.updateTableView(library);
-                playerControl.updateSongList(library);
+        /**
+         * Extract only the playlist name from text in a tree node
+         * e.g. "favorite (3)" to "favorite"
+         *
+         * @param text the text in treeNode with song counts
+         * @return the string of playlistName with counts removed
+         */
+        private String extractPlaylistNameFromTreeNodeText(String text) {
+            if (text == null) {
+                return null;
             }
-
-            // [2] Left-click on a playlist name under "Playlist"
-            if (isPlaylistSelected) {
-                System.out.println("[SideView] Playlist \"" + selectedPlaylistName + "\" clicked");
-                Playlist playlist = playlistLibrary.getPlaylistByName(selectedPlaylistName);
-                System.out.println("[Playlist:" + selectedPlaylistName + "] " + playlist.getSongList().size() + " songs\n");
-                //show the selected playlist on the main window
-                playerView.updateTableView(playlist);
-                playerControl.updateSongList(playlist.getSongList());
+            if (text.endsWith(")")) {
+                int pos = text.lastIndexOf(" (");
+                return text.substring(0, pos);
+            } else {
+                return text;
             }
         }
     }
 
     /**
-     * Extract only the playlist name from text in a tree node
-     * e.g. "favorite (3)" to "favorite"
-     *
-     * @param text the text in treeNode with song counts
-     * @return the string of playlistName with counts removed
+     * PopupMenuItemListenerForPlaylist class implements
+     * the actions of popup menu items about playlist
+     * by the name of the components.
+     * "playlist-openNewWindow"  Open in New Window
+     * "playlist-delete"         Delete Playlist
      */
-    private String extractPlaylistNameFromTreeNodeText(String text) {
-        if (text == null) {
-            return null;
-        }
-        if (text.endsWith(")")) {
-            int pos = text.lastIndexOf(" (");
-            return text.substring(0, pos);
-        } else {
-            return text;
+    private class PopupMenuListenerForPlaylist implements ActionListener {
+        String menuName;
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            // Get the name of event source component
+            menuName = ((JMenuItem) e.getSource()).getName();
+
+            if (menuName.equals("playlist-newWindow")) {
+                //[Open in New Window] menu action
+                System.out.println("[PopupMenu] Open in New Window is pressed.");
+
+                Boolean isOpen = false;
+                //If the playlist is already opened in a new window
+                for (MusicPlayerGUI playlistWindow : playlistWindowArray) {
+                    if (playlistWindow.getWindowName().equalsIgnoreCase(selectedPlaylistName)) {
+                        //show the opened window to the front
+                        playlistWindow.toFront();
+                        isOpen = true;
+                    }
+                }
+                //If not opened
+                if (!isOpen) {
+                    //open a new window for the selected playlist
+                    MusicPlayerGUI newPlaylistWindow = createNewPlaylistWindow(selectedPlaylistName, playerView);
+                    playlistWindowArray.add(newPlaylistWindow);
+                    //main window shows library
+                    playerView.updateTableView(library);
+                    newPlaylistWindow.getSongTable().setDropTarget(new DragDropToScrollPanePlWindow());
+                    System.out.println("[NewWindow] playlist \""+selectedPlaylistName+"\" is opened in a new window. "
+                            + "("+playlistWindowArray.size()+" playlist windows in total)"
+                    );
+                }
+
+            } else if (menuName.equals("playlist-delete")) {
+                //[Delete Playlist] menu action
+                System.out.println("[PopupMenu] Delete Playlist is pressed.");
+
+                String title = "Delete Playlist";
+                String msg = "Are you sure you want to delete\nplaylist \""+selectedPlaylistName+"\"?";
+                //Ask user if they surely want to delete playlist via dialog
+                int flag = JOptionPane.showConfirmDialog(playerView, msg, title, JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
+                if (flag == JOptionPane.YES_OPTION) {
+                    System.out.println("[DeletePlaylist] Yes is pressed on deleting "+selectedPlaylistName+".");
+                    //delete the selected playlist
+                    playlistLibrary.deletePlaylist(selectedPlaylistName);
+                    //update the playlist tree view on the side
+                    playerView.getSideView().updatePlaylistTree(playlistLibrary.getAllPlaylistNames());
+                    //show library on the main window
+                    playerView.updateTableView(library);
+                    //if the playlist window was opened, close the window
+                    MusicPlayerGUI playlistWindow = getPlaylistWindow(selectedPlaylistName);
+                    if(playlistWindow!=null) {
+                        playlistWindow.dispose();
+                        playlistWindowArray.remove(playlistWindow);
+                    }
+                } else {
+                    System.out.println("[DeletePlaylist] Canceled.");
+                }
+
+            }
         }
     }
-}
 
-/**
- * PopupMenuItemListenerForPlaylist class implements
- * the actions of popup menu items about playlist
- * by the name of the components.
- * "playlist-openNewWindow"  Open in New Window
- * "playlist-delete"         Delete Playlist
- */
-private class PopupMenuListenerForPlaylist implements ActionListener {
-    String menuName;
+    /**
+     * FocusListenerForWindow class implements the actions when a window is focused.
+     * This changes the song lists loaded on the BasicPlayer
+     */
+    public class FocusListenerForWindow implements WindowFocusListener {
+        @Override
+        public void windowGainedFocus(WindowEvent e) {
+            focusedWindow = (MusicPlayerGUI) e.getWindow();
+            focusedWindowName = focusedWindow.getWindowName();
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        // Get the name of event source component
-        menuName = ((JMenuItem) e.getSource()).getName();
-
-        if (menuName.equals("playlist-newWindow")) {
-            //[Open in New Window] menu action
-            System.out.println("[PopupMenu] Open in New Window is pressed.");
-
-            Boolean isOpen = false;
-            //If the playlist is already opened in a new window
-            for (MusicPlayerGUI playlistWindow : playlistWindowArray) {
-                if (playlistWindow.getWindowName().equalsIgnoreCase(selectedPlaylistName)) {
-                    //show the opened window to the front
-                    playlistWindow.toFront();
-                    isOpen = true;
-                }
-            }
-            //If not opened
-            if (!isOpen) {
-                //open a new window for the selected playlist
-                MusicPlayerGUI newPlaylistWindow = createNewPlaylistWindow(selectedPlaylistName, playerView);
-                playlistWindowArray.add(newPlaylistWindow);
-                //main window shows library
-                playerView.updateTableView(library);
-                newPlaylistWindow.getSongTable().setDropTarget(new DragDropToScrollPanePlWindow());
-                System.out.println("[NewWindow] playlist \""+selectedPlaylistName+"\" is opened in a new window. "
-                        + "("+playlistWindowArray.size()+" playlist windows in total)"
-                );
-            }
-
-        } else if (menuName.equals("playlist-delete")) {
-            //[Delete Playlist] menu action
-            System.out.println("[PopupMenu] Delete Playlist is pressed.");
-
-            String title = "Delete Playlist";
-            String msg = "Are you sure you want to delete\nplaylist \""+selectedPlaylistName+"\"?";
-            //Ask user if they surely want to delete playlist via dialog
-            int flag = JOptionPane.showConfirmDialog(playerView, msg, title, JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
-            if (flag == JOptionPane.YES_OPTION) {
-                System.out.println("[DeletePlaylist] Yes is pressed on deleting "+selectedPlaylistName+".");
-                //delete the selected playlist
-                playlistLibrary.deletePlaylist(selectedPlaylistName);
-                //update the playlist tree view on the side
-                playerView.getSideView().updatePlaylistTree(playlistLibrary.getAllPlaylistNames());
-                //show library on the main window
-                playerView.updateTableView(library);
-                //if the playlist window was opened, close the window
-                MusicPlayerGUI playlistWindow = getPlaylistWindow(selectedPlaylistName);
-                if(playlistWindow!=null) {
-                    playlistWindow.dispose();
-                    playlistWindowArray.remove(playlistWindow);
-                }
+            //if the main window has the focus
+            if (focusedWindowName.equals("main")) {
+                System.out.println("\nFocus on the main window.");
+                //TODO might need to check if playlist is on the main window table... or it can work fine without it.
+                playerControl.updateSongList(library);
             } else {
-                System.out.println("[DeletePlaylist] Canceled.");
+                    System.out.println("\nFocus on playlist window \"" + focusedWindowName + "\".");
+                    playerControl.updateSongList(playlistLibrary.getPlaylistByName(focusedWindowName).getSongList());
+                    selectedPlaylistName = focusedWindowName;
+                }
             }
 
+        @Override
+        public void windowLostFocus(WindowEvent e) {
+            //clear any row selection on the table when losing focus
+            ((MusicPlayerGUI) e.getWindow()).getSongTable().clearSelection();
+            //remember the last focused window in case no window is focused.
+            focusedWindow = (MusicPlayerGUI) e.getWindow();
+            focusedWindowName = focusedWindow.getWindowName();
+            System.out.println(focusedWindowName + " window lost the focus.");
         }
     }
-}
-
-/**
- * FocusListenerForWindow class implements the actions when a window is focused.
- * This changes the song lists loaded on the BasicPlayer
- */
-public class FocusListenerForWindow implements WindowFocusListener {
-    @Override
-    public void windowGainedFocus(WindowEvent e) {
-        focusedWindow = (MusicPlayerGUI) e.getWindow();
-        focusedWindowName = focusedWindow.getWindowName();
-
-        //if the main window has the focus
-        if (focusedWindowName.equals("main")) {
-            System.out.println("\nFocus on the main window.");
-            //TODO might need to check if playlist is on the main window table... or it can work fine without it.
-            playerControl.updateSongList(library);
-        } else {
-                System.out.println("\nFocus on playlist window \"" + focusedWindowName + "\".");
-                playerControl.updateSongList(playlistLibrary.getPlaylistByName(focusedWindowName).getSongList());
-                selectedPlaylistName = focusedWindowName;
-            }
-        }
-
-    @Override
-    public void windowLostFocus(WindowEvent e) {
-        //clear any row selection on the table when losing focus
-        ((MusicPlayerGUI) e.getWindow()).getSongTable().clearSelection();
-        //remember the last focused window in case no window is focused.
-        focusedWindow = (MusicPlayerGUI) e.getWindow();
-        focusedWindowName = focusedWindow.getWindowName();
-        System.out.println(focusedWindowName + " window lost the focus.");
-    }
-}
 
     /**
      * Creates a new window for a playlist.
