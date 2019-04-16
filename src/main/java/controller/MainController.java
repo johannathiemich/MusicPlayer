@@ -250,7 +250,7 @@ public class MainController {
 
             } else if (menuName.equals("lib-addSong")) {
                 //[Add A Song To Library] menu actions
-                System.out.println("[Menu] Add Song is pressed.");
+                System.out.println("[Menu] Add Song To Library is pressed.");
                 JFileChooser chooser = new JFileChooser();
                 chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
                 //save windowname in case loosing focus when choosing song
@@ -265,6 +265,7 @@ public class MainController {
                                 "mp3 file.");
                     } else {
                         if (!windowName.equals("main")) {
+                            //TODO suspicious a bit...
                             playlistLibrary.getPlaylistByName(windowName).addSong(newSong);
                             getPlaylistWindow(windowName).
                                     updateTableView(playlistLibrary.getPlaylistByName(windowName));
@@ -382,8 +383,10 @@ public class MainController {
                             System.out.println("row:" + selectedRow[i] + " is selected to be added.");
                             playlist.addSong(selectedSong);
                             //update the opened playlist window view where the song was added
-                            getPlaylistWindow(playlistName).
-                                    updateTableView(playlistLibrary.getPlaylistByName(playlistName));
+                            if(getPlaylistWindow(playlistName)!=null) {
+                                getPlaylistWindow(playlistName).
+                                        updateTableView(playlistLibrary.getPlaylistByName(playlistName));
+                            }
                         } else {
                             System.out.println("row:" + selectedRow[i] + ", nothing selected to add.");
                         }
@@ -568,9 +571,8 @@ public class MainController {
                 }
                 if (invalidFilesFound) {
                     System.out.println("[DragDrop] Added " + successCount + " songs out of " + draggedCount + " files.\n");
-                    JOptionPane.showMessageDialog(playerView,
-                            "Some files have not been added\n" +
-                                    "since they are not valid mp3 files.");
+                    String msg = "Some files have not been added\nsince they are not valid mp3 files.";
+                    JOptionPane.showMessageDialog(playerView, msg, "Notice", JOptionPane.PLAIN_MESSAGE);
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
