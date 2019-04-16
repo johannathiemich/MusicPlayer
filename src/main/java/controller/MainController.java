@@ -458,6 +458,7 @@ public class MainController {
         @Override
         public void valueChanged(ListSelectionEvent e) {
             //e.getSource()
+            String displaying = focusedWindow.getDisplayingListName();
             if (!e.getValueIsAdjusting()) {
                 //get the table in the focused window
                 if (focusedWindowName.equals("main")) {
@@ -469,8 +470,13 @@ public class MainController {
                 row = table.getSelectedRow();
                 isRowInbound = row >= 0 && row < table.getRowCount();
                 if (isRowInbound) {
-                    //TODO need to refactor, possible error
-                    selectedSong = playerControl.getSongList().get(row);
+                    //get the song from library or playlist
+                    if(displaying.equals("library")){
+                        selectedSong = library.get(row);
+                    } else {
+                        Playlist playlist = playlistLibrary.getPlaylistByName(displaying);
+                        selectedSong = playlist.getSongList().get(row);
+                    }
                     System.out.print("[Table] selectedRow:" + row);
                     System.out.println(", [" + selectedSong.getTitleAndArtist() + "]");
                 }
