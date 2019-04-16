@@ -704,6 +704,7 @@ public class MainController {
 
         @Override
         public void dragGestureRecognized(DragGestureEvent dge) {
+            //TODO is it executed? don't see any print msg on runtime log...
             //get the source window of the DragGestureEvent
             MusicPlayerGUI sourceWindow = (MusicPlayerGUI)SwingUtilities.getWindowAncestor(dge.getComponent());
             String displaying = sourceWindow.getDisplayingListName();
@@ -714,6 +715,8 @@ public class MainController {
             Cursor cursor = Cursor.getDefaultCursor();
             int[] songIndices = sourceWindow.getSongTable().getSelectedRows();
             String songNames = "";
+            System.out.println("[DragDrop] selected row count: "+songIndices.length);
+
             if(displaying.equals("library")) {
             //from library
                 for (int i = 0; i < songIndices.length; i++) {
