@@ -557,16 +557,31 @@ public class MainController {
                     filePath = file.getAbsolutePath();
                     Song newSong = new Song(filePath);
                     if (newSong.getPath() == null) {
+                    //not a valid song file
                         System.out.println("[DragDrop] Not a valid file. '" + filePath + "'\n");
                         invalidFilesFound = true;
                     } else {
+                        //add the song to the library
                         //if library successfully adds the song
                         //which is valid mp3 and not present in library..
                         if (library.addSong(newSong)) {
                             successCount++;
-                            playerView.updateTableView(library);
-                            playerControl.updateSongList(library);
+
+                            String displaying = focusedWindow.getDisplayingListName();
+                            if (!displaying.equals("library")) {
+                            //if displaying a playlist on the focused window
+                                //add the song also to the playlist
+                                Playlist playlist = playlistLibrary.getPlaylistByName(displaying);
+                                playlist.addSong(newSong);
+                                focusedWindow.updateTableView(playlist);
+                                playerControl.updateSongList(playlist.getSongList());
+                            } else {
+                            //if displaying library
+                                playerView.updateTableView(library);
+                                playerControl.updateSongList(library);
+                            }
                         }
+
                     }
                 }
                 if (invalidFilesFound) {
