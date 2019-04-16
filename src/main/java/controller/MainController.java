@@ -358,7 +358,7 @@ public class MainController {
                 //[About] menu actions
                 System.out.println("[Menu] About is pressed.");
                 String title = "About";
-                String appName = "MyTunes1.5";
+                String appName = "MyTunes 2.0";
                 String teamInfo = "[CECS543 Team6]\nSella Bae\nBrett Rexius\nJohanna Thiemich";
                 String year = "2019";
                 String msg = appName + "\n" + year + "\n\n" + teamInfo;
