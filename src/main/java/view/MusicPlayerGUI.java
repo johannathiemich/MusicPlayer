@@ -186,6 +186,8 @@ public class MusicPlayerGUI extends JFrame {
 
     public void updateTableView(SongLibrary library){
         songListView.updateTableView(library);
+        sideView.getLibraryTree().setSelectionRow(0);
+        sideView.getPlaylistTree().clearSelection();
         //update displayingListName
         setDisplayingListName("library");
     }

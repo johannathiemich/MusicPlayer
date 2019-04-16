@@ -570,9 +570,9 @@ public class MainController {
 
                             String displaying = focusedWindow.getDisplayingListName();
                             System.out.println("focusedWindow: "+focusedWindow.getWindowName()+"\tfocusedWindow.getDisplayingListName(): "+displaying);
-                            //TODO null point exception
                             if (!displaying.equals("library")) {
                             //if displaying a playlist on the focused window
+                                //TODO handle drag&drop files that exits in the library to playlist in the main window situation
                                 //add the song also to the playlist
                                 Playlist playlist = playlistLibrary.getPlaylistByName(displaying);
                                 playlist.addSong(newSong);
@@ -820,42 +820,38 @@ public class MainController {
                     playlistWindowArray.add(newPlaylistWindow);
                     //main window shows library
                     playerView.updateTableView(library);
-                    playerView.getSideView().getLibraryTree().setSelectionRow(0);
-                    playerView.getSideView().getPlaylistTree().clearSelection();
                     newPlaylistWindow.getSongListView().setDropTarget(new DragDropToScrollPane());
+                    System.out.println("[NewWindow] playlist \""+selectedPlaylistName+"\" is opened in a new window. "
+                            + "("+playlistWindowArray.size()+" playlist windows in total)"
+                    );
                 }
-
-//                //create a new playlist window
-//                PlaylistWindow playlistWindow = new PlaylistWindow(selectedPlaylistName, ColorTheme.dark);
-//                //set transferable
-//                playlistWindow.getTableView().setSongLPlaylistL(playlistLibrary, library);
-//                //update the table view of the playlist window
-//                playlistWindow.getTableView().updateTableView(playlistLibrary.getPlaylistByName(selectedPlaylistName));
 
             } else if (menuName.equals("playlist-delete")) {
                 //[Delete Playlist] menu action
                 System.out.println("[PopupMenu] Delete Playlist is pressed.");
 
+                String title = "Delete Playlist";
+                String msg = "Are you sure you want to delete\nplaylist \""+selectedPlaylistName+"\"?";
                 //Ask user if they surely want to delete playlist via dialog
-                //JOptionPane.show....
-                //System.out.println("Are you sure you want to delete this playlist?");
-
-                //JOptionPane.showConfirmDialog(null,
-                //      "Delete Playlist " + selectedPlaylistName + "?", null, JOptionPane.YES_NO_OPTION);
-                if (JOptionPane.showConfirmDialog(null,
-                        "Delete Playlist " + "'" + selectedPlaylistName + "'?", null, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                    System.out.println("[PopupMenu] Yes is pressed.");
-                    //delete the selected playlist by calling a method that works with database
-                    //...
+                int flag = JOptionPane.showConfirmDialog(playerView, msg, title, JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
+                if (flag == JOptionPane.YES_OPTION) {
+                    System.out.println("[DeletePlaylist] Yes is pressed on deleting "+selectedPlaylistName+".");
+                    //delete the selected playlist
                     playlistLibrary.deletePlaylist(selectedPlaylistName);
+                    //update the playlist tree view on the side
                     playerView.getSideView().updatePlaylistTree(playlistLibrary.getAllPlaylistNames());
+                    //show library on the main window
+                    playerView.updateTableView(library);
+                    //if the playlist window was opened, close the window
+                    MusicPlayerGUI playlistWindow = getPlaylistWindow(selectedPlaylistName);
+                    if(playlistWindow!=null) {
+                        playlistWindow.dispose();
+                        playlistWindowArray.remove(playlistWindow);
+                    }
                 } else {
-                    System.out.println("[PopupMenu] No is pressed.");
+                    System.out.println("[DeletePlaylist] Canceled.");
                 }
 
-
-                //update the playlist tree view
-                //...
             }
         }
     }
@@ -872,10 +868,9 @@ public class MainController {
 
             //if the main window has the focus
             if (focusedWindowName.equals("main")) {
-                System.out.println("\nFocus on the main window.");
+                System.out.println("\nFocus on the main window. displaying \""+focusedWindow.getDisplayingListName()+"\".");
                 //TODO might need to check if playlist is on the main window table... or it can work fine without it.
                 playerControl.updateSongList(library);
-                System.out.println("main window - displayingListName: "+focusedWindow.getDisplayingListName());
             }
             //if a playlist window has the focus
             else {
@@ -976,7 +971,7 @@ public class MainController {
      * Gets playlistWindow by playlist name, if opened.
      *
      * @param playlistName the name of the playlist to check if a new window is opened.
-     * @return MusicPlayerGUI window
+     * @return MusicPlayerGUI window, null if no playlist window is opened with the name
      */
     public MusicPlayerGUI getPlaylistWindow(String playlistName) {
         for (MusicPlayerGUI playlistWindow : playlistWindowArray) {
