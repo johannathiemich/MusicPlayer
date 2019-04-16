@@ -569,6 +569,8 @@ public class MainController {
                             successCount++;
 
                             String displaying = focusedWindow.getDisplayingListName();
+                            System.out.println("focusedWindow: "+focusedWindow.getWindowName()+"\tfocusedWindow.getDisplayingListName(): "+displaying);
+                            //TODO null point exception
                             if (!displaying.equals("library")) {
                             //if displaying a playlist on the focused window
                                 //add the song also to the playlist
