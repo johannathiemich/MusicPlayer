@@ -820,7 +820,7 @@ public class MainController {
                     playlistWindowArray.add(newPlaylistWindow);
                     //main window shows library
                     playerView.updateTableView(library);
-                    newPlaylistWindow.getSongListView().setDropTarget(new DragDropToScrollPane());
+                    newPlaylistWindow.getSongTable().setDropTarget(new DragDropToScrollPanePlWindow());
                     System.out.println("[NewWindow] playlist \""+selectedPlaylistName+"\" is opened in a new window. "
                             + "("+playlistWindowArray.size()+" playlist windows in total)"
                     );
