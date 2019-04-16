@@ -56,7 +56,7 @@ public class MainController {
      */
     public MainController() {
         //assign modules
-        playerView = new MusicPlayerGUI("MyTunes 2.0", 800, 600, "main");
+        playerView = new MusicPlayerGUI("MyTunes 2.0", 800, 600, "main","library");
         library = new SongLibrary(); //should always be up-to-date with db
         playlistLibrary = new PlaylistLibrary(); //should always be up-to-date with db
 
@@ -251,7 +251,7 @@ public class MainController {
 
             } else if (menuName.equals("lib-addSong")) {
                 //[Add A Song To Library] menu actions
-                System.out.println("[Menu] Add Song is pressed.");
+                System.out.println("[Menu] Add Song To Library is pressed.");
                 JFileChooser chooser = new JFileChooser();
                 chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
                 //save windowname in case loosing focus when choosing song
@@ -266,9 +266,10 @@ public class MainController {
                                 "mp3 file.");
                     } else {
                         if (!windowName.equals("main")) {
+                            //TODO suspicious a bit...
                             playlistLibrary.getPlaylistByName(windowName).addSong(newSong);
                             getPlaylistWindow(windowName).
-                                    updateTableView(playlistLibrary.getPlaylistByName(windowName).getSongList());
+                                    updateTableView(playlistLibrary.getPlaylistByName(windowName));
                         }
                         library.addSong(newSong);
                         playerView.updateTableView(library);
@@ -300,7 +301,7 @@ public class MainController {
                         for (String plistName : playlistLibrary.getAllPlaylistNames()) {
                             if (getPlaylistWindow(plistName) != null) {
                                 getPlaylistWindow(plistName).
-                                        updateTableView(playlistLibrary.getPlaylistByName(plistName).getSongList());
+                                        updateTableView(playlistLibrary.getPlaylistByName(plistName));
                             }
                         }
 
@@ -320,7 +321,7 @@ public class MainController {
                         //delete song from playlist
                         playlistLibrary.getPlaylistByName(focusedWindowName).deleteSong(selectedSong);
                         getPlaylistWindow(focusedWindowName).updateTableView(
-                                playlistLibrary.getPlaylistByName(focusedWindowName).getSongList());
+                                playlistLibrary.getPlaylistByName(focusedWindowName));
                     } else {
                         System.out.println("[Playlist window] row: " + selectedRow + " nothing selected to delete.");
                     }
@@ -360,7 +361,7 @@ public class MainController {
                 playerView.getSideView().getPlaylistTree().setSelectionRow(lastRow);
                 //open it on the main window
                 Playlist playlist = playlistLibrary.getPlaylistByName(playlistName);
-                playerView.updateTableView(playlist.getSongList());
+                playerView.updateTableView(playlist);
                 playerControl.updateSongList(playlist.getSongList());
 
             } else if (menuName.equals("exit")) {
@@ -383,8 +384,10 @@ public class MainController {
                             System.out.println("row:" + selectedRow[i] + " is selected to be added.");
                             playlist.addSong(selectedSong);
                             //update the opened playlist window view where the song was added
-                            getPlaylistWindow(playlistName).
-                                    updateTableView(playlistLibrary.getPlaylistByName(playlistName).getSongList());
+                            if(getPlaylistWindow(playlistName)!=null) {
+                                getPlaylistWindow(playlistName).
+                                        updateTableView(playlistLibrary.getPlaylistByName(playlistName));
+                            }
                         } else {
                             System.out.println("row:" + selectedRow[i] + ", nothing selected to add.");
                         }
@@ -555,23 +558,37 @@ public class MainController {
                     filePath = file.getAbsolutePath();
                     Song newSong = new Song(filePath);
                     if (newSong.getPath() == null) {
+                    //not a valid song file
                         System.out.println("[DragDrop] Not a valid file. '" + filePath + "'\n");
                         invalidFilesFound = true;
                     } else {
+                        //add the song to the library
                         //if library successfully adds the song
                         //which is valid mp3 and not present in library..
                         if (library.addSong(newSong)) {
                             successCount++;
-                            playerView.updateTableView(library);
-                            playerControl.updateSongList(library);
+
+                            String displaying = focusedWindow.getDisplayingListName();
+                            if (!displaying.equals("library")) {
+                            //if displaying a playlist on the focused window
+                                //add the song also to the playlist
+                                Playlist playlist = playlistLibrary.getPlaylistByName(displaying);
+                                playlist.addSong(newSong);
+                                focusedWindow.updateTableView(playlist);
+                                playerControl.updateSongList(playlist.getSongList());
+                            } else {
+                            //if displaying library
+                                playerView.updateTableView(library);
+                                playerControl.updateSongList(library);
+                            }
                         }
+
                     }
                 }
                 if (invalidFilesFound) {
                     System.out.println("[DragDrop] Added " + successCount + " songs out of " + draggedCount + " files.\n");
-                    JOptionPane.showMessageDialog(playerView,
-                            "Some files have not been added\n" +
-                                    "since they are not valid mp3 files.");
+                    String msg = "Some files have not been added\nsince they are not valid mp3 files.";
+                    JOptionPane.showMessageDialog(playerView, msg, "Notice", JOptionPane.PLAIN_MESSAGE);
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -589,46 +606,43 @@ public class MainController {
             String filePath;
             int successCount = 0;
             int draggedCount = 0;
+            evt.acceptDrop(DnDConstants.ACTION_COPY);
+            List<File> droppedFiles = null;
             try {
-                evt.acceptDrop(DnDConstants.ACTION_COPY);
-                List<File> droppedFiles = null;
-                try {
-                    droppedFiles = (List<File>) evt.getTransferable()
-                            .getTransferData(DataFlavor.javaFileListFlavor);
-                } catch (UnsupportedFlavorException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                draggedCount = droppedFiles.size();
-                for (File file : droppedFiles) {
-                    filePath = file.getAbsolutePath();
-                    Song newSong = new Song(filePath);
-                    if (newSong.getPath() == null) {
-                        System.out.println("[DragDrop] Not a valid file. '" + filePath + "'\n");
-                        invalidFilesFound = true;
-                    } else {
-                        //TODO implement adding to playlist here
-                        /**
-                            if (library.addSong(newSong)) {
-                                successCount++;
-                                playerView.updateTableView(library);
-                                playerControl.updateSongList(library);
-                            } else {
-                                //drop in playlist window
-                            }**/
-                        }
-                    }
-                }
-                if (invalidFilesFound) {
-                    System.out.println("[DragDrop] Added " + successCount + " songs out of " + draggedCount + " files.\n");
-                    JOptionPane.showMessageDialog(playerView,
-                            "Some files have not been added\n" +
-                                    "since they are not valid mp3 files.");
-                }
-            } catch (Exception ex) {
-                ex.printStackTrace();
+                droppedFiles = (List<File>) evt.getTransferable()
+                        .getTransferData(DataFlavor.javaFileListFlavor);
+            } catch (UnsupportedFlavorException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+            draggedCount = droppedFiles.size();
+            for (File file : droppedFiles) {
+                filePath = file.getAbsolutePath();
+                Song newSong = new Song(filePath);
+                if (newSong.getPath() == null) {
+                    System.out.println("[DragDrop] Not a valid file. '" + filePath + "'\n");
+                    invalidFilesFound = true;
+                } else {
+                    playlistLibrary.getPlaylistByName(focusedWindowName).addSong(newSong);
+                    /**
+                     if (library.addSong(newSong)) {
+                     successCount++;
+                     playerView.updateTableView(library);
+                     playerControl.updateSongList(library);
+                     } else {
+                     //drop in playlist window
+                     }**/
+                }
+            }
+            focusedWindow.updateTableView(playlistLibrary.getPlaylistByName(focusedWindowName).getSongList());
+            if (invalidFilesFound) {
+                System.out.println("[DragDrop] Added " + successCount + " songs out of " + draggedCount + " files.\n");
+                JOptionPane.showMessageDialog(playerView,
+                        "Some files have not been added\n" +
+                                "since they are not valid mp3 files.");
+            }
+        }
 
         @Override
         public void dragGestureRecognized(DragGestureEvent dge) {
@@ -742,7 +756,7 @@ public class MainController {
                     Playlist playlist = playlistLibrary.getPlaylistByName(selectedPlaylistName);
                     System.out.println("[Playlist:" + selectedPlaylistName + "] " + playlist.getSongList().size() + " songs\n");
                     //show the selected playlist on the main window
-                    playerView.updateTableView(playlist.getSongList());
+                    playerView.updateTableView(playlist);
                     playerControl.updateSongList(playlist.getSongList());
                 }
             }
@@ -885,8 +899,8 @@ public class MainController {
      */
     private MusicPlayerGUI createNewPlaylistWindow(String playlistName, MusicPlayerGUI parentView) {
         //Create a new window for a playlist
-        MusicPlayerGUI playlistWindow = new MusicPlayerGUI("Playlist: " + playlistName, 500,
-                300, playlistName);
+
+        MusicPlayerGUI playlistWindow = new MusicPlayerGUI("Playlist: " + playlistName, 500, 300, playlistName, playlistName);
         //Closing action of playlist window
         playlistWindow.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
         playlistWindow.addWindowListener(new WindowAdapter() {

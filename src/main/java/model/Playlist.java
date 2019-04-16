@@ -19,6 +19,9 @@ public class Playlist { //extends ArrayList<Song> {
 
     //private constructor since we only instantiate this class using the static factory method in order to keep track
     //of all the playlists already instantiated
+    public Playlist() {
+        this("undefined");
+    }
     public Playlist(String name) {
         this.name = name;
         library = new SongLibrary(dbHandler.getSongLibrary());
