@@ -1,6 +1,5 @@
 package view;
 
-import controller.TableRowTransferHandler;
 import model.PlaylistLibrary;
 import model.Song;
 import model.SongLibrary;
@@ -132,7 +131,7 @@ public class SongListView extends JPanel {
     }
 
     public void setSongLPlaylistL(PlaylistLibrary playlistL, SongLibrary songL) {
-        table.setTransferHandler(new TableRowTransferHandler(songL, playlistL));
+        //table.setTransferHandler(new TableRowTransferHandler(songL, playlistL));
     }
 
 }
