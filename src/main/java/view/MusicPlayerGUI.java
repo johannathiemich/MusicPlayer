@@ -72,8 +72,6 @@ public class MusicPlayerGUI extends JFrame {
         this.setPreferredSize(new Dimension(width,height));
         this.setMinimumSize(new Dimension(width,height));
 
-        //to detect which window is focused
-        //this.setFocusable(true);
         this.windowName = windowName;
         this.displayingListName = displayingListName;
 
