@@ -544,9 +544,13 @@ public class MainController {
     }
 
     /**
-     * User can drag and drop mp3 files from their directory into the library.
+     * DragDropToScrollPane class implements
+     * drag-and-drop mp3 files
+     * to the main window(displaying library or playlist).
      */
-    class DragDropToScrollPane extends DropTarget implements DragGestureListener {
+    class DragDropToScrollPane
+            extends DropTarget implements DragGestureListener {
+
         public synchronized void drop(DropTargetDropEvent evt) {
             boolean invalidFilesFound = false;
             String filePath;
@@ -556,6 +560,7 @@ public class MainController {
 
             evt.acceptDrop(DnDConstants.ACTION_COPY);
             List<File> droppedFiles = null;
+            String droppedSongs = null;
             try {
                 if (evt.getTransferable().isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
                     droppedFiles = (List<File>) evt.getTransferable()
@@ -572,8 +577,7 @@ public class MainController {
                             //add the song to the library
                             //if library successfully adds the song
                             //which is valid mp3 and not present in library..
-                            int flag = library.addSong(newSong);
-                            if(flag != SongLibrary.ADDSONG_FILEPATH_NULL) {
+                            if(library.addSong(newSong) != SongLibrary.ADDSONG_FILEPATH_NULL) {
                                 successCount++;
 
                                 String displaying = focusedWindow.getDisplayingListName();
@@ -595,13 +599,14 @@ public class MainController {
                     }
 
                 } else if (evt.getTransferable().isDataFlavorSupported(DataFlavor.stringFlavor)) {
-                    String droppedSongs = (String) evt.getTransferable().
+                    droppedSongs = (String) evt.getTransferable().
                             getTransferData(DataFlavor.stringFlavor);
                     System.out.println(droppedSongs);
                     draggedCount = droppedSongs.split(";").length;
+
                     for (String song : droppedSongs.split(";")) {
                         String songPath = song.split("\t")[0];
-                        System.out.println("[] song name is " + songPath);
+                        System.out.println("[DragDrop] song name is " + songPath);
                         Song addedSong = new Song(songPath);
                         if (addedSong == null) {
                             invalidFilesFound = true;
@@ -640,8 +645,8 @@ public class MainController {
             String songNames = "";
             for (int i = 0; i < songIndices.length; i++) {
                 songNames = songNames + ";" + library.get(songIndices[i]).getPath();
-                System.out.println("Song name dragged: " + songNames);
             }
+            System.out.println("Song name dragged: " + songNames);
             Transferable t = new StringSelection(songNames);
 
             if (dge.getDragAction() == DnDConstants.ACTION_COPY) {
@@ -652,10 +657,12 @@ public class MainController {
     }
 
     /**
-     * User can drag and drop mp3 files from their directory into the playlist.
+     * DragDropToScrollPanePlWindow class implements
+     * drag-and-drop mp3 files
+     * to a playlist window.
      */
-    class DragDropToScrollPanePlWindow extends DropTarget implements
-            DragGestureListener {
+    class DragDropToScrollPanePlWindow
+            extends DropTarget implements DragGestureListener {
 
         private DataFlavor[] supportedFlavors = new DataFlavor[1];
 
@@ -669,6 +676,7 @@ public class MainController {
             int successCount = 0;
             int draggedCount = 0;
             int draggedStringCount = 0;
+
             evt.acceptDrop(DnDConstants.ACTION_COPY);
             List<File> droppedFiles = null;
             String droppedSongs = null;
@@ -681,23 +689,27 @@ public class MainController {
                         filePath = file.getAbsolutePath();
                         Song newSong = new Song(filePath);
                         if (newSong.getPath() == null) {
+                            //not a valid song file
                             System.out.println("[DragDrop] Not a valid file. '" + filePath + "'\n");
                             invalidFilesFound = true;
                         } else {
                             playlistLibrary.getPlaylistByName(focusedWindowName).addSong(newSong);
                             /**
                              if (library.addSong(newSong) != SongLibrary.ADDSONG_FILEPATH_NULL) {
-                             successCount++;
-                             playerView.updateTableView(library);
-                             playerControl.updateSongList(library);
+                                 successCount++;
+                                 playerView.updateTableView(library);
+                                 playerControl.updateSongList(library);
                              } else {
-                             //drop in playlist window
+                                //drop in playlist window
                              }**/
                         }
                     }
                 } else if (evt.getTransferable().isDataFlavorSupported(DataFlavor.stringFlavor)){
-                    droppedSongs = (String) evt.getTransferable().getTransferData(DataFlavor.stringFlavor);
+                    droppedSongs = (String) evt.getTransferable().
+                            getTransferData(DataFlavor.stringFlavor);
+                    System.out.println(droppedSongs);
                     draggedCount = droppedSongs.split(";").length;
+
                     for (String song : droppedSongs.split(";")) {
                         String songPath = song.split("\t")[0];
                         System.out.println("[DragDrop] song name is " + songPath);
@@ -711,11 +723,11 @@ public class MainController {
                 }
                 if (invalidFilesFound) {
                     System.out.println("[DragDrop] Added " + successCount + " songs out of " + draggedCount + " files.\n");
-                    JOptionPane.showMessageDialog(playerView,
-                            "Some files have not been added\n" +
-                                    "since they are not valid mp3 files.");
+                    String msg = "Some files have not been added\nsince they are not valid mp3 files.";
+                    JOptionPane.showMessageDialog(playerView, msg, "Notice", JOptionPane.PLAIN_MESSAGE);
                 }
                 focusedWindow.updateTableView(playlistLibrary.getPlaylistByName(focusedWindowName));
+
             } catch (UnsupportedFlavorException e) {
                 e.printStackTrace();
             } catch (IOException e) {
