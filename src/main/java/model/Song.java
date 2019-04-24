@@ -88,6 +88,17 @@ public class Song {
         return properties;
     }
 
+    public String[] toArrayNoPath() {
+        String[] properties = new String[6];
+        properties[0] = this.getTitle();
+        properties[1] = this.getArtist();
+        properties[2] = this.getAlbum();
+        properties[3] = this.getYear();
+        properties[4] = this.getComment();
+        properties[5] = this.getGenre();
+        return properties;
+    }
+
 
     // Getters
     public String getPath() { return path; }

@@ -22,8 +22,8 @@ public class PlaylistWindow extends JDialog {
     public PlaylistWindow(MusicPlayerGUI owner, Playlist playlist, ColorTheme theme){
         super(owner, "Playlist: "+playlist.getName(), false);
         //this.setDefaultCloseOperation();
-        this.setPreferredSize(new Dimension(500,300));
-        this.setMinimumSize(new Dimension(500,300));
+        this.setPreferredSize(new Dimension(400,300));
+        this.setMinimumSize(new Dimension(400,300));
 
         //initialize variables
         this.playlistName = playlist.getName();

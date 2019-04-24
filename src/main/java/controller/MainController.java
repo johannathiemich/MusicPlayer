@@ -98,9 +98,6 @@ public class MainController {
         playerView.getSideView().addMouseListener(new MouseListenerForSideView());
         playerView.getSideView().addMenuListener(new PopupMenuListenerForPlaylist());
 
-        //playerView.getSongListView().getSongTable().setTransferHandler(
-        //        new TableRowTransferHandler(library, playlistLibrary));
-
         //Add drop target to scroll pane
         playerView.addDragDropToScrollPane(new DragDropToScrollPane());
 
@@ -108,8 +105,9 @@ public class MainController {
         focusedWindow = playerView;
         focusedWindowName = "main";
 
-        //COMMENTED OUT FROM MERGE CONFLICT for Drag&Drop function
-        //playerView.getSongListView().setTransferHandlerLibrary(library);
+        playerView.getSongTable().getTableHeader().addMouseListener(new TableHeaderListener());
+        playerView.getSongListView().addItemListenerTableHeader(new TableColumnCheckBoxListener());
+
     }
 
     //Listeners
@@ -602,6 +600,75 @@ public class MainController {
         }
     }
 
+    class TableHeaderListener implements MouseListener {
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            System.out.println("mouse Clicked on header");
+            if (e.isPopupTrigger()) {
+                playerView.getSongListView().getTableHeaderPopup().show(e.getComponent(), e.getX(), e.getY());
+                System.out.println("is popup");
+            }
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            System.out.println("mouse pressed on header");
+            if (e.isPopupTrigger()) {
+                playerView.getSongListView().getTableHeaderPopup().show(e.getComponent(), e.getX(), e.getY());
+                System.out.println("is popup");
+            }
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            System.out.println("mouse released on header");
+            if (e.isPopupTrigger()) {
+                playerView.getSongListView().getTableHeaderPopup().show(e.getComponent(), e.getX(), e.getY());
+                System.out.println("is popup");
+            }
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+        }
+    }
+
+    class TableColumnCheckBoxListener implements ItemListener {
+
+        @Override
+        public void itemStateChanged(ItemEvent e) {
+            for (int i = 0; i < playerView.getSongListView().getTableHeaderPopup().getComponentCount(); i++) {
+                JCheckBoxMenuItem item = (JCheckBoxMenuItem) playerView.getSongListView().
+                        getTableHeaderPopup().getComponent(i);
+                System.out.println(item.getText());
+                if (item.isSelected()) {
+                    playerView.getSongListView().showColumn(playerView.getSongTable().
+                            getColumnModel().getColumn(i));
+                    for (int j = 0; j < playlistWindowArray.size(); j++) {
+                        playlistWindowArray.get(j).getSongListView().showColumn(playlistWindowArray.
+                                get(j).getSongTable().getColumnModel().getColumn(i));
+                    }
+
+                } else {
+                    playerView.getSongListView().hideColumn(playerView.getSongTable().
+                            getColumnModel().getColumn(i));
+                    for (int j = 0; j < playlistWindowArray.size(); j++) {
+                        playlistWindowArray.get(j).getSongListView().hideColumn(playlistWindowArray.
+                                get(j).getSongTable().getColumnModel().getColumn(i));
+                    }
+
+                }
+            }
+        }
+
+
+    }
+
     /**
      * DragDropToScrollPane class implements drag-and-drop
      * 1. mp3 files to library on the main window
@@ -927,6 +994,8 @@ public class MainController {
                 if (!isOpen) {
                     //open a new window for the selected playlist
                     MusicPlayerGUI newPlaylistWindow = createNewPlaylistWindow(selectedPlaylistName, playerView);
+                    newPlaylistWindow.getSongTable().getTableHeader().addMouseListener(new TableHeaderListener());
+                    newPlaylistWindow.getSongListView().addItemListenerTableHeader(new TableColumnCheckBoxListener());
                     playlistWindowArray.add(newPlaylistWindow);
                     //main window shows library
                     playerView.updateTableView(library);
@@ -1081,4 +1150,5 @@ public class MainController {
         }
         return null;
     }
+
 }

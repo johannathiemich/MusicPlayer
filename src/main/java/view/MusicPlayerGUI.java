@@ -62,6 +62,7 @@ public class MusicPlayerGUI extends JFrame {
     private JCheckBoxMenuItem darkThemeMenuItem;
     private JCheckBoxMenuItem songInfoMenuItem;
 
+
     /**
      * This constructor initializes all necessary components.
      * @param frameTitle the title shown on the frame
