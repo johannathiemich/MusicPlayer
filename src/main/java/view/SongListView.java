@@ -7,7 +7,9 @@ import model.SongLibrary;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 import java.awt.*;
+import java.awt.event.ItemListener;
 import java.util.ArrayList;
 
 /**
@@ -22,16 +24,16 @@ public class SongListView extends JPanel {
     private DefaultTableModel tableModel;
     private String[] columnHeader;
     private int tableRowHeight = 24;
-    //private final TransferHandler handler;
+    private JPopupMenu tableHeaderPopup;
+    private  ArrayList<JCheckBoxMenuItem> columnList;
 
     /**
      * Constructs a panel to show a list of songs
      * with an empty table view.
      */
     public SongListView(){
-        //handler = new TableRowTransferHandler();
         // Table setup
-        columnHeader = new String[]{"Path", "Title", "Artist", "Album", "Year", "Comment", "Genre"};
+        columnHeader = new String[]{"Title", "Artist", "Album", "Year", "Comment", "Genre"};
         table = new JTable(){
             @Override   //block table contents editing
             public boolean isCellEditable(int row, int column) { return false; }
@@ -53,16 +55,20 @@ public class SongListView extends JPanel {
         table.getTableHeader().setFont(MusicPlayerGUI.FONT);
         table.setRowHeight(tableRowHeight);
         table.setShowGrid(false);
+        table.getColumnModel().getColumn(0).setWidth(0);
+        table.getColumnModel().getColumn(0).setMaxWidth(0);
+        table.getColumnModel().getColumn(0).setMaxWidth(0);
 
-        //new drag and drop functionality
-        //table.setTransferHandler(handler);
-        //table.setDropMode(DropMode.INSERT_ROWS);
+        tableHeaderPopup = new JPopupMenu();
+        columnList = new ArrayList<JCheckBoxMenuItem>();
+        createTableHeaderPopup();
 
         //put table in place
         tableScrollPane = new JScrollPane(table);
         tableScrollPane.setBorder(BorderFactory.createEmptyBorder());
         this.setLayout(new BorderLayout());
         this.add(tableScrollPane, BorderLayout.CENTER);
+    //    table.getColumnModel().removeColumn(table.getColumnModel().getColumn(0));
     }
 
     /**
@@ -93,13 +99,36 @@ public class SongListView extends JPanel {
     public void updateTableView(ArrayList<Song> songList) {
         initializeTable();
         for (Song song : songList) {
-            tableModel.addRow(song.toArray());
+            tableModel.addRow(song.toArrayNoPath());
         }
         tableModel.fireTableDataChanged();
         table.repaint();
         this.repaint();
     }
 
+    public void createTableHeaderPopup() {
+        JCheckBoxMenuItem title = new JCheckBoxMenuItem("Title", true);
+        title.setEnabled(false);
+        JCheckBoxMenuItem artist = new JCheckBoxMenuItem("Artist", true);
+        JCheckBoxMenuItem album = new JCheckBoxMenuItem("Album", true);
+        JCheckBoxMenuItem year = new JCheckBoxMenuItem("Year", true);
+        JCheckBoxMenuItem comment = new JCheckBoxMenuItem("Comment", true);
+        JCheckBoxMenuItem genre = new JCheckBoxMenuItem("Genre", true);
+
+        tableHeaderPopup.add(title);
+        tableHeaderPopup.add(artist);
+        tableHeaderPopup.add(album);
+        tableHeaderPopup.add(year);
+        tableHeaderPopup.add(comment);
+        tableHeaderPopup.add(genre);
+
+        columnList.add(title);
+        columnList.add(artist);
+        columnList.add(album);
+        columnList.add(year);
+        columnList.add(comment);
+        columnList.add(genre);
+    }
     /**
      * Returns the table of this SongListView
      * @return JTable containing songs
@@ -130,8 +159,58 @@ public class SongListView extends JPanel {
         table.setSelectionForeground(pointColor[1]);
     }
 
-    public void setSongLPlaylistL(PlaylistLibrary playlistL, SongLibrary songL) {
-        //table.setTransferHandler(new TableRowTransferHandler(songL, playlistL));
+    public void addItemListenerTableHeader(ItemListener listener) {
+        for (int i = 0; i < tableHeaderPopup.getComponentCount(); i++) {
+            JCheckBoxMenuItem item = (JCheckBoxMenuItem) tableHeaderPopup.getComponent(i);
+            item.addItemListener(listener);
+        }
+    }
+
+    public JPopupMenu getTableHeaderPopup() {
+        tableHeaderPopup.setVisible(true);
+        return tableHeaderPopup;
+    }
+
+    public void hideColumn(TableColumn column) {
+        column.setWidth(0);
+        column.setMinWidth(0);
+        column.setMaxWidth(0);
+    }
+
+    public void showColumn(TableColumn column) {
+        int numCol = 0;
+        int size = 0;
+        for (JCheckBoxMenuItem item : columnList) {
+            if (item.isSelected()) {
+                numCol++;
+            }
+        }
+        size = table.getWidth() / numCol;
+
+        column.setWidth(size);
+        column.setMinWidth(size);
+        column.setMaxWidth(size);
+    }
+
+    private int getColumnNumber(JCheckBoxMenuItem item) {
+        switch (item.getText()) {
+            case "Path":
+                return 0;
+            case "Title":
+                return 1;
+            case "Artist":
+                return 2;
+            case "Album":
+                return 3;
+            case "Year":
+                return 4;
+            case "Comment":
+                return 5;
+            case "Genre":
+                return 6;
+            default:
+                return 0;
+        }
     }
 
 }
