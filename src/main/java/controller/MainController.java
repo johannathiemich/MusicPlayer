@@ -83,6 +83,7 @@ public class MainController {
 
         //Add listeners to standard menu bar / popup menu items
         playerView.addMenuItemListener(new MenuItemListener());
+        playerView.addControlsMenuItemListener(new ControlsMenuItemListener());
 
         //Add listener to table
         playerView.addSelectionListenerForTable(new SelectionListenerForTable());
@@ -448,6 +449,60 @@ public class MainController {
 
             } else {
                 System.out.println("none of the menu item action performed.");
+            }
+
+        }
+    }
+
+    //Class for controls menu actions
+    class ControlsMenuItemListener implements ActionListener {
+        String menuName;
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            // Get the name of event source component
+            menuName = ((JMenuItem) e.getSource()).getName();
+            System.out.println("menuName: " + menuName);
+
+            if (menuName == null) {
+                System.out.println("[Menu_Error] menuName: null");
+                return;
+            }
+            else if(menuName.equals("Play")){
+                System.out.println("[Controls Menu] Play is pressed.");
+                //TODO connect to play button
+            }
+            else if(menuName.equals("Next")){
+                System.out.println("[Controls Menu] Next is pressed.");
+                //TODO connect to next button
+            }
+            else if(menuName.equals("Previous")){
+                System.out.println("[Controls Menu] Previous is pressed.");
+                //TODO connect to previous button
+            }
+            else if(menuName.equals("Recent")){
+                System.out.println("[Controls Menu] Recent is pressed.");
+                //TODO show recently played songs and be able to play one of them
+            }
+            else if(menuName.equals("Current")){
+                System.out.println("[Controls Menu] Current is pressed.");
+                //TODO go to and highlight current playing song
+            }
+            else if(menuName.equals("Increase")){
+                System.out.println("[Controls Menu] Increase is pressed.");
+                //TODO increase volume by 5%
+            }
+            else if(menuName.equals("Decrease")){
+                System.out.println("[Controls Menu] Decrease is pressed.");
+                //TODO decrease volume by 5%
+            }
+            else if(menuName.equals("Shuffle")){
+                System.out.println("[Controls Menu] Shuffle is pressed.");
+                //TODO when this is clicked we need to have a random song play next
+            }
+            else if(menuName.equals("Repeat")){
+                System.out.println("[Controls Menu] Repeat is pressed.");
+                //TODO when this is clicked the song will play repeatedly
             }
 
         }
