@@ -110,21 +110,21 @@ public class Song {
     public String getGenre() { return genre; }
     public int getTime() { return time; }
 
-    /**
-     * Get song time in '0:00' form
-     * @return
-     */
-    public String getTimeMinSec() {
-        int min = time / 60;
-        int sec = time % 60;
-        String minSec;
-        if (sec < 10) {
-            minSec = min + ":0" + sec;
-        } else {
-            minSec = min + ":" + sec;
-        }
-        return minSec;
-    }
+//    /**
+//     * Get song time in '0:00' form
+//     * @return
+//     */
+//    public String getTimeMinSec() {
+//        int min = time / 60;
+//        int sec = time % 60;
+//        String minSec;
+//        if (sec < 10) {
+//            minSec = min + ":0" + sec;
+//        } else {
+//            minSec = min + ":" + sec;
+//        }
+//        return minSec;
+//    }
 
     /**
      * Get title and artist of the song in 'title - artist' form

@@ -112,7 +112,7 @@ public class PlayerController {
                 e.printStackTrace();
             }
             //reflect to the view
-            playerView.updateCurrentPlayingView(currentSong);
+            playerView.getControlView().updateCurrentPlayingView(currentSong);
             System.out.println("[PlayerControl] Play Song '"+currentSong.getTitleAndArtist()+"'\n");
         }
     }
@@ -263,15 +263,16 @@ public class PlayerController {
          * This method is called several time per seconds while playing.
          * properties map includes audio format features
          * such as instant bitrate, microseconds position, current frame number, ...
-         * @param i     bytesread - from encoded stream.
-         * @param l     microseconds - elapsed (reseted after a seek !).
-         * @param bytes pcmdata - PCM samples.
-         * @param map   java.util.Map properties - audio stream parameters.
+         * @param b         bytesread - from encoded stream.
+         * @param microsec  microseconds - elapsed (reseted after a seek !).
+         * @param bytes     pcmdata - PCM samples.
+         * @param map       java.util.Map properties - audio stream parameters.
          */
         @Override
-        public void progress(int i, long l, byte[] bytes, Map map) {
-            //TODO update progressbar
-
+        public void progress(int b, long microsec, byte[] bytes, Map map) {
+            // Update the progress bar
+            playerView.getControlView().updateProgressView((int)microsec/1000, currentSong.getTime());
+            //System.out.println("bytesread: "+i+", microseconds: "+l+ "pcmdata[0]: "+bytes[0]+"map: "+map.toString());
         }
 
         @Override
