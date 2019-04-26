@@ -1,9 +1,6 @@
 package view;
 
-import model.PlaylistLibrary;
 import model.Song;
-import model.SongLibrary;
-//import controller.TableRowTransferHandler;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -11,6 +8,8 @@ import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
+
+//import controller.TableRowTransferHandler;
 
 /**
  * SongListView class is to show either the library or a playlist.
@@ -26,6 +25,7 @@ public class SongListView extends JPanel {
     private int tableRowHeight = 24;
     private JPopupMenu tableHeaderPopup;
     private  ArrayList<JCheckBoxMenuItem> columnList;
+    //TODO some boolean array for the hide/show the column?
 
     /**
      * Constructs a panel to show a list of songs
