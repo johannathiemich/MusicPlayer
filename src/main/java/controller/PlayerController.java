@@ -272,9 +272,13 @@ public class PlayerController {
         public void progress(int b, long microsec, byte[] bytes, Map map) {
             // Update the progress bar
             playerView.getControlView().updateProgressView((int)microsec/1000, currentSong.getTime());
-            //System.out.println("bytesread: "+i+", microseconds: "+l+ "pcmdata[0]: "+bytes[0]+"map: "+map.toString());
+            //TODO update all windows
         }
 
+        /**
+         * Notification callback for basicplayer events such as opened, eom ...
+         * @param basicPlayerEvent
+         */
         @Override
         public void stateUpdated(BasicPlayerEvent basicPlayerEvent) {
             //Autoplay the next music when the player finishes playing the current music
@@ -285,6 +289,8 @@ public class PlayerController {
                 System.out.println("[Player] end of the music '"+currentSong.getTitleAndArtist()+"'");
                 playNextSong();
             }
+
+            //TODO might be better to handle the ui updates of play/stop/resume states...
 
         }
 
