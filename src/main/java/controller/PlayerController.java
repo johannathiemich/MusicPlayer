@@ -1,13 +1,13 @@
 package controller;
 
-import javazoom.jlgui.basicplayer.BasicPlayer;
-import javazoom.jlgui.basicplayer.BasicPlayerException;
+import javazoom.jlgui.basicplayer.*;
 import model.Song;
 import view.MusicPlayerGUI;
 
 import javax.swing.*;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Map;
 
 import static java.lang.Math.abs;
 
@@ -20,9 +20,11 @@ public class PlayerController {
     private Song currentSong;            //the song currently loaded on the BasicPlayer
     private ArrayList<Song> songList;    //can be either a library or a playlist
     private MusicPlayerGUI playerView; //to reflect player's action to the view
-    private JTable table;
 
+    //TODO better to handle the table selection from somewhere else not in player controller...
+    private JTable table;
     private int currSongIndex;
+
     /**
      * Constructor for this class
      * @param songList a list of all songs currently contained in the songList
@@ -34,6 +36,9 @@ public class PlayerController {
             currentSong = songList.get(0);   //first song in the songList by default
         }
         this.playerView = playerView;
+
+        //add listener to the basic player
+        player.addBasicPlayerListener(new MyBasicPlayerListener());
     }
 
     /**
@@ -184,6 +189,7 @@ public class PlayerController {
      * Play the song that comes after the currently playing song in the songList
      */
     public void playNextSong(){
+        //TODO make it work without checking the table row.. it should be based on the songList
         currSongIndex = table.getSelectedRow();
         //currSongIndex = playerView.getSongTable().getSelectedRow();
         //if (currSongIndex == -1 ) {
@@ -238,5 +244,52 @@ public class PlayerController {
 
     public void setSongTable(JTable table) {
         this.table = table;
+    }
+
+
+    /**
+     * MyBasicPlayerListener class implements the actions triggered from basic player
+     *
+     */
+    public class MyBasicPlayerListener implements BasicPlayerListener {
+
+        @Override
+        public void opened(Object o, Map map) {
+
+        }
+
+        /**
+         * Progress callback while playing.
+         * This method is called several time per seconds while playing.
+         * properties map includes audio format features
+         * such as instant bitrate, microseconds position, current frame number, ...
+         * @param i     bytesread - from encoded stream.
+         * @param l     microseconds - elapsed (reseted after a seek !).
+         * @param bytes pcmdata - PCM samples.
+         * @param map   java.util.Map properties - audio stream parameters.
+         */
+        @Override
+        public void progress(int i, long l, byte[] bytes, Map map) {
+            //TODO update progressbar
+
+        }
+
+        @Override
+        public void stateUpdated(BasicPlayerEvent basicPlayerEvent) {
+            //Autoplay the next music when the player finishes playing the current music
+            if(basicPlayerEvent.getCode() == BasicPlayerEvent.EOM) {    //EOM: End of MP3
+                //TODO check if repeated is clicked
+                //TODO shuffle..?
+                //TODO if not, play the next song
+                System.out.println("[Player] end of the music '"+currentSong.getTitleAndArtist()+"'");
+                playNextSong();
+            }
+
+        }
+
+        @Override
+        public void setController(BasicController basicController) {
+
+        }
     }
 }
