@@ -190,6 +190,16 @@ public class MusicPlayerGUI extends JFrame {
         decreaseVolumeMenuItem = new JMenuItem("Decrease Volume");
         shuffleMenuItem = new JCheckBoxMenuItem("Shuffle");
         repeatMenuItem = new JCheckBoxMenuItem("Repeat");
+        //name controls menu
+        playMenuItem.setName("Play");
+        nextMenuItem.setName("Next");
+        previousMenuItem.setName("Previous");
+        playRecentMenuItem.setName("Recent");
+        goToCurrentSongMenuItem.setName("Current");
+        increaseVolumeMenuItem.setName("Increase");
+        decreaseVolumeMenuItem.setName("Decrease");
+        shuffleMenuItem.setName("Shuffle");
+        repeatMenuItem.setName("Repeat");
         //add controls to controlsMenu
         controlsMenu.add(playMenuItem);
         controlsMenu.add(nextMenuItem);
@@ -202,8 +212,19 @@ public class MusicPlayerGUI extends JFrame {
         controlsMenu.addSeparator();
         controlsMenu.add(shuffleMenuItem);
         controlsMenu.add(repeatMenuItem);
+        //Shortcuts for Controls Menu
+        playMenuItem.setMnemonic(KeyEvent.VK_P);
+        nextMenuItem.setMnemonic(KeyEvent.VK_N);
+        previousMenuItem.setMnemonic(KeyEvent.VK_P);
+        playRecentMenuItem.setMnemonic(KeyEvent.VK_R);
+        goToCurrentSongMenuItem.setMnemonic(KeyEvent.VK_C);
+        increaseVolumeMenuItem.setMnemonic(KeyEvent.VK_I);
+        decreaseVolumeMenuItem.setMnemonic(KeyEvent.VK_D);
+        shuffleMenuItem.setMnemonic(KeyEvent.VK_S);
+        repeatMenuItem.setMnemonic(KeyEvent.VK_R);
 
-        //extra menus
+
+        //view menus
         viewMenu = new JMenu("View");
         darkThemeMenuItem = new JCheckBoxMenuItem("Dark Theme",true);
         songInfoMenuItem = new JCheckBoxMenuItem("Song Info",true);
@@ -365,6 +386,23 @@ public class MusicPlayerGUI extends JFrame {
             addToPlaylistPopupMenu.getItem(i).addActionListener(listener);
         }
     }
+
+
+
+    //add menu item listen for controls menu
+    public void addControlsMenuItemListener(ActionListener listener) {
+        //standard menu items in menu bar
+        playMenuItem.addActionListener(listener);
+        nextMenuItem.addActionListener(listener);
+        previousMenuItem.addActionListener(listener);
+        playRecentMenuItem.addActionListener(listener);
+        goToCurrentSongMenuItem.addActionListener(listener);
+        increaseVolumeMenuItem.addActionListener(listener);
+        decreaseVolumeMenuItem.addActionListener(listener);
+        shuffleMenuItem.addActionListener(listener);
+        repeatMenuItem.addActionListener(listener);
+    }
+
 
     /**
      * Attach a listener to optional menu items in menu bar
