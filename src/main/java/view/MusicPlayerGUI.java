@@ -10,7 +10,6 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.dnd.DropTarget;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.WindowFocusListener;
 import java.util.ArrayList;
@@ -207,7 +206,7 @@ public class MusicPlayerGUI extends JFrame {
         //extra menus
         viewMenu = new JMenu("View");
         darkThemeMenuItem = new JCheckBoxMenuItem("Dark Theme",true);
-        songInfoMenuItem = new JCheckBoxMenuItem("Song Info",false);
+        songInfoMenuItem = new JCheckBoxMenuItem("Song Info",true);
         darkThemeMenuItem.setName("darkTheme");
         songInfoMenuItem.setName("songInfo");
         viewMenu.add(darkThemeMenuItem);

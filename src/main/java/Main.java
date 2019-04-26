@@ -3,6 +3,8 @@ import database.DatabaseHandler;
 
 public class Main {
 
+    public static String appName = "MyTunes 3.0";
+
     public static void main(String[] args) {
 
         DatabaseHandler handler = DatabaseHandler.getInstance();
@@ -12,7 +14,7 @@ public class Main {
 //        handler.addPlaylist("Party");
 //        handler.addPlaylist("Jazz");
 
-        MainController controller = new MainController();
+        MainController controller = new MainController(appName);
 
 /**        DatabaseHandler handler = DatabaseHandler.getInstance();
         handler.addSong(new Song(1));

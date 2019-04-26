@@ -36,6 +36,8 @@ import java.util.List;
 @SuppressWarnings("ALL")
 public class MainController {
 
+    private String appName;
+
     //View
     private MusicPlayerGUI playerView;
 
@@ -56,12 +58,13 @@ public class MainController {
     /**
      * Construct a main controller and initialize all modules
      */
-    public MainController() {
+    public MainController(String appName) {
+        this.appName = appName;
+
         //assign modules
-        playerView = new MusicPlayerGUI("MyTunes 2.0", 800, 600, "main", "library");
+        playerView = new MusicPlayerGUI(appName, 800, 600, "main", "library");
         library = new SongLibrary(); //should always be up-to-date with db
         playlistLibrary = new PlaylistLibrary(); //should always be up-to-date with db
-
 
         playerControl = new PlayerController(library, playerView);
         selectedSong = null;
@@ -383,7 +386,6 @@ public class MainController {
                 //[About] menu actions
                 System.out.println("[Menu] About is pressed.");
                 String title = "About";
-                String appName = "MyTunes 2.0";
                 String teamInfo = "[CECS543 Team6]\nSella Bae\nBrett Rexius\nJohanna Thiemich";
                 String year = "2019";
                 String msg = appName + "\n" + year + "\n\n" + teamInfo;

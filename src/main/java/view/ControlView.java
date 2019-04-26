@@ -82,7 +82,7 @@ public class ControlView extends JPanel {
         this.add(sliderPanel, BorderLayout.EAST);
 
         createSongInfoPanel();
-        showSongInfoPanel(false);
+        showSongInfoPanel(true);
     }
 
     /**
@@ -103,10 +103,10 @@ public class ControlView extends JPanel {
         songInfoPanel.setLayout(new BorderLayout(0,0));
 
         //song info
-        songTitleLbl = new JLabel("Title");
-        songDetailLbl = new JLabel("Artist");
-        songTimePlayingLbl = new JLabel("0:00");
-        songTimeRemainingLbl = new JLabel("9:99");
+        songTitleLbl = new JLabel(" ");
+        songDetailLbl = new JLabel(" ");
+        songTimePlayingLbl = new JLabel(" ");
+        songTimeRemainingLbl = new JLabel(" ");
 
         //ui setup
         songTitleLbl.setPreferredSize(new Dimension(this.getWidth(),24));
@@ -117,8 +117,8 @@ public class ControlView extends JPanel {
         songTimeRemainingLbl.setHorizontalAlignment(SwingConstants.RIGHT);
 
         //progress bar
-        songProgressBar = new JProgressBar(0,0,190);
-        songProgressBar.setValue(60);
+        songProgressBar = new JProgressBar(0,0,0);
+        songProgressBar.setValue(0);
 
         //add all components to song info panel
         songInfoPanel.add(Box.createHorizontalStrut(10));   //invisible space
