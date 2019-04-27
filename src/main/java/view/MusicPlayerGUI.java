@@ -387,9 +387,10 @@ public class MusicPlayerGUI extends JFrame {
         }
     }
 
-
-
-    //add menu item listen for controls menu
+    /**
+     * Attach a listener to all menu items under [Controls] menu
+     * @param listener ActionListener with Control menu actions
+     */
     public void addControlsMenuItemListener(ActionListener listener) {
         //standard menu items in menu bar
         playMenuItem.addActionListener(listener);
@@ -403,10 +404,9 @@ public class MusicPlayerGUI extends JFrame {
         repeatMenuItem.addActionListener(listener);
     }
 
-
     /**
-     * Attach a listener to optional menu items in menu bar
-     * @param listener ActionListener with optional menu actions
+     * Attach a listener to the menu items under [View] menu
+     * @param listener ActionListener with View menu actions
      */
     public void addViewMenuListener(ActionListener listener) {
         darkThemeMenuItem.addActionListener(listener);
