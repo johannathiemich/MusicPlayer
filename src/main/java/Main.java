@@ -3,6 +3,8 @@ import database.DatabaseHandler;
 
 public class Main {
 
+    public static String appName = "MyTunes 3.0";
+
     public static void main(String[] args) {
 
         //test code for playlist
@@ -10,12 +12,15 @@ public class Main {
 //        handler.addPlaylist("Favorite");
 //        handler.addPlaylist("Party");
 //        handler.addPlaylist("Jazz");
+
        // DatabaseHandler handler = DatabaseHandler.getInstance();
         //boolean[] array = new boolean[]{true, false, true, false, true};
         //boolean[] returnArray = new boolean[5];
         //handler.saveShowHideColumns(array);
         //returnArray = handler.getShowHideColumns();
-        MainController controller = new MainController();
+
+
+        MainController controller = new MainController(appName);
 
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
             public void run() {

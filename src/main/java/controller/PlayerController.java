@@ -1,15 +1,13 @@
 package controller;
 
-import javazoom.jlgui.basicplayer.BasicPlayer;
-import javazoom.jlgui.basicplayer.BasicPlayerException;
+import javazoom.jlgui.basicplayer.*;
 import model.Song;
 import view.MusicPlayerGUI;
 
 import javax.swing.*;
 import java.io.File;
 import java.util.ArrayList;
-
-import static java.lang.Math.abs;
+import java.util.Map;
 
 /**
  * PlayerController manages actions related to playing songs
@@ -20,9 +18,14 @@ public class PlayerController {
     private Song currentSong;            //the song currently loaded on the BasicPlayer
     private ArrayList<Song> songList;    //can be either a library or a playlist
     private MusicPlayerGUI playerView; //to reflect player's action to the view
-    private JTable table;
 
+    //TODO better to handle the table selection from somewhere else not in player controller...
+    private JTable table;
     private int currSongIndex;
+
+    //Recently Played Songs
+    private ArrayList<Song> recentlyPlayedSongs;
+
     /**
      * Constructor for this class
      * @param songList a list of all songs currently contained in the songList
@@ -34,6 +37,12 @@ public class PlayerController {
             currentSong = songList.get(0);   //first song in the songList by default
         }
         this.playerView = playerView;
+
+        //add listener to the basic player
+        player.addBasicPlayerListener(new MyBasicPlayerListener());
+
+        //initialize the recently played songs
+        recentlyPlayedSongs = new ArrayList<Song>();
     }
 
     /**
@@ -84,6 +93,12 @@ public class PlayerController {
         return player.getStatus();
     }
 
+    /**
+     * Gets the recentlyPlayedSongs
+     * @return ArrayList<Song>
+     */
+    public ArrayList<Song> getRecentlyPlayedSongs() { return recentlyPlayedSongs; }
+
     //------------- Music player control --------------
 
     /**
@@ -98,18 +113,33 @@ public class PlayerController {
      * @param song to be played
      */
     public void playSong(Song song){
-        if(song!=null){
-            try {
-                player.open(new File(song.getPath()));
-                player.play();
-                this.setCurrentSong(song);
-            } catch(BasicPlayerException e) {
-                e.printStackTrace();
-            }
-            //reflect to the view
-            playerView.updateCurrentPlayingView(currentSong);
-            System.out.println("[PlayerControl] Play Song '"+currentSong.getTitleAndArtist()+"'\n");
+
+        //if nothing is selected, set the song to be the first song on the list
+        if(song == null) {
+            song = songList.get(0);
+            System.out.println("[Player] selecting the first song on the list.");
         }
+
+        //play the song
+        try {
+            this.setCurrentSong(song);
+            player.open(new File(currentSong.getPath()));
+            player.play();
+        } catch(BasicPlayerException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("[PlayerControl] Play Song '"+currentSong.getTitleAndArtist()+"'\n");
+
+        //reflect to the view
+        playerView.getControlView().updateCurrentPlayingView(currentSong);
+        //TODO update all playlist window's view
+
+        //add the song to the top of the recently played list
+        recentlyPlayedSongs.add(0, currentSong);
+        //add the song title$artist to the [Play Recent] menu
+        playerView.addMenuItemToPlayRecent(currentSong.getFileName());
+        System.out.println("[Player] '"+currentSong.getTitleAndArtist()+"' is added to the recently played list.");
     }
 
     /**
@@ -184,6 +214,7 @@ public class PlayerController {
      * Play the song that comes after the currently playing song in the songList
      */
     public void playNextSong(){
+        //TODO make it work without checking the table row.. it should be based on the songList
         currSongIndex = table.getSelectedRow();
         //currSongIndex = playerView.getSongTable().getSelectedRow();
         //if (currSongIndex == -1 ) {
@@ -229,7 +260,7 @@ public class PlayerController {
      * @return the input value for the basic player setGain() method
      */
     private double convertVolume(double value) {
-        return value / abs(this.player.getMaximumGain() - this.player.getMinimumGain());
+        return value / Math.abs(this.player.getMaximumGain() - this.player.getMinimumGain());
     }
 
     public int getCurrSongIndex() {
@@ -238,5 +269,53 @@ public class PlayerController {
 
     public void setSongTable(JTable table) {
         this.table = table;
+    }
+
+
+    /**
+     * MyBasicPlayerListener class implements the actions triggered from basic player
+     *
+     */
+    public class MyBasicPlayerListener implements BasicPlayerListener {
+        /**
+         * Progress callback while playing.
+         * This method is called several time per seconds while playing.
+         * properties map includes audio format features
+         * such as instant bitrate, microseconds position, current frame number, ...
+         * @param b         bytesread - from encoded stream.
+         * @param microsec  microseconds - elapsed (reseted after a seek !).
+         * @param bytes     pcmdata - PCM samples.
+         * @param map       java.util.Map properties - audio stream parameters.
+         */
+        @Override
+        public void progress(int b, long microsec, byte[] bytes, Map map) {
+            // Update the progress bar
+            playerView.getControlView().updateProgressView((int)microsec/1000, currentSong.getTime());
+            //TODO update all windows
+        }
+
+        /**
+         * Notification callback for basicplayer events such as opened, eom ...
+         * @param basicPlayerEvent
+         */
+        @Override
+        public void stateUpdated(BasicPlayerEvent basicPlayerEvent) {
+            //Autoplay the next music when the player finishes playing the current music
+            if(basicPlayerEvent.getCode() == BasicPlayerEvent.EOM) {    //EOM: End of MP3
+                //TODO check if repeated is clicked
+                //TODO shuffle..?
+                //TODO if not, play the next song
+                System.out.println("[Player] end of the music '"+currentSong.getTitleAndArtist()+"'");
+                playNextSong();
+            }
+
+            //TODO might be better to handle the ui updates of play/stop/resume states...
+
+        }
+
+        @Override
+        public void opened(Object o, Map map) { }
+        @Override
+        public void setController(BasicController basicController) { }
     }
 }

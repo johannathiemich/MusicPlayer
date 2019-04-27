@@ -82,7 +82,7 @@ public class ControlView extends JPanel {
         this.add(sliderPanel, BorderLayout.EAST);
 
         createSongInfoPanel();
-        showSongInfoPanel(false);
+        showSongInfoPanel(true);
     }
 
     /**
@@ -103,10 +103,10 @@ public class ControlView extends JPanel {
         songInfoPanel.setLayout(new BorderLayout(0,0));
 
         //song info
-        songTitleLbl = new JLabel("Title");
-        songDetailLbl = new JLabel("Artist");
-        songTimePlayingLbl = new JLabel("0:00");
-        songTimeRemainingLbl = new JLabel("9:99");
+        songTitleLbl = new JLabel(" ");
+        songDetailLbl = new JLabel(" ");
+        songTimePlayingLbl = new JLabel(" ");
+        songTimeRemainingLbl = new JLabel(" ");
 
         //ui setup
         songTitleLbl.setPreferredSize(new Dimension(this.getWidth(),24));
@@ -117,8 +117,8 @@ public class ControlView extends JPanel {
         songTimeRemainingLbl.setHorizontalAlignment(SwingConstants.RIGHT);
 
         //progress bar
-        songProgressBar = new JProgressBar(0,0,190);
-        songProgressBar.setValue(60);
+        songProgressBar = new JProgressBar(0,0,0);
+        songProgressBar.setValue(0);
 
         //add all components to song info panel
         songInfoPanel.add(Box.createHorizontalStrut(10));   //invisible space
@@ -142,7 +142,7 @@ public class ControlView extends JPanel {
     }
 
     /**
-     * Update the view of song info panel
+     * Updates the view of song info panel
      * with title, artist, time of currently playing song.
      * @param song currently playing song
      */
@@ -150,11 +150,41 @@ public class ControlView extends JPanel {
         if(songInfoPanel != null) {
             songTitleLbl.setText(song.getTitle());
             songDetailLbl.setText(song.getArtist());
-            songTimePlayingLbl.setText("0:00");
-            songTimeRemainingLbl.setText(song.getTimeMinSec());
+            //setup the progressbar
             songProgressBar.setMinimum(0);
-            songProgressBar.setMaximum(song.getTime());
+            songProgressBar.setMaximum(song.getTime()*1000);
+            //update the text and value at the progressbar
+            updateProgressView(0, song.getTime());
         }
+    }
+
+    /**
+     * Updates the progress bar value and the played/remained time text
+     * @param played    played time in MILLISECONDS (1000ms = 1s)
+     * @param duration  song duration in SECONDS
+     */
+    public void updateProgressView(int played, int duration){
+        int playedInSec = played/1000;
+        songTimePlayingLbl.setText(convertTimeToMinSec(playedInSec));
+        songTimeRemainingLbl.setText(convertTimeToMinSec(duration-playedInSec));
+        songProgressBar.setValue(played);
+    }
+
+    /**
+     * Converts time in seconds to "0:00" form of string
+     * @param time  seconds
+     * @return  String in "0:00" form
+     */
+    private String convertTimeToMinSec(int time){
+        int min = time / 60;
+        int sec = time % 60;
+        String minSec;
+        if (sec < 10) {
+            minSec = min + ":0" + sec;
+        } else {
+            minSec = min + ":" + sec;
+        }
+        return minSec;
     }
 
     /**

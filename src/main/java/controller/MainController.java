@@ -37,6 +37,8 @@ import java.util.List;
 @SuppressWarnings("ALL")
 public class MainController {
 
+    private String appName;
+
     //View
     private MusicPlayerGUI playerView;
 
@@ -47,22 +49,26 @@ public class MainController {
     //Other Controllers
     private PlayerController playerControl;
 
+    //...
     private Song selectedSong;  //different from currentSong
     private String selectedPlaylistName;
 
+    //Playlist Windows
     private ArrayList<MusicPlayerGUI> playlistWindowArray;
     private String focusedWindowName = "main";
     private MusicPlayerGUI focusedWindow;
 
+
     /**
      * Construct a main controller and initialize all modules
      */
-    public MainController() {
+    public MainController(String appName) {
+        this.appName = appName;
+
         //assign modules
-        playerView = new MusicPlayerGUI("MyTunes 2.0", 800, 600, "main", "library");
+        playerView = new MusicPlayerGUI(appName, 800, 600, "main", "library");
         library = new SongLibrary(); //should always be up-to-date with db
         playlistLibrary = new PlaylistLibrary(); //should always be up-to-date with db
-
 
         playerControl = new PlayerController(library, playerView);
         selectedSong = null;
@@ -84,6 +90,7 @@ public class MainController {
 
         //Add listeners to standard menu bar / popup menu items
         playerView.addMenuItemListener(new MenuItemListener());
+        playerView.addControlsMenuItemListener(new ControlsMenuItemListener());
 
         //Add listener to table
         playerView.addSelectionListenerForTable(new SelectionListenerForTable());
@@ -114,6 +121,18 @@ public class MainController {
                 playerView.getSongListView().getTableHeaderPopup());
 
     }
+
+    /**
+     * Action of "Play" that occurs by button, double-click, menu, hotkey...
+     */
+    private void playAction() {
+        //play song
+        playerControl.playSong(selectedSong);
+        //change the play button text
+        updatePlayBtnTextInAllWindow(MusicPlayerGUI.BTNTEXT_PAUSE);
+
+    }
+
 
     //Listeners
 
@@ -150,31 +169,7 @@ public class MainController {
                     //Play Action
                     case BasicPlayer.STOPPED:
                     default:
-                        if (focusedWindowName.equals("main")) {
-                            //main window
-                            if (playerView.isAnyRowSelected()) {
-                                playerControl.setCurrentSong(selectedSong);
-                            } else {
-                                System.out.println("nothing selected on the main window, playing the first song in " +
-                                        "the library..");
-                            }
-                        } else {
-                            //all playlist windows
-                            for (MusicPlayerGUI playlistWindow : playlistWindowArray) {
-                                if (playlistWindow.getWindowName().equals(focusedWindowName)) {
-                                    if (playlistWindow.isAnyRowSelected()) {
-                                        playerControl.setCurrentSong(selectedSong);
-                                    } else {
-                                        System.out.println("nothing selected on the " + focusedWindowName +
-                                                " window, playing the first song in the library..");
-                                    }
-                                }
-                            }
-                        }
-                        //play song
-                        playerControl.playSong();
-                        //change the play button text
-                        updatePlayBtnTextInAllWindow(MusicPlayerGUI.BTNTEXT_PAUSE);
+                        playAction();
                         break;
                 }
             } else if (btnName.equals("stop")) {
@@ -388,7 +383,6 @@ public class MainController {
                 //[About] menu actions
                 System.out.println("[Menu] About is pressed.");
                 String title = "About";
-                String appName = "MyTunes 2.0";
                 String teamInfo = "[CECS543 Team6]\nSella Bae\nBrett Rexius\nJohanna Thiemich";
                 String year = "2019";
                 String msg = appName + "\n" + year + "\n\n" + teamInfo;
@@ -453,6 +447,75 @@ public class MainController {
 
             } else {
                 System.out.println("none of the menu item action performed.");
+            }
+
+        }
+    }
+
+    //Class for controls menu actions
+    class ControlsMenuItemListener implements ActionListener {
+        JMenuItem menuItem;
+        String menuName;
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            // Get the name of event source component
+            menuItem = (JMenuItem) e.getSource();
+            menuName = menuItem.getName();
+
+            System.out.println("menuName: " + menuName);
+
+            if (menuName == null) {
+                System.out.println("[Menu_Error] menuName: null");
+                return;
+            }
+
+            if(menuName.equals("Play")){
+                System.out.println("[Controls Menu] Play is pressed.");
+                playAction();
+            }
+            else if(menuName.equals("Next")){
+                System.out.println("[Controls Menu] Next is pressed.");
+                //TODO connect to next button
+            }
+            else if(menuName.equals("Previous")){
+                System.out.println("[Controls Menu] Previous is pressed.");
+                //TODO connect to previous button
+            }
+            else if(menuName.equals("recent")){
+                String text = menuItem.getText();
+                System.out.println("[Controls Menu] Play Recent is pressed. "+text);
+
+                //get the index of the menu item and play that in recentlyPlayedSongs
+                int index = 0;
+                for(int i=0; i<playerView.getPlayRecentMenu().getItemCount(); i++){
+                    if(menuItem == playerView.getPlayRecentMenu().getItem(i)){
+                        index = i;
+                    }
+                }
+                System.out.println("index = "+index);
+                selectedSong = playerControl.getRecentlyPlayedSongs().get(index);
+                playAction();
+            }
+            else if(menuName.equals("Current")){
+                System.out.println("[Controls Menu] Current is pressed.");
+                //TODO go to and highlight current playing song
+            }
+            else if(menuName.equals("Increase")){
+                System.out.println("[Controls Menu] Increase is pressed.");
+                //TODO increase volume by 5%
+            }
+            else if(menuName.equals("Decrease")){
+                System.out.println("[Controls Menu] Decrease is pressed.");
+                //TODO decrease volume by 5%
+            }
+            else if(menuName.equals("Shuffle")){
+                System.out.println("[Controls Menu] Shuffle is pressed.");
+                //TODO when this is clicked we need to have a random song play next
+            }
+            else if(menuName.equals("Repeat")){
+                System.out.println("[Controls Menu] Repeat is pressed.");
+                //TODO when this is clicked the song will play repeatedly
             }
 
         }
@@ -598,8 +661,7 @@ public class MainController {
                 if ((e.getClickCount() == 2) && !e.isConsumed() && !e.isPopupTrigger()) {
                     System.out.println("[Table] double clicked");
                     selectedSong = playerControl.getSongList().get(row);
-                    playerControl.playSong(selectedSong);
-                    updatePlayBtnTextInAllWindow(MusicPlayerGUI.BTNTEXT_PAUSE);
+                    playAction();
                 }
             }
         }

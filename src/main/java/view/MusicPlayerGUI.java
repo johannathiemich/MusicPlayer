@@ -10,6 +10,7 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.dnd.DropTarget;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.WindowFocusListener;
 import java.util.ArrayList;
@@ -50,6 +51,17 @@ public class MusicPlayerGUI extends JFrame {
     private JMenuItem aboutMenuItem;
     private JMenuItem newPlaylistMenuItem;
     private JMenuItem exitMenuItem;
+    //controls
+    private JMenu controlsMenu;
+    private JMenuItem playMenuItem;
+    private JMenuItem nextMenuItem;
+    private JMenuItem previousMenuItem;
+    private JMenu playRecentMenu;
+    private JMenuItem goToCurrentSongMenuItem;
+    private JMenuItem increaseVolumeMenuItem;
+    private JMenuItem decreaseVolumeMenuItem;
+    private JCheckBoxMenuItem shuffleMenuItem;
+    private JCheckBoxMenuItem repeatMenuItem;
 
     //popup menu(right-click) and menu items
     private JPopupMenu popUpMenu;
@@ -168,10 +180,54 @@ public class MusicPlayerGUI extends JFrame {
         fileMenu.add(aboutMenuItem);
         fileMenu.add(exitMenuItem);
 
-        //extra menus
+        //[Controls] menus
+        controlsMenu = new JMenu("Controls");
+        playMenuItem = new JMenuItem("Play");
+        nextMenuItem = new JMenuItem("Next");
+        previousMenuItem = new JMenuItem("Previous");
+        playRecentMenu = new JMenu("Play Recent");
+        goToCurrentSongMenuItem = new JMenuItem("Go To Current Song");
+        increaseVolumeMenuItem = new JMenuItem("Increase Volume");
+        decreaseVolumeMenuItem = new JMenuItem("Decrease Volume");
+        shuffleMenuItem = new JCheckBoxMenuItem("Shuffle");
+        repeatMenuItem = new JCheckBoxMenuItem("Repeat");
+        //name controls menu
+        playMenuItem.setName("Play");
+        nextMenuItem.setName("Next");
+        previousMenuItem.setName("Previous");
+        playRecentMenu.setName("recent");
+        goToCurrentSongMenuItem.setName("Current");
+        increaseVolumeMenuItem.setName("Increase");
+        decreaseVolumeMenuItem.setName("Decrease");
+        shuffleMenuItem.setName("Shuffle");
+        repeatMenuItem.setName("Repeat");
+        //add controls to controlsMenu
+        controlsMenu.add(playMenuItem);
+        controlsMenu.add(nextMenuItem);
+        controlsMenu.add(previousMenuItem);
+        controlsMenu.add(playRecentMenu);
+        controlsMenu.add(goToCurrentSongMenuItem);
+        controlsMenu.addSeparator();
+        controlsMenu.add(increaseVolumeMenuItem);
+        controlsMenu.add(decreaseVolumeMenuItem);
+        controlsMenu.addSeparator();
+        controlsMenu.add(shuffleMenuItem);
+        controlsMenu.add(repeatMenuItem);
+        //Shortcuts for Controls Menu
+        playMenuItem.setMnemonic(KeyEvent.VK_P);
+        nextMenuItem.setMnemonic(KeyEvent.VK_N);
+        previousMenuItem.setMnemonic(KeyEvent.VK_P);
+        //playRecentMenu.setMnemonic(KeyEvent.VK_R);
+        goToCurrentSongMenuItem.setMnemonic(KeyEvent.VK_C);
+        increaseVolumeMenuItem.setMnemonic(KeyEvent.VK_I);
+        decreaseVolumeMenuItem.setMnemonic(KeyEvent.VK_D);
+        shuffleMenuItem.setMnemonic(KeyEvent.VK_S);
+        repeatMenuItem.setMnemonic(KeyEvent.VK_R);
+
+        //[View] menus
         viewMenu = new JMenu("View");
         darkThemeMenuItem = new JCheckBoxMenuItem("Dark Theme",true);
-        songInfoMenuItem = new JCheckBoxMenuItem("Song Info",false);
+        songInfoMenuItem = new JCheckBoxMenuItem("Song Info",true);
         darkThemeMenuItem.setName("darkTheme");
         songInfoMenuItem.setName("songInfo");
         viewMenu.add(darkThemeMenuItem);
@@ -179,6 +235,7 @@ public class MusicPlayerGUI extends JFrame {
 
         //add menus to the menu bar
         menuBar.add(fileMenu);
+        menuBar.add(controlsMenu);
         menuBar.add(viewMenu);
         //add menu bar to main frame
         this.setJMenuBar(menuBar);
@@ -330,6 +387,23 @@ public class MusicPlayerGUI extends JFrame {
         }
     }
 
+
+
+    //add menu item listen for controls menu
+    public void addControlsMenuItemListener(ActionListener listener) {
+        //standard menu items in menu bar
+        playMenuItem.addActionListener(listener);
+        nextMenuItem.addActionListener(listener);
+        previousMenuItem.addActionListener(listener);
+        playRecentMenu.addActionListener(listener);
+        goToCurrentSongMenuItem.addActionListener(listener);
+        increaseVolumeMenuItem.addActionListener(listener);
+        decreaseVolumeMenuItem.addActionListener(listener);
+        shuffleMenuItem.addActionListener(listener);
+        repeatMenuItem.addActionListener(listener);
+    }
+
+
     /**
      * Attach a listener to optional menu items in menu bar
      * @param listener ActionListener with optional menu actions
@@ -437,5 +511,29 @@ public class MusicPlayerGUI extends JFrame {
     public void setDisplayingListName(String displayingListName) {
         this.displayingListName = displayingListName;
         System.out.println("the \""+windowName+"\" window is now displaying \""+displayingListName+"\"");
+    }
+
+    /**
+     * Adds a menu item into [Play Recent] submenu
+     * and add listener to the new menu item.
+     * Note that the most recently played song is on top of the list
+     * @param text      text for the new menu item to display
+     */
+    public void addMenuItemToPlayRecent(String text) {
+        JMenuItem newMenuItem = new JMenuItem(text);
+        //set name and add listener
+        newMenuItem.setName("recent");
+        newMenuItem.addActionListener(playRecentMenu.getActionListeners()[0]);
+        //add the new menu item onto the top of the list
+        playRecentMenu.add(newMenuItem, 0);
+        System.out.println("[Menu] '"+text+"' is added to [Play Recent].");
+    }
+
+    /**
+     * Gets the [Play Recent] submenu under [Controls] menu
+     * @return JMenu [Play Recent]
+     */
+    public JMenu getPlayRecentMenu(){
+        return playRecentMenu;
     }
 }
