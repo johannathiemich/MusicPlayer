@@ -137,6 +137,8 @@ public class PlayerController {
 
         //add the song to the top of the recently played list
         recentlyPlayedSongs.add(0, currentSong);
+        //add the song title$artist to the [Play Recent] menu
+        playerView.addMenuItemToPlayRecent(currentSong.getFileName());
         System.out.println("[Player] '"+currentSong.getTitleAndArtist()+"' is added to the recently played list.");
     }
 

@@ -125,8 +125,7 @@ public class MainController {
         playerControl.playSong(selectedSong);
         //change the play button text
         updatePlayBtnTextInAllWindow(MusicPlayerGUI.BTNTEXT_PAUSE);
-        //TODO clumsy code...
-        playerView.addMenuItemToPlayRecent(playerControl.getRecentlyPlayedSongs().get(0).getTitleAndArtist(), new ControlsMenuItemListener());
+
     }
 
 
