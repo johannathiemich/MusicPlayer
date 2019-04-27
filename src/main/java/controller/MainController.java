@@ -508,7 +508,13 @@ public class MainController {
             }
             else if(menuName.equals("Repeat")){
                 System.out.println("[Controls Menu] Repeat is pressed.");
-                //TODO when this is clicked the song will play repeatedly
+                JCheckBoxMenuItem checkMenu = (JCheckBoxMenuItem)menuItem;
+                if(checkMenu.getState()) {
+                    playerControl.setIsRepeating(true);
+                } else {
+                    playerControl.setIsRepeating(false);
+                }
+
             }
 
         }

@@ -25,6 +25,8 @@ public class PlayerController {
     private ArrayList<Song> recentlyPlayedSongs;
     private int recentlyPlayedLimit = 10;
 
+    private boolean isRepeating = false;
+
     /**
      * Constructor for this class
      * @param songList a list of all songs currently contained in the songList
@@ -103,6 +105,26 @@ public class PlayerController {
      * @return ArrayList<Song>
      */
     public ArrayList<Song> getRecentlyPlayedSongs() { return recentlyPlayedSongs; }
+
+    /**
+     * Get isRepeating boolean value
+     * @return the boolean
+     */
+    public boolean getIsRepeating() { return isRepeating; }
+
+    /**
+     * Sets isRepeating.
+     * If true, repeat the currently playing song.
+     * @param repeating the boolean
+     */
+    public void setIsRepeating(boolean repeating) {
+        isRepeating = repeating;
+        if(isRepeating) {
+            System.out.println("[Player] repeat: on");
+        }else {
+            System.out.println("[Player] repeat: off");
+        }
+    }
 
     //------------- Music player control --------------
 
@@ -321,13 +343,15 @@ public class PlayerController {
         public void stateUpdated(BasicPlayerEvent basicPlayerEvent) {
             //Autoplay the next music when the player finishes playing the current music
             if(basicPlayerEvent.getCode() == BasicPlayerEvent.EOM) {    //EOM: End of MP3
-                //TODO check if repeated is clicked
-                //TODO shuffle..?
-
-
-                //if not, Auto play the next song
-                System.out.println("[Player] Auto play the next song.");
-                playNextSong();
+                //TODO check shuffle
+                if(isRepeating){
+                    System.out.println("[Player] Repeat the song.");
+                    playSong();
+                }else {
+                    //if not, Auto play the next song
+                    System.out.println("[Player] Auto play the next song.");
+                    playNextSong();
+                }
             }
 
             //TODO might be better to handle the ui updates of play/stop/resume states...
