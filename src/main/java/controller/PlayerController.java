@@ -135,14 +135,16 @@ public class PlayerController {
             e.printStackTrace();
         }
 
-        System.out.println("[PlayerControl] Play Song '"+currentSong.getTitleAndArtist()+"' currSongIndex:"+currSongIndex+"\n");
+        System.out.println("[PlayerControl] Play Song '"+currentSong.getTitleAndArtist()+"' currSongIndex:"+currSongIndex);
 
         //reflect to the view
         playerView.getControlView().updateCurrentPlayingView(currentSong);
+        playerView.changeTableRowSelection(currSongIndex);
         //TODO update all playlist window's view
-        //TODO update the highlight on the table view here
 
         addRecentlyPlayed();
+
+        System.out.println();
     }
 
     /**
@@ -172,7 +174,8 @@ public class PlayerController {
         //System.out.println("recentlyPlayedSongs.size(): "+recentlyPlayedSongs.size());
         //add the song title$artist to the [Play Recent] menu
         playerView.addMenuItemToPlayRecent(currentSong.getFileName());
-        System.out.println("[PlayerControl] '"+currentSong.getFileName()+"' is added to the recently played list.");
+        //System.out.println("[PlayerControl] '"+currentSong.getFileName()+"' is added to the recently played list.");
+        System.out.println("'"+currentSong.getFileName()+"' is added to recentlyPlayedSongs and [Play Recent] submenu.");
     }
 
     /**
@@ -320,7 +323,9 @@ public class PlayerController {
             if(basicPlayerEvent.getCode() == BasicPlayerEvent.EOM) {    //EOM: End of MP3
                 //TODO check if repeated is clicked
                 //TODO shuffle..?
-                //TODO if not, play the next song
+
+
+                //if not, Auto play the next song
                 System.out.println("[Player] Auto play the next song.");
                 playNextSong();
             }
