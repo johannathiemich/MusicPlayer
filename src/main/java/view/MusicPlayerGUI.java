@@ -530,10 +530,16 @@ public class MusicPlayerGUI extends JFrame {
     }
 
     /**
-     * Gets the [Play Recent] submenu under [Controls] menu
-     * @return JMenu [Play Recent]
+     * Gets the index of the selected menu item on the [Play Recent] submenu
+     * @param menuItem menu item to query the index
+     * @return the index. If the menu item doesn't exist on the [Play Recent] submenu, return -1.
      */
-    public JMenu getPlayRecentMenu(){
-        return playRecentMenu;
+    public int getPlayRecentMenuIndex(JMenuItem menuItem) {
+        for(int i=0; i<playRecentMenu.getItemCount(); i++){
+            if(menuItem == playRecentMenu.getItem(i)){
+                return i;
+            }
+        }
+        return -1;
     }
 }

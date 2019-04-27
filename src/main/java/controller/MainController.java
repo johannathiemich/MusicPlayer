@@ -482,13 +482,8 @@ public class MainController {
                 System.out.println("[Controls Menu] Play Recent is pressed. "+text);
 
                 //get the index of the menu item and play that in recentlyPlayedSongs
-                int index = 0;
-                for(int i=0; i<playerView.getPlayRecentMenu().getItemCount(); i++){
-                    if(menuItem == playerView.getPlayRecentMenu().getItem(i)){
-                        index = i;
-                    }
-                }
-                System.out.println("index = "+index);
+                int index = playerView.getPlayRecentMenuIndex(menuItem);
+                System.out.println("index = "+ index);
                 selectedSong = playerControl.getRecentlyPlayedSongs().get(index);
                 playAction();
             }
