@@ -468,7 +468,6 @@ public class MainController {
 
             if(menuName.equals("Play")){
                 System.out.println("[Controls Menu] Play is pressed.");
-                //TODO connect to play button
                 playAction();
             }
             else if(menuName.equals("Next")){
@@ -482,7 +481,17 @@ public class MainController {
             else if(menuName.equals("recent")){
                 String text = menuItem.getText();
                 System.out.println("[Controls Menu] Play Recent is pressed. "+text);
-                //playerControl.playSong();
+
+                //get the index of the menu item and play that in recentlyPlayedSongs
+                int index = 0;
+                for(int i=0; i<playerView.getPlayRecentMenu().getItemCount(); i++){
+                    if(menuItem == playerView.getPlayRecentMenu().getItem(i)){
+                        index = i;
+                    }
+                }
+                System.out.println("index = "+index);
+                selectedSong = playerControl.getRecentlyPlayedSongs().get(index);
+                playAction();
             }
             else if(menuName.equals("Current")){
                 System.out.println("[Controls Menu] Current is pressed.");

@@ -523,6 +523,7 @@ public class MusicPlayerGUI extends JFrame {
     public void addMenuItemToPlayRecent(String text, ActionListener listener) {
         JMenuItem newMenuItem = new JMenuItem(text);
         newMenuItem.addActionListener(listener);
+        newMenuItem.setName("recent");
         //add the new menu item onto the top of the list
         playRecentMenu.add(newMenuItem, 0);
         System.out.println("[Menu] '"+text+"' is added to [Play Recent].");
