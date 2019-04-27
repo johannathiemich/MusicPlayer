@@ -1,5 +1,6 @@
 package controller;
 
+import database.DatabaseHandler;
 import javazoom.jlgui.basicplayer.BasicPlayer;
 import model.Playlist;
 import model.PlaylistLibrary;
@@ -115,6 +116,10 @@ public class MainController {
 
         playerView.getSongTable().getTableHeader().addMouseListener(new TableHeaderListener());
         playerView.getSongListView().addItemListenerTableHeader(new TableColumnCheckBoxListener());
+
+        //restore shown/hidden columns from last session
+        playerView.getSongListView().setColumnVisibility(DatabaseHandler.getInstance().getShowHideColumns(),
+                playerView.getSongListView().getTableHeaderPopup());
 
     }
 
@@ -690,7 +695,7 @@ public class MainController {
 
         @Override
         public void mouseReleased(MouseEvent e) {
-            System.out.println("mouse released on header");
+            System.out.println("mouse pressed on header");
             if (e.isPopupTrigger()) {
                 playerView.getSongListView().getTableHeaderPopup().show(e.getComponent(), e.getX(), e.getY());
                 System.out.println("is popup");
@@ -710,28 +715,32 @@ public class MainController {
 
         @Override
         public void itemStateChanged(ItemEvent e) {
+            boolean[] visibility = new boolean[5];
             for (int i = 0; i < playerView.getSongListView().getTableHeaderPopup().getComponentCount(); i++) {
                 JCheckBoxMenuItem item = (JCheckBoxMenuItem) playerView.getSongListView().
                         getTableHeaderPopup().getComponent(i);
                 System.out.println(item.getText());
                 if (item.isSelected()) {
+
                     playerView.getSongListView().showColumn(playerView.getSongTable().
-                            getColumnModel().getColumn(i));
-                    for (int j = 0; j < playlistWindowArray.size(); j++) {
-                        playlistWindowArray.get(j).getSongListView().showColumn(playlistWindowArray.
-                                get(j).getSongTable().getColumnModel().getColumn(i));
+                            getColumnModel().getColumn(i), playerView.getSongListView().getTableHeaderPopup());
+                for (int j = 0; j < playlistWindowArray.size(); j++) {
+                       playlistWindowArray.get(j).getSongListView().showColumn(playlistWindowArray.
+                        get(j).getSongTable().getColumnModel().getColumn(i), playerView.getSongListView().getTableHeaderPopup());
                     }
 
                 } else {
                     playerView.getSongListView().hideColumn(playerView.getSongTable().
-                            getColumnModel().getColumn(i));
+                           getColumnModel().getColumn(i));
                     for (int j = 0; j < playlistWindowArray.size(); j++) {
                         playlistWindowArray.get(j).getSongListView().hideColumn(playlistWindowArray.
                                 get(j).getSongTable().getColumnModel().getColumn(i));
                     }
 
                 }
+                if (i > 0) visibility[i-1] = item.isSelected();
             }
+            DatabaseHandler.getInstance().saveShowHideColumns(visibility);
         }
 
 
@@ -747,13 +756,6 @@ public class MainController {
      */
     class DragDropToScrollPane
             extends DropTarget implements DragGestureListener {
-
-        //code from class DragDropToScrollPanePlWindow
-//        private DataFlavor[] supportedFlavors = new DataFlavor[1];
-//
-//        public DragDropToScrollPane() {
-//            supportedFlavors[0] = DataFlavor.stringFlavor;
-//        }
 
         public synchronized void drop(DropTargetDropEvent evt) {
             //get the target window of drop event
@@ -996,6 +998,8 @@ public class MainController {
                     selectedPlaylistName = null;
                     playerView.updateTableView(library);
                     playerControl.updateSongList(library);
+                    playerView.getSongListView().setColumnVisibility(DatabaseHandler.getInstance().getShowHideColumns(),
+                            playerView.getSongListView().getTableHeaderPopup());
                 }
 
                 // [2] Left-click on a playlist name under "Playlist"
@@ -1004,10 +1008,21 @@ public class MainController {
                     Playlist playlist = playlistLibrary.getPlaylistByName(selectedPlaylistName);
                     System.out.println("[Playlist:" + selectedPlaylistName + "] " + playlist.getSongList().size() + " songs\n");
                     //show the selected playlist on the main window
+
                     playerView.updateTableView(playlist);
                     playerControl.updateSongList(playlist.getSongList());
+                    playerView.getSongListView().setColumnVisibility(DatabaseHandler.getInstance().getShowHideColumns(),
+                            playerView.getSongListView().getTableHeaderPopup());
                 }
             }
+        }
+
+        private boolean[] getShowHideColumns() {
+            boolean[] visibility = new boolean[5];
+            for (int i = 0; i < visibility.length; i++) {
+                visibility[i] = playerView.getSongListView().getColumnList().get(i+1).isSelected();
+            }
+            return visibility;
         }
 
         /**
@@ -1064,9 +1079,13 @@ public class MainController {
                     MusicPlayerGUI newPlaylistWindow = createNewPlaylistWindow(selectedPlaylistName, playerView);
                     newPlaylistWindow.getSongTable().getTableHeader().addMouseListener(new TableHeaderListener());
                     newPlaylistWindow.getSongListView().addItemListenerTableHeader(new TableColumnCheckBoxListener());
+                    //newPlaylistWindow.getSongListView().setColumnVisibility(DatabaseHandler.getInstance().
+                    //    getShowHideColumns(), playerView.getSongListView().getTableHeaderPopup());
                     playlistWindowArray.add(newPlaylistWindow);
                     //main window shows library
                     playerView.updateTableView(library);
+                    //playerView.getSongListView().setColumnVisibility(DatabaseHandler.getInstance().getShowHideColumns(),
+                    //        playerView.getSongListView().getTableHeaderPopup());
                     System.out.println("[NewWindow] playlist \""+selectedPlaylistName+"\" is opened in a new window. "
                             + "("+playlistWindowArray.size()+" playlist windows in total)"
                     );
@@ -1227,6 +1246,14 @@ public class MainController {
             }
         }
         return null;
+    }
+
+    public boolean[] getShowHideColumns() {
+        boolean[] visibility = new boolean[5];
+        for (int i = 0; i < visibility.length; i++) {
+            visibility[i] = playerView.getSongListView().getColumnList().get(i+1).isSelected();
+        }
+        return visibility;
     }
 
 }

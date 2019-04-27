@@ -7,9 +7,21 @@ public class Main {
 
     public static void main(String[] args) {
 
-        DatabaseHandler handler = DatabaseHandler.getInstance();
+       // DatabaseHandler handler = DatabaseHandler.getInstance();
+        //boolean[] array = new boolean[]{true, false, true, false, true};
+        //boolean[] returnArray = new boolean[5];
+        //handler.saveShowHideColumns(array);
+        //returnArray = handler.getShowHideColumns();
+
 
         MainController controller = new MainController(appName);
+
+        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+            public void run() {
+                DatabaseHandler.getInstance().saveShowHideColumns(controller.getShowHideColumns());
+            }
+        }));
+
 
     }
 }
