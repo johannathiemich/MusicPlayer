@@ -339,13 +339,23 @@ public class MusicPlayerGUI extends JFrame {
     }
 
     /**
-     * This method sets the text for the play button in order to switch between 'Play'<->'Pause' text change.
+     * Sets the text for the play button in order to switch between 'Play'<->'Pause' text change.
      * @param text the text to be assigned to the play button
      */
-    public void setPlayBtnText(String text){ controlView.getPlayBtn().setText(text); }
+    public void setPlayBtnText(String text){
+        controlView.getPlayBtn().setText(text);
+    }
 
     /**
-     * This method displays an error message dialog.
+     * Sets the value to the volume slider
+     * @param val the value to apply to volume slider
+     */
+    public void setVolumeSlider(int val){
+        controlView.getVolumeSlider().setValue(val);
+    }
+
+    /**
+     * Displays an error message dialog.
      * @param errorMessage the error message to be displayed.
      */
     public void displayErrorMessage(String errorMessage){

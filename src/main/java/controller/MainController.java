@@ -209,8 +209,9 @@ public class MainController {
     class VolumeSliderListener implements ChangeListener {
         @Override
         public void stateChanged(ChangeEvent e) {
-            double sliderVal = ((JSlider) e.getSource()).getValue();
+            int sliderVal = ((JSlider) e.getSource()).getValue();
             playerControl.setVolume(sliderVal);
+            updateVolumeSliderInAllWindows(sliderVal);
         }
     }
 
@@ -1182,14 +1183,24 @@ public class MainController {
 
 
     /**
-     * Updates play buttons in all window
-     *
+     * Updates play buttons in the main window and all playlist windows
      * @param btnText
      */
     public void updatePlayBtnTextInAllWindow(String btnText) {
         playerView.setPlayBtnText(btnText);
         for (MusicPlayerGUI playlistWindow : playlistWindowArray) {
             playlistWindow.setPlayBtnText(btnText);
+        }
+    }
+
+    /**
+     * Updates the value of volume slider in the main window and all playlist windows
+     * @param val the value to be displayed on the volume slider
+     */
+    public void updateVolumeSliderInAllWindows(int val) {
+        playerView.setVolumeSlider(val);
+        for (MusicPlayerGUI playlistWindow : playlistWindowArray) {
+            playlistWindow.setVolumeSlider(val);
         }
     }
 
