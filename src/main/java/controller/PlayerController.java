@@ -25,6 +25,7 @@ public class PlayerController {
 
     //Recently Played Songs
     private ArrayList<Song> recentlyPlayedSongs;
+    private int recentlyPlayedLimit = 10;
 
     /**
      * Constructor for this class
@@ -85,6 +86,10 @@ public class PlayerController {
         currentSong = song;
     }
 
+    public void setCurrSongIndex(int index) {
+        currSongIndex = index;
+    }
+
     /**
      * This method returns the current status of the basic player.
      * @return the current status of the basic player (STOP, RESUME, PLAY, SEEKING)
@@ -120,27 +125,44 @@ public class PlayerController {
             System.out.println("[Player] selecting the first song on the list.");
         }
 
+        this.setCurrentSong(song);
+
         //play the song
         try {
-            this.setCurrentSong(song);
             player.open(new File(currentSong.getPath()));
             player.play();
         } catch(BasicPlayerException e) {
             e.printStackTrace();
         }
 
-        System.out.println("[PlayerControl] Play Song '"+currentSong.getTitleAndArtist()+"'\n");
+        System.out.println("[PlayerControl] Play Song '"+currentSong.getTitleAndArtist()+"' currSongIndex:"+currSongIndex+"\n");
 
         //reflect to the view
         playerView.getControlView().updateCurrentPlayingView(currentSong);
         //TODO update all playlist window's view
         //TODO update the highlight on the table view here
 
+        addRecentlyPlayed();
+    }
+
+    /**
+     * Adds currently playing song to the list of recentlyPlayedSongs and [Play Recent] submenu.
+     * Note that only the most recently played songs are kept within recentlyPlayedLimit.
+     */
+    public void addRecentlyPlayed(){
+        //keep the number of songs stored under limit
+        int size = recentlyPlayedSongs.size();
+        if(size==recentlyPlayedLimit) {
+            recentlyPlayedSongs.remove(size-1);
+            playerView.removeLastMenuItemUnderPlayRecent();
+        }
+
         //add the song to the top of the recently played list
         recentlyPlayedSongs.add(0, currentSong);
+        //System.out.println("recentlyPlayedSongs.size(): "+recentlyPlayedSongs.size());
         //add the song title$artist to the [Play Recent] menu
         playerView.addMenuItemToPlayRecent(currentSong.getFileName());
-        System.out.println("[Player] '"+currentSong.getTitleAndArtist()+"' is added to the recently played list.");
+        System.out.println("[PlayerControl] '"+currentSong.getFileName()+"' is added to the recently played list.");
     }
 
     /**
@@ -216,26 +238,22 @@ public class PlayerController {
      */
     public void playNextSong(){
         //TODO make it work without checking the table row.. it should be based on the songList
-        currSongIndex = table.getSelectedRow();
-        //currSongIndex = playerView.getSongTable().getSelectedRow();
-        //if (currSongIndex == -1 ) {
-        //    currSongIndex = table.getSelectedRow();
-        //
+        //currSongIndex = table.getSelectedRow();
         System.out.println("before currently selected row: " + currSongIndex);
-        int nextRow;
+        int nextIndex;
         //int selectedRow = songList.indexOf(currentSong);
         int selectedRow = currSongIndex;
-        int lastRow = songList.size() - 1;
+        int lastIndex = songList.size() - 1;
 
-        if(selectedRow == lastRow) {
-            nextRow = 0;    //nextRow goes to the top
+        if(selectedRow == lastIndex) {
+            nextIndex = 0;    //nextRow goes to the top
         } else {
-            nextRow = selectedRow + 1;
+            nextIndex = selectedRow + 1;
         }
 
         // Get the next song in the songList and play it
-        Song nextSong = songList.get(nextRow);
-        currSongIndex = nextRow;
+        Song nextSong = songList.get(nextIndex);
+        currSongIndex = nextIndex;
         System.out.println("after currently selected row: " + currSongIndex);
 
         this.playSong(nextSong);

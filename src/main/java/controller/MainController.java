@@ -652,6 +652,8 @@ public class MainController {
                 if ((e.getClickCount() == 2) && !e.isConsumed() && !e.isPopupTrigger()) {
                     System.out.println("[Table] double clicked");
                     selectedSong = playerControl.getSongList().get(row);
+                    playerControl.setCurrSongIndex(row);
+                    playerControl.setCurrentSong(selectedSong);
                     playAction();
                 }
             }
