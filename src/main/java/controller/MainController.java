@@ -49,6 +49,7 @@ public class MainController {
     private PlayerController playerControl;
 
     //...
+    private int selectedRow;
     private Song selectedSong;  //different from currentSong
     private String selectedPlaylistName;
 
@@ -121,11 +122,16 @@ public class MainController {
      * Action of "Play" that occurs by button, double-click, menu, hotkey...
      */
     private void playAction() {
+        //update the current song of the player
+        playerControl.setCurrSongIndex(selectedRow);
+        playerControl.setCurrentSong(selectedSong);
+
         //play song
-        playerControl.playSong(selectedSong);
+        playerControl.playSong();
+
         //change the play button text
         updatePlayBtnTextInAllWindow(MusicPlayerGUI.BTNTEXT_PAUSE);
-
+        //TODO update the currentSongIndex in PlayerControl?
     }
 
 
@@ -175,8 +181,6 @@ public class MainController {
             } else if (btnName.equals("prev")) {
                 //PREV button action
                 System.out.println("[BUTTON] PREV button is pressed.");
-                //reflect to the view: change the row selection of the window
-                playerControl.setSongTable(focusedWindow.getSongTable());
 
                 playerControl.playPrevSong();
                 //reflect to the view: update all playBtnText
@@ -187,8 +191,6 @@ public class MainController {
             } else if (btnName.equals("next")) {
                 //NEXT button action
                 System.out.println("[BUTTON] NEXT button is pressed.");
-                //reflect to the view: change the row selection of the window
-                playerControl.setSongTable(focusedWindow.getSongTable());
 
                 playerControl.playNextSong();
                 //reflect to the view: update all playBtnText
@@ -585,6 +587,7 @@ public class MainController {
                         Playlist playlist = playlistLibrary.getPlaylistByName(displaying);
                         selectedSong = playlist.getSongList().get(row);
                     }
+                    selectedRow = row;
                     System.out.print("[Table] selectedRow:" + row);
                     System.out.println(", [" + selectedSong.getTitleAndArtist() + "]");
                 }
@@ -652,8 +655,7 @@ public class MainController {
                 if ((e.getClickCount() == 2) && !e.isConsumed() && !e.isPopupTrigger()) {
                     System.out.println("[Table] double clicked");
                     selectedSong = playerControl.getSongList().get(row);
-                    playerControl.setCurrSongIndex(row);
-                    playerControl.setCurrentSong(selectedSong);
+                    selectedRow = row;
                     playAction();
                 }
             }
