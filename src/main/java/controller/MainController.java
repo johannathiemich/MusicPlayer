@@ -48,12 +48,15 @@ public class MainController {
     //Other Controllers
     private PlayerController playerControl;
 
+    //...
     private Song selectedSong;  //different from currentSong
     private String selectedPlaylistName;
 
+    //Playlist Windows
     private ArrayList<MusicPlayerGUI> playlistWindowArray;
     private String focusedWindowName = "main";
     private MusicPlayerGUI focusedWindow;
+
 
     /**
      * Construct a main controller and initialize all modules
@@ -114,6 +117,19 @@ public class MainController {
 
     }
 
+    /**
+     * Action of "Play" that occurs by button, double-click, menu, hotkey...
+     */
+    private void playAction() {
+        //play song
+        playerControl.playSong(selectedSong);
+        //change the play button text
+        updatePlayBtnTextInAllWindow(MusicPlayerGUI.BTNTEXT_PAUSE);
+        //TODO clumsy code...
+        playerView.addMenuItemToPlayRecent(playerControl.getRecentlyPlayedSongs().get(0).getTitleAndArtist(), new ControlsMenuItemListener());
+    }
+
+
     //Listeners
 
     /**
@@ -149,31 +165,7 @@ public class MainController {
                     //Play Action
                     case BasicPlayer.STOPPED:
                     default:
-                        if (focusedWindowName.equals("main")) {
-                            //main window
-                            if (playerView.isAnyRowSelected()) {
-                                playerControl.setCurrentSong(selectedSong);
-                            } else {
-                                System.out.println("nothing selected on the main window, playing the first song in " +
-                                        "the library..");
-                            }
-                        } else {
-                            //all playlist windows
-                            for (MusicPlayerGUI playlistWindow : playlistWindowArray) {
-                                if (playlistWindow.getWindowName().equals(focusedWindowName)) {
-                                    if (playlistWindow.isAnyRowSelected()) {
-                                        playerControl.setCurrentSong(selectedSong);
-                                    } else {
-                                        System.out.println("nothing selected on the " + focusedWindowName +
-                                                " window, playing the first song in the library..");
-                                    }
-                                }
-                            }
-                        }
-                        //play song
-                        playerControl.playSong();
-                        //change the play button text
-                        updatePlayBtnTextInAllWindow(MusicPlayerGUI.BTNTEXT_PAUSE);
+                        playAction();
                         break;
                 }
             } else if (btnName.equals("stop")) {
@@ -458,21 +450,26 @@ public class MainController {
 
     //Class for controls menu actions
     class ControlsMenuItemListener implements ActionListener {
+        JMenuItem menuItem;
         String menuName;
 
         @Override
         public void actionPerformed(ActionEvent e) {
             // Get the name of event source component
-            menuName = ((JMenuItem) e.getSource()).getName();
+            menuItem = (JMenuItem) e.getSource();
+            menuName = menuItem.getName();
+
             System.out.println("menuName: " + menuName);
 
             if (menuName == null) {
                 System.out.println("[Menu_Error] menuName: null");
                 return;
             }
-            else if(menuName.equals("Play")){
+
+            if(menuName.equals("Play")){
                 System.out.println("[Controls Menu] Play is pressed.");
                 //TODO connect to play button
+                playAction();
             }
             else if(menuName.equals("Next")){
                 System.out.println("[Controls Menu] Next is pressed.");
@@ -482,9 +479,10 @@ public class MainController {
                 System.out.println("[Controls Menu] Previous is pressed.");
                 //TODO connect to previous button
             }
-            else if(menuName.equals("Recent")){
-                System.out.println("[Controls Menu] Recent is pressed.");
-                //TODO show recently played songs and be able to play one of them
+            else if(menuName.equals("recent")){
+                String text = menuItem.getText();
+                System.out.println("[Controls Menu] Play Recent is pressed. "+text);
+                //playerControl.playSong();
             }
             else if(menuName.equals("Current")){
                 System.out.println("[Controls Menu] Current is pressed.");
@@ -650,8 +648,7 @@ public class MainController {
                 if ((e.getClickCount() == 2) && !e.isConsumed() && !e.isPopupTrigger()) {
                     System.out.println("[Table] double clicked");
                     selectedSong = playerControl.getSongList().get(row);
-                    playerControl.playSong(selectedSong);
-                    updatePlayBtnTextInAllWindow(MusicPlayerGUI.BTNTEXT_PAUSE);
+                    playAction();
                 }
             }
         }

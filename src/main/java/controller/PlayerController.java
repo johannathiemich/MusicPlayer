@@ -9,8 +9,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Map;
 
-import static java.lang.Math.abs;
-
 /**
  * PlayerController manages actions related to playing songs
  * Play, Stop, Pause, Resume, Previous, Next.
@@ -24,6 +22,9 @@ public class PlayerController {
     //TODO better to handle the table selection from somewhere else not in player controller...
     private JTable table;
     private int currSongIndex;
+
+    //Recently Played Songs
+    private ArrayList<Song> recentlyPlayedSongs;
 
     /**
      * Constructor for this class
@@ -39,6 +40,9 @@ public class PlayerController {
 
         //add listener to the basic player
         player.addBasicPlayerListener(new MyBasicPlayerListener());
+
+        //initialize the recently played songs
+        recentlyPlayedSongs = new ArrayList<Song>();
     }
 
     /**
@@ -89,6 +93,12 @@ public class PlayerController {
         return player.getStatus();
     }
 
+    /**
+     * Gets the recentlyPlayedSongs
+     * @return ArrayList<Song>
+     */
+    public ArrayList<Song> getRecentlyPlayedSongs() { return recentlyPlayedSongs; }
+
     //------------- Music player control --------------
 
     /**
@@ -103,18 +113,31 @@ public class PlayerController {
      * @param song to be played
      */
     public void playSong(Song song){
-        if(song!=null){
-            try {
-                player.open(new File(song.getPath()));
-                player.play();
-                this.setCurrentSong(song);
-            } catch(BasicPlayerException e) {
-                e.printStackTrace();
-            }
-            //reflect to the view
-            playerView.getControlView().updateCurrentPlayingView(currentSong);
-            System.out.println("[PlayerControl] Play Song '"+currentSong.getTitleAndArtist()+"'\n");
+
+        //if nothing is selected, set the song to be the first song on the list
+        if(song == null) {
+            song = songList.get(0);
+            System.out.println("[Player] selecting the first song on the list.");
         }
+
+        //play the song
+        try {
+            this.setCurrentSong(song);
+            player.open(new File(currentSong.getPath()));
+            player.play();
+        } catch(BasicPlayerException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("[PlayerControl] Play Song '"+currentSong.getTitleAndArtist()+"'\n");
+
+        //reflect to the view
+        playerView.getControlView().updateCurrentPlayingView(currentSong);
+        //TODO update all playlist window's view
+
+        //add the song to the top of the recently played list
+        recentlyPlayedSongs.add(0, currentSong);
+        System.out.println("[Player] '"+currentSong.getTitleAndArtist()+"' is added to the recently played list.");
     }
 
     /**
@@ -235,7 +258,7 @@ public class PlayerController {
      * @return the input value for the basic player setGain() method
      */
     private double convertVolume(double value) {
-        return value / abs(this.player.getMaximumGain() - this.player.getMinimumGain());
+        return value / Math.abs(this.player.getMaximumGain() - this.player.getMinimumGain());
     }
 
     public int getCurrSongIndex() {
@@ -252,12 +275,6 @@ public class PlayerController {
      *
      */
     public class MyBasicPlayerListener implements BasicPlayerListener {
-
-        @Override
-        public void opened(Object o, Map map) {
-
-        }
-
         /**
          * Progress callback while playing.
          * This method is called several time per seconds while playing.
@@ -295,8 +312,8 @@ public class PlayerController {
         }
 
         @Override
-        public void setController(BasicController basicController) {
-
-        }
+        public void opened(Object o, Map map) { }
+        @Override
+        public void setController(BasicController basicController) { }
     }
 }

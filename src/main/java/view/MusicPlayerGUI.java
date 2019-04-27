@@ -10,6 +10,7 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.dnd.DropTarget;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.WindowFocusListener;
 import java.util.ArrayList;
@@ -55,7 +56,7 @@ public class MusicPlayerGUI extends JFrame {
     private JMenuItem playMenuItem;
     private JMenuItem nextMenuItem;
     private JMenuItem previousMenuItem;
-    private JMenuItem playRecentMenuItem;
+    private JMenu playRecentMenu;
     private JMenuItem goToCurrentSongMenuItem;
     private JMenuItem increaseVolumeMenuItem;
     private JMenuItem decreaseVolumeMenuItem;
@@ -179,12 +180,12 @@ public class MusicPlayerGUI extends JFrame {
         fileMenu.add(aboutMenuItem);
         fileMenu.add(exitMenuItem);
 
-        //control menus
+        //[Controls] menus
         controlsMenu = new JMenu("Controls");
         playMenuItem = new JMenuItem("Play");
         nextMenuItem = new JMenuItem("Next");
         previousMenuItem = new JMenuItem("Previous");
-        playRecentMenuItem = new JMenuItem("Play Recent");
+        playRecentMenu = new JMenu("Play Recent");
         goToCurrentSongMenuItem = new JMenuItem("Go To Current Song");
         increaseVolumeMenuItem = new JMenuItem("Increase Volume");
         decreaseVolumeMenuItem = new JMenuItem("Decrease Volume");
@@ -194,7 +195,7 @@ public class MusicPlayerGUI extends JFrame {
         playMenuItem.setName("Play");
         nextMenuItem.setName("Next");
         previousMenuItem.setName("Previous");
-        playRecentMenuItem.setName("Recent");
+        playRecentMenu.setName("recent");
         goToCurrentSongMenuItem.setName("Current");
         increaseVolumeMenuItem.setName("Increase");
         decreaseVolumeMenuItem.setName("Decrease");
@@ -204,7 +205,7 @@ public class MusicPlayerGUI extends JFrame {
         controlsMenu.add(playMenuItem);
         controlsMenu.add(nextMenuItem);
         controlsMenu.add(previousMenuItem);
-        controlsMenu.add(playRecentMenuItem);
+        controlsMenu.add(playRecentMenu);
         controlsMenu.add(goToCurrentSongMenuItem);
         controlsMenu.addSeparator();
         controlsMenu.add(increaseVolumeMenuItem);
@@ -216,15 +217,14 @@ public class MusicPlayerGUI extends JFrame {
         playMenuItem.setMnemonic(KeyEvent.VK_P);
         nextMenuItem.setMnemonic(KeyEvent.VK_N);
         previousMenuItem.setMnemonic(KeyEvent.VK_P);
-        playRecentMenuItem.setMnemonic(KeyEvent.VK_R);
+        //playRecentMenu.setMnemonic(KeyEvent.VK_R);
         goToCurrentSongMenuItem.setMnemonic(KeyEvent.VK_C);
         increaseVolumeMenuItem.setMnemonic(KeyEvent.VK_I);
         decreaseVolumeMenuItem.setMnemonic(KeyEvent.VK_D);
         shuffleMenuItem.setMnemonic(KeyEvent.VK_S);
         repeatMenuItem.setMnemonic(KeyEvent.VK_R);
 
-
-        //view menus
+        //[View] menus
         viewMenu = new JMenu("View");
         darkThemeMenuItem = new JCheckBoxMenuItem("Dark Theme",true);
         songInfoMenuItem = new JCheckBoxMenuItem("Song Info",true);
@@ -235,8 +235,8 @@ public class MusicPlayerGUI extends JFrame {
 
         //add menus to the menu bar
         menuBar.add(fileMenu);
-        menuBar.add(viewMenu);
         menuBar.add(controlsMenu);
+        menuBar.add(viewMenu);
         //add menu bar to main frame
         this.setJMenuBar(menuBar);
     }
@@ -395,7 +395,7 @@ public class MusicPlayerGUI extends JFrame {
         playMenuItem.addActionListener(listener);
         nextMenuItem.addActionListener(listener);
         previousMenuItem.addActionListener(listener);
-        playRecentMenuItem.addActionListener(listener);
+        playRecentMenu.addActionListener(listener);
         goToCurrentSongMenuItem.addActionListener(listener);
         increaseVolumeMenuItem.addActionListener(listener);
         decreaseVolumeMenuItem.addActionListener(listener);
@@ -511,5 +511,28 @@ public class MusicPlayerGUI extends JFrame {
     public void setDisplayingListName(String displayingListName) {
         this.displayingListName = displayingListName;
         System.out.println("the \""+windowName+"\" window is now displaying \""+displayingListName+"\"");
+    }
+
+    /**
+     * Adds a menu item into [Play Recent] submenu
+     * and add listener to the new menu item.
+     * Note that the most recently played song is on top of the list
+     * @param text      text for the new menu item to display
+     * @param listener  ActionListener for the menu item
+     */
+    public void addMenuItemToPlayRecent(String text, ActionListener listener) {
+        JMenuItem newMenuItem = new JMenuItem(text);
+        newMenuItem.addActionListener(listener);
+        //add the new menu item onto the top of the list
+        playRecentMenu.add(newMenuItem, 0);
+        System.out.println("[Menu] '"+text+"' is added to [Play Recent].");
+    }
+
+    /**
+     * Gets the [Play Recent] submenu under [Controls] menu
+     * @return JMenu [Play Recent]
+     */
+    public JMenu getPlayRecentMenu(){
+        return playRecentMenu;
     }
 }
