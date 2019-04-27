@@ -134,6 +134,7 @@ public class PlayerController {
         //reflect to the view
         playerView.getControlView().updateCurrentPlayingView(currentSong);
         //TODO update all playlist window's view
+        //TODO update the highlight on the table view here
 
         //add the song to the top of the recently played list
         recentlyPlayedSongs.add(0, currentSong);
@@ -241,28 +242,31 @@ public class PlayerController {
     }
 
     /**
-     * Change volume of the basic player
-     * @param volume value to be set as volume
+     * Changes the volume of the basic player.
+     * Note that the value is converted for the basic player setGain() method.
+     * @param val value to be set as volume, range from 0 to 100
      */
-    public void setVolume(double volume) {
+    public void setVolume(int val) {
+        System.out.println("volume: "+val);
+        double convertedVal = val / Math.abs(player.getMaximumGain() - player.getMinimumGain());
         try {
-            this.player.setGain(this.convertVolume(volume));
-            System.out.println(this.player.getGainValue());
+            player.setGain(convertedVal);
+            //System.out.println(player.getGainValue());
         } catch (BasicPlayerException e) {
             e.printStackTrace();
         }
     }
 
     /**
-     * This method converts the value of the JSlider into a volume that can be used by the basic player setGain()
-     * method.
-     * @param value the value to be converted.
-     * @return the input value for the basic player setGain() method
+     * Gets the volume of the basic player.
+     * Note that the value is converted from player.getGainValue() to range from 0 to 100.
+     * @return integer from 0 to 100
      */
-    private double convertVolume(double value) {
-        return value / Math.abs(this.player.getMaximumGain() - this.player.getMinimumGain());
+    public int getVolume() {
+        return (int)(player.getGainValue() * Math.abs(player.getMaximumGain() - player.getMinimumGain()));
     }
 
+    //TODO below should be removed and the related parts should be refactored.
     public int getCurrSongIndex() {
         return this.currSongIndex;
     }
@@ -274,7 +278,8 @@ public class PlayerController {
 
     /**
      * MyBasicPlayerListener class implements the actions triggered from basic player
-     *
+     * 1. Update the progress bar as a song is playing
+     * 2. Auto play the next song
      */
     public class MyBasicPlayerListener implements BasicPlayerListener {
         /**
