@@ -20,6 +20,7 @@ public class DatabaseHandler {
     private final String songsTableName = "SONGS";
     private final String playlistSongsTableName = "PLAYLIST_SONGS";
     private final String playlistTableName = "PLAYLISTS";
+    private final String showHideColumnsTableName = "SHOW_HIDE_COLUMNS";
     private static DatabaseHandler handler_instance = null;
 
     /**
@@ -30,6 +31,7 @@ public class DatabaseHandler {
         createSongTable();
         createPlaylistTable();
         createPlaylistSongsTable();
+        createColShowHideTable();
     }
 
     public static DatabaseHandler getInstance()
@@ -116,6 +118,28 @@ public class DatabaseHandler {
             }
         }
     }
+
+    public void createColShowHideTable() {
+        Connection conn = null;
+        Statement statement = null;
+        String sql = "CREATE TABLE " + showHideColumnsTableName + "( " +
+                "NAME VARCHAR(512), VISIBLE BOOLEAN )";
+        try {
+            conn = DriverManager.getConnection(createDatabaseURL);
+            statement = conn.createStatement();
+            statement.execute(sql);
+            DriverManager.getConnection(shutdownURL);
+        } catch (SQLException e) {
+            if (e.getSQLState().equals("X0Y32")) {
+                System.out.println(showHideColumnsTableName +" table already exists, won't create a new one.");
+            } else if (e.getSQLState().equals("XJ015")) {
+                System.out.println("Derby shutdown normally.");
+            } else {
+                e.printStackTrace();
+            }
+        }
+    }
+
 
     /**
      * This method adds a row containing a song to the songs database table.
@@ -472,12 +496,6 @@ public class DatabaseHandler {
             }
             return null;
         }
-
- //       for (Playlist playlist : list) {
- //           ArrayList<Song> songList = getSongsInPlaylist(playlist);
- //           playlist.addMultipleSongs(songList);
- //       }
-
         return list;
     }
 
@@ -538,6 +556,68 @@ public class DatabaseHandler {
             }
         }
         return exists;
+    }
+
+    public boolean saveShowHideColumns(boolean[] columnVisibility) {
+        boolean success = false;
+        Connection conn = null;
+        Statement statement = null;
+        ArrayList<Song> list = new ArrayList<Song>();
+        String sql1 = "DELETE FROM " + showHideColumnsTableName + " WHERE 1 = 1";
+        String sql2 = "INSERT INTO " + showHideColumnsTableName + " VALUES ('" +
+                        "ARTIST' , " + columnVisibility[0] + "), ('" +
+                        "ALBUM', " + columnVisibility[1] + "), ('" +
+                        "YEAR', " + columnVisibility[2] + "), ('" +
+                        "COMMENT', " + columnVisibility[3] + "), ('" +
+                        "GENRE', " + columnVisibility[4] + ")";
+
+        try {
+            conn = DriverManager.getConnection(createDatabaseURL);
+            statement = conn.createStatement();
+            statement.execute(sql1);
+            System.out.println("[Database] Deleted everything in saveShowHideColumns");
+            statement.execute(sql2);
+            System.out.println("[Database] Input everything in saveShowHideColumns");
+            conn.close();
+            success = true;
+        } catch (SQLException e) {
+            if (e.getSQLState().equals("XJ015")) {
+                System.out.println("Derby shutdown normally.");
+                success = true;
+            } else {
+                e.printStackTrace();
+                success = false;
+            }
+        }
+        return success;
+    }
+
+    public boolean[] getShowHideColumns() {
+        Connection conn = null;
+        Statement statement = null;
+        boolean[] columnVisibility = new boolean[5];
+        String sql = "SELECT * FROM " + showHideColumnsTableName;
+        try {
+            conn = DriverManager.getConnection(createDatabaseURL);
+            statement = conn.createStatement();
+            ResultSet results = statement.executeQuery(sql);
+            int index = 0;
+            while(results.next())
+            {
+                columnVisibility[index] = results.getBoolean(results.findColumn("VISIBLE"));
+                index++;
+            }
+            results.close();
+            conn.close();
+
+        } catch (SQLException e) {
+            if (e.getSQLState().equals("XJ015")) {
+                System.out.println("Derby shutdown normally.");
+            } else {
+                e.printStackTrace();
+            }
+        }
+        return columnVisibility;
     }
 
     /**

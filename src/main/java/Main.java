@@ -5,14 +5,24 @@ public class Main {
 
     public static void main(String[] args) {
 
-        DatabaseHandler handler = DatabaseHandler.getInstance();
         //test code for playlist
         //handler.clearPlaylists();
 //        handler.addPlaylist("Favorite");
 //        handler.addPlaylist("Party");
 //        handler.addPlaylist("Jazz");
-
+       // DatabaseHandler handler = DatabaseHandler.getInstance();
+        //boolean[] array = new boolean[]{true, false, true, false, true};
+        //boolean[] returnArray = new boolean[5];
+        //handler.saveShowHideColumns(array);
+        //returnArray = handler.getShowHideColumns();
         MainController controller = new MainController();
+
+        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+            public void run() {
+                DatabaseHandler.getInstance().saveShowHideColumns(controller.getShowHideColumns());
+            }
+        }));
+
 
 /**        DatabaseHandler handler = DatabaseHandler.getInstance();
         handler.addSong(new Song(1));
