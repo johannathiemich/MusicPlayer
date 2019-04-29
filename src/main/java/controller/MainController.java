@@ -473,45 +473,45 @@ public class MainController {
                 return;
             }
 
-            if(menuName.equals("Play")){
+            if(menuName.equals("play")){
                 System.out.println("[Controls Menu] Play is pressed.");
                 playAction();
             }
-            else if(menuName.equals("Next")){
+            else if(menuName.equals("next")){
                 System.out.println("[Controls Menu] Next is pressed.");
                 //TODO connect to next button
             }
-            else if(menuName.equals("Previous")){
+            else if(menuName.equals("previous")){
                 System.out.println("[Controls Menu] Previous is pressed.");
                 //TODO connect to previous button
             }
-            else if(menuName.equals("recent")){
+            else if(menuName.equals("play_recent")){
                 String text = menuItem.getText();
                 System.out.println("[Controls Menu] Play Recent is pressed. "+text);
 
-                //get the index of the menu item and play that in recentlyPlayedSongs
+                //play the song with the selected index
                 int index = playerView.getPlayRecentMenuIndex(menuItem);
                 System.out.println("index = "+ index);
                 selectedSong = playerControl.getRecentlyPlayedSongs().get(index);
                 playAction();
             }
-            else if(menuName.equals("Current")){
+            else if(menuName.equals("go_to_current")){
                 System.out.println("[Controls Menu] Current is pressed.");
                 //TODO go to and highlight current playing song
             }
-            else if(menuName.equals("Increase")){
+            else if(menuName.equals("increase_volume")){
                 System.out.println("[Controls Menu] Increase is pressed.");
                 //TODO increase volume by 5%
             }
-            else if(menuName.equals("Decrease")){
+            else if(menuName.equals("decrease_volume")){
                 System.out.println("[Controls Menu] Decrease is pressed.");
                 //TODO decrease volume by 5%
             }
-            else if(menuName.equals("Shuffle")){
+            else if(menuName.equals("shuffle")){
                 System.out.println("[Controls Menu] Shuffle is pressed.");
                 //TODO when this is clicked we need to have a random song play next
             }
-            else if(menuName.equals("Repeat")){
+            else if(menuName.equals("repeat")){
                 System.out.println("[Controls Menu] Repeat is pressed.");
                 JCheckBoxMenuItem checkMenu = (JCheckBoxMenuItem)menuItem;
                 if(checkMenu.getState()) {

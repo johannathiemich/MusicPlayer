@@ -107,23 +107,13 @@ public class PlayerController {
     public ArrayList<Song> getRecentlyPlayedSongs() { return recentlyPlayedSongs; }
 
     /**
-     * Get isRepeating boolean value
-     * @return the boolean
-     */
-    public boolean getIsRepeating() { return isRepeating; }
-
-    /**
      * Sets isRepeating.
      * If true, repeat the currently playing song.
      * @param repeating the boolean
      */
     public void setIsRepeating(boolean repeating) {
         isRepeating = repeating;
-        if(isRepeating) {
-            System.out.println("[Player] repeat: on");
-        }else {
-            System.out.println("[Player] repeat: off");
-        }
+        System.out.println("[Player] repeat: " + (isRepeating ? "on" : "off") );
     }
 
     //------------- Music player control --------------

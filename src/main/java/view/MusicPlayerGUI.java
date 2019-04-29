@@ -192,15 +192,15 @@ public class MusicPlayerGUI extends JFrame {
         shuffleMenuItem = new JCheckBoxMenuItem("Shuffle");
         repeatMenuItem = new JCheckBoxMenuItem("Repeat");
         //name controls menu
-        playMenuItem.setName("Play");
-        nextMenuItem.setName("Next");
-        previousMenuItem.setName("Previous");
-        playRecentMenu.setName("recent");
-        goToCurrentSongMenuItem.setName("Current");
-        increaseVolumeMenuItem.setName("Increase");
-        decreaseVolumeMenuItem.setName("Decrease");
-        shuffleMenuItem.setName("Shuffle");
-        repeatMenuItem.setName("Repeat");
+        playMenuItem.setName("play");
+        nextMenuItem.setName("next");
+        previousMenuItem.setName("previous");
+        playRecentMenu.setName("play_recent");
+        goToCurrentSongMenuItem.setName("go_to_current");
+        increaseVolumeMenuItem.setName("increase_volume");
+        decreaseVolumeMenuItem.setName("decrease_volume");
+        shuffleMenuItem.setName("shuffle");
+        repeatMenuItem.setName("repeat");
         //add controls to controlsMenu
         controlsMenu.add(playMenuItem);
         controlsMenu.add(nextMenuItem);
