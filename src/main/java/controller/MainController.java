@@ -8,6 +8,7 @@ import model.Song;
 import model.SongLibrary;
 import view.ColorTheme;
 import view.MusicPlayerGUI;
+import view.SongListView;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -78,7 +79,7 @@ public class MainController {
         selectedPlaylistName = null;
 
         //setup presentation
-        playerView.updateTableView(library);
+        playerView.updateTableView(library, playerView.getSongTable());
         playerView.getSideView().updatePlaylistTree(playlistLibrary.getAllPlaylistNames());
         playerView.setVisible(true);
 
@@ -118,8 +119,8 @@ public class MainController {
         playerView.getSongListView().addItemListenerTableHeader(new TableColumnCheckBoxListener());
 
         //restore shown/hidden columns from last session
-        playerView.getSongListView().setColumnVisibility(DatabaseHandler.getInstance().getShowHideColumns(),
-                playerView.getSongListView().getTableHeaderPopup());
+        //playerView.getSongListView().setColumnVisibility(DatabaseHandler.getInstance().getShowHideColumns(),
+        //        playerView.getSongListView().getTableHeaderPopup());
 
     }
 
@@ -285,10 +286,11 @@ public class MainController {
                             //TODO suspicious a bit...
                             playlistLibrary.getPlaylistByName(windowName).addSong(newSong);
                             getPlaylistWindow(windowName).
-                                    updateTableView(playlistLibrary.getPlaylistByName(windowName));
+                                    updateTableView(playlistLibrary.getPlaylistByName(windowName),
+                                            getPlaylistWindow(windowName).getSongTable());
                         }
                         library.addSong(newSong);
-                        playerView.updateTableView(library);
+                        playerView.updateTableView(library, playerView.getSongTable());
                         playerControl.updateSongList(library);
                     }
 
@@ -316,13 +318,14 @@ public class MainController {
                                 //delete song from all playlists
                                 playlistLibrary.deleteSongFromAllPlaylists(selectedSong);
                                 //update the view
-                                playerView.updateTableView(library);
+                                playerView.updateTableView(library, playerView.getSongTable());
                                 playerControl.updateSongList(library);
                                 //reflect deleted song to all opened playlist window
                                 for (String plistName : playlistLibrary.getAllPlaylistNames()) {
                                     if (getPlaylistWindow(plistName) != null) {
                                         getPlaylistWindow(plistName).
-                                                updateTableView(playlistLibrary.getPlaylistByName(plistName));
+                                                updateTableView(playlistLibrary.getPlaylistByName(plistName),
+                                                        getPlaylistWindow(plistName).getSongTable());
                                     }
                                 }
 
@@ -349,9 +352,11 @@ public class MainController {
                             }
                         }
                         //TODO refactoring point
-                        playerView.updateTableView(playlistLibrary.getPlaylistByName(playlistName));
+                        playerView.updateTableView(playlistLibrary.getPlaylistByName(playlistName),
+                                playerView.getSongTable());
                         getPlaylistWindow(playlistName).updateTableView(
-                                playlistLibrary.getPlaylistByName(playlistName));
+                                playlistLibrary.getPlaylistByName(playlistName),
+                                getPlaylistWindow(playlistName).getSongTable());
                     }
                 } else {
                 //[Delete Song] menu actions on the playlist window
@@ -378,8 +383,10 @@ public class MainController {
                     }
                     //TODO refactoring point
                     getPlaylistWindow(focusedWindowName).updateTableView(
-                            playlistLibrary.getPlaylistByName(focusedWindowName));
-                    playerView.updateTableView(playlistLibrary.getPlaylistByName(focusedWindowName));
+                            playlistLibrary.getPlaylistByName(focusedWindowName),
+                            getPlaylistWindow(focusedWindowName).getSongTable());
+                    playerView.updateTableView(playlistLibrary.getPlaylistByName(focusedWindowName),
+                            playerView.getSongTable());
                 }
 
             } else if (menuName.equals("about")) {
@@ -415,7 +422,7 @@ public class MainController {
                 playerView.getSideView().getPlaylistTree().setSelectionRow(lastRow);
                 //open it on the main window
                 Playlist playlist = playlistLibrary.getPlaylistByName(playlistName);
-                playerView.updateTableView(playlist);
+                playerView.updateTableView(playlist, playerView.getSongTable());
                 playerControl.updateSongList(playlist.getSongList());
 
             } else if (menuName.equals("exit")) {
@@ -440,7 +447,8 @@ public class MainController {
                             //update the opened playlist window view where the song was added
                             if (getPlaylistWindow(playlistName) != null) {
                                 getPlaylistWindow(playlistName).
-                                        updateTableView(playlistLibrary.getPlaylistByName(playlistName));
+                                        updateTableView(playlistLibrary.getPlaylistByName(playlistName),
+                                                getPlaylistWindow(playlistName).getSongTable());
                             }
                         } else {
                             System.out.println("row:" + selectedRow[i] + ", nothing selected to add.");
@@ -679,7 +687,7 @@ public class MainController {
         public void mouseClicked(MouseEvent e) {
             System.out.println("mouse Clicked on header");
             if (e.isPopupTrigger()) {
-                playerView.getSongListView().getTableHeaderPopup().show(e.getComponent(), e.getX(), e.getY());
+                playerView.getSongListView().getTableHeaderPopupToShow().show(e.getComponent(), e.getX(), e.getY());
                 System.out.println("is popup");
             }
         }
@@ -688,7 +696,7 @@ public class MainController {
         public void mousePressed(MouseEvent e) {
             System.out.println("mouse pressed on header");
             if (e.isPopupTrigger()) {
-                playerView.getSongListView().getTableHeaderPopup().show(e.getComponent(), e.getX(), e.getY());
+                playerView.getSongListView().getTableHeaderPopupToShow().show(e.getComponent(), e.getX(), e.getY());
                 System.out.println("is popup");
             }
         }
@@ -697,7 +705,7 @@ public class MainController {
         public void mouseReleased(MouseEvent e) {
             System.out.println("mouse pressed on header");
             if (e.isPopupTrigger()) {
-                playerView.getSongListView().getTableHeaderPopup().show(e.getComponent(), e.getX(), e.getY());
+                playerView.getSongListView().getTableHeaderPopupToShow().show(e.getComponent(), e.getX(), e.getY());
                 System.out.println("is popup");
             }
         }
@@ -802,25 +810,26 @@ public class MainController {
                                     Playlist playlist = playlistLibrary.getPlaylistByName(displaying);
                                     playlist.addSong(newSong);
                                     //update the view and the player control
-                                    targetWindow.updateTableView(playlist);
+                                    targetWindow.updateTableView(playlist, targetWindow.getSongTable());
                                     playerControl.updateSongList(playlist.getSongList());
 
                                     //if library is on the main window
                                     if(playerView.getDisplayingListName().equals("library")) {
                                         //also update the view of the main window
-                                        playerView.updateTableView(library);
+                                        playerView.updateTableView(library, playerView.getSongTable());
                                     } else {
                                     //if playlist is opened in main window
-                                        playerView.updateTableView(playlist);
+                                        playerView.updateTableView(playlist, playerView.getSongTable());
                                     }
 
                                     //update a playlist window if the playlist is also opened in a window
-                                    getPlaylistWindow(displaying).updateTableView(playlist);
+                                    getPlaylistWindow(displaying).updateTableView(playlist,
+                                            getPlaylistWindow(displaying).getSongTable());
 
                                 } else {
                                 //if displaying library on the targetWindow
                                     //update the view and the player control
-                                    targetWindow.updateTableView(library);
+                                    targetWindow.updateTableView(library, targetWindow.getSongTable());
                                     playerControl.updateSongList(library);
                                 }
                             }
@@ -846,7 +855,7 @@ public class MainController {
                             //to library
                                 library.addSong(addedSong);
                                 System.out.println("Song was added to the library");
-                                targetWindow.updateTableView(library);
+                                targetWindow.updateTableView(library, targetWindow.getSongTable());
                                 playerControl.updateSongList(library);
                             } else {
                             //to playlist
@@ -854,11 +863,11 @@ public class MainController {
                                 playlist.addSong(addedSong);
                                 System.out.println("Song was added to the playlist" + displaying);
                                 //update the view
-                                targetWindow.updateTableView(playlist);
+                                targetWindow.updateTableView(playlist, targetWindow.getSongTable());
                                 //TODO refactoring point for the update
                                 if(playerView.getDisplayingListName().equals(displaying)) {
                                     //if the main window is showing the same playlist
-                                    playerView.updateTableView(playlist);
+                                    playerView.updateTableView(playlist, playerView.getSongTable());
                                 }
                                 playerControl.updateSongList(playlist.getSongList());
                             }
@@ -996,10 +1005,10 @@ public class MainController {
                     System.out.println("[SideView] Library clicked\n");
                     //show library on the main window
                     selectedPlaylistName = null;
-                    playerView.updateTableView(library);
+                    playerView.updateTableView(library, playerView.getSongTable());
                     playerControl.updateSongList(library);
-                    playerView.getSongListView().setColumnVisibility(DatabaseHandler.getInstance().getShowHideColumns(),
-                            playerView.getSongListView().getTableHeaderPopup());
+                    //playerView.getSongListView().setColumnVisibility(DatabaseHandler.getInstance().getShowHideColumns(),
+                    //        playerView.getSongListView().getTableHeaderPopup());
                 }
 
                 // [2] Left-click on a playlist name under "Playlist"
@@ -1009,21 +1018,21 @@ public class MainController {
                     System.out.println("[Playlist:" + selectedPlaylistName + "] " + playlist.getSongList().size() + " songs\n");
                     //show the selected playlist on the main window
 
-                    playerView.updateTableView(playlist);
+                    playerView.updateTableView(playlist, playerView.getSongTable());
                     playerControl.updateSongList(playlist.getSongList());
-                    playerView.getSongListView().setColumnVisibility(DatabaseHandler.getInstance().getShowHideColumns(),
-                            playerView.getSongListView().getTableHeaderPopup());
+                    //playerView.getSongListView().setColumnVisibility(DatabaseHandler.getInstance().getShowHideColumns(),
+                    //        playerView.getSongListView().getTableHeaderPopup());
                 }
             }
         }
 
-        private boolean[] getShowHideColumns() {
+        /**private boolean[] getShowHideColumns() {
             boolean[] visibility = new boolean[5];
             for (int i = 0; i < visibility.length; i++) {
                 visibility[i] = playerView.getSongListView().getColumnList().get(i+1).isSelected();
             }
             return visibility;
-        }
+        }**/
 
         /**
          * Extract only the playlist name from text in a tree node
@@ -1083,7 +1092,7 @@ public class MainController {
                     //    getShowHideColumns(), playerView.getSongListView().getTableHeaderPopup());
                     playlistWindowArray.add(newPlaylistWindow);
                     //main window shows library
-                    playerView.updateTableView(library);
+                    playerView.updateTableView(library, playerView.getSongTable());
                     //playerView.getSongListView().setColumnVisibility(DatabaseHandler.getInstance().getShowHideColumns(),
                     //        playerView.getSongListView().getTableHeaderPopup());
                     System.out.println("[NewWindow] playlist \""+selectedPlaylistName+"\" is opened in a new window. "
@@ -1106,7 +1115,7 @@ public class MainController {
                     //update the playlist tree view on the side
                     playerView.getSideView().updatePlaylistTree(playlistLibrary.getAllPlaylistNames());
                     //show library on the main window
-                    playerView.updateTableView(library);
+                    playerView.updateTableView(library, playerView.getSongTable());
                     //if the playlist window was opened, close the window
                     MusicPlayerGUI playlistWindow = getPlaylistWindow(selectedPlaylistName);
                     if(playlistWindow!=null) {
@@ -1246,14 +1255,6 @@ public class MainController {
             }
         }
         return null;
-    }
-
-    public boolean[] getShowHideColumns() {
-        boolean[] visibility = new boolean[5];
-        for (int i = 0; i < visibility.length; i++) {
-            visibility[i] = playerView.getSongListView().getColumnList().get(i+1).isSelected();
-        }
-        return visibility;
     }
 
 }

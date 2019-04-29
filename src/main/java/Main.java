@@ -1,5 +1,6 @@
 import controller.MainController;
 import database.DatabaseHandler;
+import view.SongListView;
 
 public class Main {
 
@@ -18,7 +19,7 @@ public class Main {
 
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
             public void run() {
-                DatabaseHandler.getInstance().saveShowHideColumns(controller.getShowHideColumns());
+                DatabaseHandler.getInstance().saveShowHideColumns(SongListView.getColumnVisibility());
             }
         }));
 

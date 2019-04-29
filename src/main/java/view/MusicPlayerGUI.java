@@ -7,6 +7,7 @@ import model.SongLibrary;
 import javax.swing.*;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.dnd.DropTarget;
 import java.awt.event.ActionListener;
@@ -245,18 +246,25 @@ public class MusicPlayerGUI extends JFrame {
 //        songListView.updateTableView(songList);
 //    }
 
-    public void updateTableView(SongLibrary library){
+    public void updateTableView(SongLibrary library, JTable table){
         songListView.updateTableView(library);
         sideView.getLibraryTree().setSelectionRow(0);
         sideView.getPlaylistTree().clearSelection();
         //update displayingListName
         setDisplayingListName("library");
+
+        setShowHideColumns(SongListView.getColumnVisibility(), SongListView.getTableHeaderPopup(), table);
     }
 
-    public void updateTableView(Playlist playlist){
+    public void updateTableView(Playlist playlist, JTable table){
         songListView.updateTableView(playlist.getSongList());
         //update displayingListName
         setDisplayingListName(playlist.getName());
+        setShowHideColumns(SongListView.getColumnVisibility(), SongListView.getTableHeaderPopup(), table);
+    }
+
+    private void setShowHideColumns(boolean[] visibility, JPopupMenu menu, JTable table) {
+        getSongListView().setColumnVisibility(visibility, menu, table);
     }
 
     /**
