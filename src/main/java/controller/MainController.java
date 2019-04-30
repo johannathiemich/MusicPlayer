@@ -78,7 +78,6 @@ public class MainController {
         selectedPlaylistName = null;
 
         //setup presentation
-        playerView.updateTableView(library, playerView.getSongTable());
         playerView.getSideView().updatePlaylistTree(playlistLibrary.getAllPlaylistNames());
         playerView.setVisible(true);
 
@@ -116,6 +115,7 @@ public class MainController {
 
         playerView.getSongTable().getTableHeader().addMouseListener(new TableHeaderListener());
         playerView.getSongListView().addItemListenerTableHeader(new TableColumnCheckBoxListener());
+        playerView.updateTableView(library, playerView.getSongTable());
 
         //restore shown/hidden columns from last session
         //playerView.getSongListView().setColumnVisibility(DatabaseHandler.getInstance().getShowHideColumns(),
@@ -753,8 +753,13 @@ public class MainController {
             for (int i = 0; i < playerView.getSongListView().getTableHeaderPopup().getComponentCount(); i++) {
                 JCheckBoxMenuItem item = (JCheckBoxMenuItem) playerView.getSongListView().
                         getTableHeaderPopup().getComponent(i);
-                System.out.println(item.getText());
-                if (item.isSelected()) {
+                System.out.println("Item changed: " + item.getText());
+                playerView.updateTableView(library, playerView.getSongTable());
+                for (int j = 0; j < playlistWindowArray.size(); j++) {
+                    playlistWindowArray.get(j).updateTableView(playlistLibrary.getPlaylistByName(playlistWindowArray.
+                            get(j).getDisplayingListName()), playlistWindowArray.get(j).getSongTable());
+                }
+                /**if (item.isSelected()) {
 
                     playerView.getSongListView().showColumn(playerView.getSongTable().
                             getColumnModel().getColumn(i), playerView.getSongListView().getTableHeaderPopup());
@@ -771,13 +776,11 @@ public class MainController {
                                 get(j).getSongTable().getColumnModel().getColumn(i));
                     }
 
-                }
+                }**/
                 if (i > 0) visibility[i-1] = item.isSelected();
             }
             DatabaseHandler.getInstance().saveShowHideColumns(visibility);
         }
-
-
     }
 
     /**
@@ -1117,6 +1120,8 @@ public class MainController {
                     //newPlaylistWindow.getSongListView().setColumnVisibility(DatabaseHandler.getInstance().
                     //    getShowHideColumns(), playerView.getSongListView().getTableHeaderPopup());
                     playlistWindowArray.add(newPlaylistWindow);
+                    newPlaylistWindow.updateTableView(playlistLibrary.getPlaylistByName(newPlaylistWindow.
+                            getDisplayingListName()), newPlaylistWindow.getSongTable());
                     //main window shows library
                     playerView.updateTableView(library, playerView.getSongTable());
                     //playerView.getSongListView().setColumnVisibility(DatabaseHandler.getInstance().getShowHideColumns(),
