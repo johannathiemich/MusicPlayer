@@ -16,6 +16,7 @@ public class PlayerController {
     private BasicPlayer player;
 
     private ArrayList<Song> songList;  //can be either a library or a playlist
+    private String songListName;
     private Song currentSong;          //the song currently loaded on the BasicPlayer
     private int currSongIndex;         //the current song index within songList
 

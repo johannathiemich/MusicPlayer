@@ -162,6 +162,18 @@ public class MainController {
         focusedWindow.changeTableRowSelection(playerControl.getCurrSongIndex());
     }
 
+    /**
+     * Action of "Go To Current Song"
+     * changes the focus of window/table to the playlist
+     * and highlights the currently playing song of that playlist.
+     */
+    private void goToCurrentSongAction() {
+        //TODO need to check which playlist is activated in playerControl in order to
+        // 1) changes the focus of window/table to the playlist
+        // 2) highlights the currently playing song of that playlist
+        focusedWindow.changeTableRowSelection(playerControl.getCurrSongIndex());
+
+    }
 
     //Listeners
 
@@ -206,6 +218,7 @@ public class MainController {
                 System.out.println("[BUTTON] STOP button is pressed.");
                 playerControl.stopSong();
                 updatePlayBtnTextInAllWindow(MusicPlayerGUI.BTNTEXT_PLAY);
+
             } else if (btnName.equals("prev")) {
                 //PREV button action
                 System.out.println("[BUTTON] PREV button is pressed.");
@@ -516,8 +529,9 @@ public class MainController {
                 playAction();
             }
             else if(menuName.equals("go_to_current")){
-                System.out.println("[Controls Menu] Current is pressed.");
-                //TODO go to and highlight current playing song
+                System.out.println("[Controls Menu] Go-To-Current-Song is pressed.");
+                goToCurrentSongAction();
+
             }
             else if(menuName.equals("increase_volume")){
                 System.out.println("[Controls Menu] Increase is pressed.");
