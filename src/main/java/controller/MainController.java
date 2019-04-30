@@ -642,10 +642,10 @@ public class MainController {
 
     /**
      * MouseListenerForTable covers:
-     * 1. popup trigger for right-click inside of table
-     * 2. popup trigger for right-click outside of table
-     * 3. clear selections for left-click outside of table
-     * 4. double-click to play the song
+     * [1-1] popup trigger for right-click inside of table
+     * [1-2] popup trigger for right-click outside of table
+     * [2] double-click to play the song
+     * [3] clear selections for left-click outside of table
      */
     class MouseListenerForTable extends MouseAdapter {
         private JTable source;
@@ -660,33 +660,35 @@ public class MainController {
             row = source.rowAtPoint(e.getPoint());
             col = source.columnAtPoint(e.getPoint());
             isRowInbound = (row >= 0) && (row < rowCount);
-            // Right-click Popup Trigger (for MacOS)
+
+            //[1] Right-click Popup Trigger (for MacOS)
             if (e.isPopupTrigger() && library.size() > 0) {
-                if (isRowInbound) {   //right click in table
+                if (isRowInbound) {   //[1-1] right click in table
                     System.out.println("right clicked in table. row:" + row);
                     //source.changeSelection(row, col, false, false);
                     playerView.getPopUpMenu().show(e.getComponent(), e.getX(), e.getY());
-                } else {                //right click out of table
+                } else {              //[1-2] right click out of table
                     System.out.println("right clicked outside of the table");
                     playerView.getPopUpMenuInBlankspace().show(e.getComponent(), e.getX(), e.getY());
                 }
             }
-            // Left-click outside of table to clear selection
-            if (!isRowInbound && !e.isPopupTrigger()) {
-                playerView.getSongTable().clearSelection();
-                System.out.println("Cleared row selections.");
-            }
+
+            //[3] Left-click outside of table to clear selection
+//            if (!isRowInbound && !e.isPopupTrigger()) {
+//                playerView.getSongTable().clearSelection();
+//                System.out.println("Cleared row selections.");
+//            }
         }
 
         @Override
         public void mouseReleased(MouseEvent e) {
-            // Right-click Popup Trigger (for Windows)
+            //[1] Right-click Popup Trigger (for Windows)
             if (e.isPopupTrigger()) {
-                if (isRowInbound) {   //right click in table
+                if (isRowInbound) {   //[1-1] right click in table
                     System.out.println("right clicked inside of the table");
                     //source.changeSelection(row, col, false, false);
                     playerView.getPopUpMenu().show(e.getComponent(), e.getX(), e.getY());
-                } else {                //right click out of table
+                } else {              //[1-2] right click out of table
                     System.out.println("right clicked outside of the table");
                     playerView.getPopUpMenuInBlankspace().show(e.getComponent(), e.getX(), e.getY());
                 }
@@ -695,19 +697,25 @@ public class MainController {
 
         @Override
         public void mouseClicked(MouseEvent e) {
-            // Double-click on a song to play
+            //[2] Double-click on a song to play
             if (isRowInbound) {
-                if ((e.getClickCount() == 2) && !e.isConsumed() && !e.isPopupTrigger()) {
-                    System.out.println("[Table] double clicked");
-                    selectedSong = playerControl.getSongList().get(row);
-                    selectedRow = row;
-                    playAction();
+                if(!e.isPopupTrigger()) {   //exclude right click
+                    if ((e.getClickCount() == 2) && !e.isConsumed()) {
+                        System.out.println("[Table] double clicked");
+                        selectedSong = playerControl.getSongList().get(row);
+                        selectedRow = row;
+                        playAction();
+                    }
                 }
             }
         }
     }
 
-    class TableHeaderListener implements MouseListener {
+    /**
+     * TableHeaderListener covers
+     * triggering a popup menu on the table header by right-click.
+     */
+    class TableHeaderListener extends MouseAdapter {
 
         @Override
         public void mouseClicked(MouseEvent e) {
@@ -729,19 +737,11 @@ public class MainController {
 
         @Override
         public void mouseReleased(MouseEvent e) {
-            System.out.println("mouse pressed on header");
+            System.out.println("mouse released on header");
             if (e.isPopupTrigger()) {
                 playerView.getSongListView().getTableHeaderPopupToShow().show(e.getComponent(), e.getX(), e.getY());
                 System.out.println("is popup");
             }
-        }
-
-        @Override
-        public void mouseEntered(MouseEvent e) {
-        }
-
-        @Override
-        public void mouseExited(MouseEvent e) {
         }
     }
 
@@ -776,7 +776,6 @@ public class MainController {
             }
             DatabaseHandler.getInstance().saveShowHideColumns(visibility);
         }
-
 
     }
 
