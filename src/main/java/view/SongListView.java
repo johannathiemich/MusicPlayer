@@ -114,36 +114,33 @@ public class SongListView extends JPanel {
     }
 
     public static boolean[] getColumnVisibility() {
-        /**
             boolean[] visibility = new boolean[5];
             for (int i = 0; i < visibility.length; i++) {
                 JCheckBoxMenuItem item = (JCheckBoxMenuItem) tableHeaderPopup.getComponent(i+1);
                 visibility[i] = item.isSelected();
             }
             return visibility;
-        }**/
+        }
 
-        return DatabaseHandler.getInstance().getShowHideColumns();
-    }
+        //return DatabaseHandler.getInstance().getShowHideColumns();
 
     public void createTableHeaderPopup(boolean[] visibility) {
         if (tableHeaderPopup == null) {
             tableHeaderPopup = new JPopupMenu();
-            JCheckBoxMenuItem title = new JCheckBoxMenuItem("Title", false);
+            JCheckBoxMenuItem title = new JCheckBoxMenuItem("Title", true);
             title.setEnabled(false);
-            JCheckBoxMenuItem artist = new JCheckBoxMenuItem("Artist", false);
-            JCheckBoxMenuItem album = new JCheckBoxMenuItem("Album", false);
-            JCheckBoxMenuItem year = new JCheckBoxMenuItem("Year", false);
-            JCheckBoxMenuItem comment = new JCheckBoxMenuItem("Comment", false);
-            JCheckBoxMenuItem genre = new JCheckBoxMenuItem("Genre", false);
+            JCheckBoxMenuItem artist = new JCheckBoxMenuItem("Artist", true);
+            JCheckBoxMenuItem album = new JCheckBoxMenuItem("Album", true);
+            JCheckBoxMenuItem year = new JCheckBoxMenuItem("Year", true);
+            JCheckBoxMenuItem comment = new JCheckBoxMenuItem("Comment", true);
+            JCheckBoxMenuItem genre = new JCheckBoxMenuItem("Genre", true);
 
             title.setSelected(true);
-            //      artist.setSelected(visibility[0]);
-            //      album.setSelected(visibility[1]);
-            //      year.setSelected(visibility[2]);
-            //      comment.setSelected(visibility[3]);
-            //      genre.setSelected(visibility[4]);
-
+            artist.setSelected(visibility[0]);
+            album.setSelected(visibility[1]);
+            year.setSelected(visibility[2]);
+            comment.setSelected(visibility[3]);
+            genre.setSelected(visibility[4]);
             tableHeaderPopup.add(title);
             tableHeaderPopup.add(artist);
             tableHeaderPopup.add(album);
@@ -211,11 +208,13 @@ public class SongListView extends JPanel {
         int numCol = 0;
         int size = 0;
         for (int i = 0; i < menu.getComponentCount(); i++) {
+
             JCheckBoxMenuItem item = (JCheckBoxMenuItem) menu.getComponent(i);
             if (item.isSelected()) {
                 numCol++;
             }
         }
+        System.out.println("number of columns: " + numCol);
 
        /** for (JCheckBoxMenuItem item : columnList) {
             if (item.isSelected()) {
@@ -261,12 +260,16 @@ public class SongListView extends JPanel {
                 JCheckBoxMenuItem item = (JCheckBoxMenuItem) menu.getComponent(i);
                 item.setSelected(visibility[i - 1]);
                 if (visibility[i - 1]) {
+                    System.out.println("Showing column: " + table.getColumnName(i));
                     this.showColumn(column, menu);
                 } else {
                     this.hideColumn(column);
+                    System.out.println("Hiding column: " + table.getColumnName(i));
                 }
             }
         }
+        //table.repaint();
+        System.out.println("---------------------------------------------------");
     }
 
     public ArrayList<JCheckBoxMenuItem> getColumnList()

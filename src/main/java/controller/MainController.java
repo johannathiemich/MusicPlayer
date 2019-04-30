@@ -753,8 +753,9 @@ public class MainController {
             for (int i = 0; i < playerView.getSongListView().getTableHeaderPopup().getComponentCount(); i++) {
                 JCheckBoxMenuItem item = (JCheckBoxMenuItem) playerView.getSongListView().
                         getTableHeaderPopup().getComponent(i);
-                System.out.println(item.getText());
-                if (item.isSelected()) {
+                System.out.println("Item changed: " + item.getText());
+                playerView.updateTableView(library, playerView.getSongTable());
+                /**if (item.isSelected()) {
 
                     playerView.getSongListView().showColumn(playerView.getSongTable().
                             getColumnModel().getColumn(i), playerView.getSongListView().getTableHeaderPopup());
@@ -771,7 +772,7 @@ public class MainController {
                                 get(j).getSongTable().getColumnModel().getColumn(i));
                     }
 
-                }
+                }**/
                 if (i > 0) visibility[i-1] = item.isSelected();
             }
             DatabaseHandler.getInstance().saveShowHideColumns(visibility);
