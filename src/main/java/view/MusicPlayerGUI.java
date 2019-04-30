@@ -215,8 +215,9 @@ public class MusicPlayerGUI extends JFrame {
         controlsMenu.add(shuffleMenuItem);
         controlsMenu.add(repeatMenuItem);
         //Shortcuts for Controls Menu
-        playMenuItem.setMnemonic(KeyEvent.VK_P);
-        nextMenuItem.setMnemonic(KeyEvent.VK_N);
+
+       // playMenuItem.setMnemonic(KeyEvent.VK_P);
+       /* nextMenuItem.setMnemonic(KeyEvent.VK_N);
         previousMenuItem.setMnemonic(KeyEvent.VK_P);
         //playRecentMenu.setMnemonic(KeyEvent.VK_R);
         goToCurrentSongMenuItem.setMnemonic(KeyEvent.VK_C);
@@ -224,6 +225,23 @@ public class MusicPlayerGUI extends JFrame {
         decreaseVolumeMenuItem.setMnemonic(KeyEvent.VK_D);
         shuffleMenuItem.setMnemonic(KeyEvent.VK_S);
         repeatMenuItem.setMnemonic(KeyEvent.VK_R);
+        */
+
+       // playMenuItem.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R,
+         //       java.awt.Event.CTRL_MASK));
+        //playMenuItem.setMnemonic(KeyEvent.VK_SPACE);
+
+        nextMenuItem.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_RIGHT,
+                java.awt.Event.CTRL_MASK));
+        previousMenuItem.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_LEFT,
+                java.awt.Event.CTRL_MASK));
+        goToCurrentSongMenuItem.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_L,
+                java.awt.Event.CTRL_MASK));
+        increaseVolumeMenuItem.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_I,
+                java.awt.Event.CTRL_MASK));
+        decreaseVolumeMenuItem.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_D,
+                java.awt.Event.CTRL_MASK));
+
 
         //[View] menus
         viewMenu = new JMenu("View");

@@ -535,11 +535,11 @@ public class MainController {
             }
             else if(menuName.equals("increase_volume")){
                 System.out.println("[Controls Menu] Increase is pressed.");
-                //TODO increase volume by 5%
+                playerControl.increaseVolume();
             }
             else if(menuName.equals("decrease_volume")){
                 System.out.println("[Controls Menu] Decrease is pressed.");
-                //TODO decrease volume by 5%
+                playerControl.decreaseVolume();
             }
             else if(menuName.equals("shuffle")){
                 System.out.println("[Controls Menu] Shuffle is pressed.");
