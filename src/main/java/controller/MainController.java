@@ -755,6 +755,10 @@ public class MainController {
                         getTableHeaderPopup().getComponent(i);
                 System.out.println("Item changed: " + item.getText());
                 playerView.updateTableView(library, playerView.getSongTable());
+                for (int j = 0; j < playlistWindowArray.size(); j++) {
+                    playlistWindowArray.get(j).updateTableView(playlistLibrary.getPlaylistByName(playlistWindowArray.
+                            get(j).getDisplayingListName()), playlistWindowArray.get(j).getSongTable());
+                }
                 /**if (item.isSelected()) {
 
                     playerView.getSongListView().showColumn(playerView.getSongTable().
@@ -777,8 +781,6 @@ public class MainController {
             }
             DatabaseHandler.getInstance().saveShowHideColumns(visibility);
         }
-
-
     }
 
     /**
@@ -1118,6 +1120,8 @@ public class MainController {
                     //newPlaylistWindow.getSongListView().setColumnVisibility(DatabaseHandler.getInstance().
                     //    getShowHideColumns(), playerView.getSongListView().getTableHeaderPopup());
                     playlistWindowArray.add(newPlaylistWindow);
+                    newPlaylistWindow.updateTableView(playlistLibrary.getPlaylistByName(newPlaylistWindow.
+                            getDisplayingListName()), newPlaylistWindow.getSongTable());
                     //main window shows library
                     playerView.updateTableView(library, playerView.getSongTable());
                     //playerView.getSongListView().setColumnVisibility(DatabaseHandler.getInstance().getShowHideColumns(),

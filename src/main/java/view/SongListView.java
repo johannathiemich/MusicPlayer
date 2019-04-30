@@ -27,8 +27,6 @@ public class SongListView extends JPanel {
     private String[] columnHeader;
     private int tableRowHeight = 24;
     private static JPopupMenu tableHeaderPopup;
-    private  ArrayList<JCheckBoxMenuItem> columnList;
-    //TODO some boolean array for the hide/show the column?
 
     /**
      * Constructs a panel to show a list of songs
@@ -62,7 +60,6 @@ public class SongListView extends JPanel {
         table.getColumnModel().getColumn(0).setMaxWidth(0);
         table.getColumnModel().getColumn(0).setMaxWidth(0);
 
-        columnList = new ArrayList<JCheckBoxMenuItem>();
         createTableHeaderPopup(DatabaseHandler.getInstance().getShowHideColumns());
 
         //put table in place
@@ -70,8 +67,6 @@ public class SongListView extends JPanel {
         tableScrollPane.setBorder(BorderFactory.createEmptyBorder());
         this.setLayout(new BorderLayout());
         this.add(tableScrollPane, BorderLayout.CENTER);
-    //    table.getColumnModel().removeColumn(table.getColumnModel().getColumn(0));
-
     }
 
     /**
@@ -122,8 +117,6 @@ public class SongListView extends JPanel {
             return visibility;
         }
 
-        //return DatabaseHandler.getInstance().getShowHideColumns();
-
     public void createTableHeaderPopup(boolean[] visibility) {
         if (tableHeaderPopup == null) {
             tableHeaderPopup = new JPopupMenu();
@@ -147,13 +140,6 @@ public class SongListView extends JPanel {
             tableHeaderPopup.add(year);
             tableHeaderPopup.add(comment);
             tableHeaderPopup.add(genre);
-
-            columnList.add(title);
-            columnList.add(artist);
-            columnList.add(album);
-            columnList.add(year);
-            columnList.add(comment);
-            columnList.add(genre);
         }
     }
     /**
@@ -216,12 +202,6 @@ public class SongListView extends JPanel {
         }
         System.out.println("number of columns: " + numCol);
 
-       /** for (JCheckBoxMenuItem item : columnList) {
-            if (item.isSelected()) {
-                numCol++;
-            }
-        }**/
-
         size = table.getWidth() / numCol;
 
         column.setWidth(size);
@@ -230,50 +210,19 @@ public class SongListView extends JPanel {
 
     }
 
-    private int getColumnNumber(JCheckBoxMenuItem item) {
-        switch (item.getText()) {
-            case "Path":
-                return 0;
-            case "Title":
-                return 1;
-            case "Artist":
-                return 2;
-            case "Album":
-                return 3;
-            case "Year":
-                return 4;
-            case "Comment":
-                return 5;
-            case "Genre":
-                return 6;
-            default:
-                return 0;
-        }
-    }
-
     public void setColumnVisibility(boolean[] visibility, JPopupMenu menu, JTable table)
     {
         Enumeration<TableColumn> columns = table.getColumnModel().getColumns();
         ArrayList<TableColumn> columnList = Collections.list(columns);
-        for (TableColumn column : columnList) {
-            for (int i = 1; i < menu.getComponentCount(); i++) {
-                JCheckBoxMenuItem item = (JCheckBoxMenuItem) menu.getComponent(i);
+        for (int i = 1; i < columnList.size(); i++) {
+            JCheckBoxMenuItem item = (JCheckBoxMenuItem) menu.getComponent(i);
                 item.setSelected(visibility[i - 1]);
                 if (visibility[i - 1]) {
-                    System.out.println("Showing column: " + table.getColumnName(i));
-                    this.showColumn(column, menu);
+                    this.showColumn(table.getColumnModel().getColumn(i), menu);
                 } else {
-                    this.hideColumn(column);
-                    System.out.println("Hiding column: " + table.getColumnName(i));
+                    this.hideColumn(table.getColumnModel().getColumn(i));
                 }
-            }
         }
-        //table.repaint();
-        System.out.println("---------------------------------------------------");
     }
 
-    public ArrayList<JCheckBoxMenuItem> getColumnList()
-    {
-        return columnList;
-    }
 }
