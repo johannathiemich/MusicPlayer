@@ -8,7 +8,6 @@ import model.Song;
 import model.SongLibrary;
 import view.ColorTheme;
 import view.MusicPlayerGUI;
-import view.SongListView;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -137,9 +136,44 @@ public class MainController {
 
         //change the play button text
         updatePlayBtnTextInAllWindow(MusicPlayerGUI.BTNTEXT_PAUSE);
-        //TODO update the currentSongIndex in PlayerControl?
     }
 
+    /**
+     * Action of "Next" that occurs by button, menu, hotkey...
+     */
+    private void nextAction() {
+        //play the next song
+        playerControl.playNextSong();
+
+        //reflect to the view
+        updatePlayBtnTextInAllWindow(MusicPlayerGUI.BTNTEXT_PAUSE);
+        focusedWindow.changeTableRowSelection(playerControl.getCurrSongIndex());
+    }
+
+    /**
+     * Action of "Previous" that occurs by button, menu, hotkey...
+     */
+    private void prevAction() {
+        //play the previous song
+        playerControl.playPrevSong();
+
+        //reflect to the view
+        updatePlayBtnTextInAllWindow(MusicPlayerGUI.BTNTEXT_PAUSE);
+        focusedWindow.changeTableRowSelection(playerControl.getCurrSongIndex());
+    }
+
+    /**
+     * Action of "Go To Current Song"
+     * changes the focus of window/table to the playlist
+     * and highlights the currently playing song of that playlist.
+     */
+    private void goToCurrentSongAction() {
+        //TODO need to check which playlist is activated in playerControl in order to
+        // 1) changes the focus of window/table to the playlist
+        // 2) highlights the currently playing song of that playlist
+        focusedWindow.changeTableRowSelection(playerControl.getCurrSongIndex());
+
+    }
 
     //Listeners
 
@@ -184,26 +218,17 @@ public class MainController {
                 System.out.println("[BUTTON] STOP button is pressed.");
                 playerControl.stopSong();
                 updatePlayBtnTextInAllWindow(MusicPlayerGUI.BTNTEXT_PLAY);
+
             } else if (btnName.equals("prev")) {
                 //PREV button action
                 System.out.println("[BUTTON] PREV button is pressed.");
+                prevAction();
 
-                playerControl.playPrevSong();
-                //reflect to the view: update all playBtnText
-                updatePlayBtnTextInAllWindow(MusicPlayerGUI.BTNTEXT_PAUSE);
-
-                focusedWindow.changeTableRowSelection(playerControl.getCurrSongIndex());
-                //focusedWindow.changeTableRowSelection(playerControl.getSongList().indexOf(playerControl.getCurrentSong()));
             } else if (btnName.equals("next")) {
                 //NEXT button action
                 System.out.println("[BUTTON] NEXT button is pressed.");
+                nextAction();
 
-                playerControl.playNextSong();
-                //reflect to the view: update all playBtnText
-                updatePlayBtnTextInAllWindow(MusicPlayerGUI.BTNTEXT_PAUSE);
-
-                System.out.println("current song index is: " + playerControl.getCurrSongIndex());
-                focusedWindow.changeTableRowSelection(playerControl.getCurrSongIndex());
             } else {
                 System.out.println("none of play/stop/prev/next buttons");
             }
@@ -487,11 +512,11 @@ public class MainController {
             }
             else if(menuName.equals("next")){
                 System.out.println("[Controls Menu] Next is pressed.");
-                //TODO connect to next button
+                nextAction();
             }
             else if(menuName.equals("previous")){
                 System.out.println("[Controls Menu] Previous is pressed.");
-                //TODO connect to previous button
+                prevAction();
             }
             else if(menuName.equals("play_recent")){
                 String text = menuItem.getText();
@@ -504,8 +529,9 @@ public class MainController {
                 playAction();
             }
             else if(menuName.equals("go_to_current")){
-                System.out.println("[Controls Menu] Current is pressed.");
-                //TODO go to and highlight current playing song
+                System.out.println("[Controls Menu] Go-To-Current-Song is pressed.");
+                goToCurrentSongAction();
+
             }
             else if(menuName.equals("increase_volume")){
                 System.out.println("[Controls Menu] Increase is pressed.");
