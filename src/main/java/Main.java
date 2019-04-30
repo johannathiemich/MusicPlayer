@@ -14,7 +14,7 @@ public class Main {
         //handler.saveShowHideColumns(array);
         //returnArray = handler.getShowHideColumns();
 
-
+        boolean[] visibility = DatabaseHandler.getInstance().getShowHideColumns();
         MainController controller = new MainController(appName);
 
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {

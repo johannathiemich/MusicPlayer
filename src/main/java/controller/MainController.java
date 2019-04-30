@@ -79,7 +79,6 @@ public class MainController {
         selectedPlaylistName = null;
 
         //setup presentation
-        playerView.updateTableView(library, playerView.getSongTable());
         playerView.getSideView().updatePlaylistTree(playlistLibrary.getAllPlaylistNames());
         playerView.setVisible(true);
 
@@ -117,6 +116,7 @@ public class MainController {
 
         playerView.getSongTable().getTableHeader().addMouseListener(new TableHeaderListener());
         playerView.getSongListView().addItemListenerTableHeader(new TableColumnCheckBoxListener());
+        playerView.updateTableView(library, playerView.getSongTable());
 
         //restore shown/hidden columns from last session
         //playerView.getSongListView().setColumnVisibility(DatabaseHandler.getInstance().getShowHideColumns(),
