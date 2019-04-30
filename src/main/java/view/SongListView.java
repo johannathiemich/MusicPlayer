@@ -1,7 +1,6 @@
 package view;
 
 import database.DatabaseHandler;
-import javafx.scene.control.Tab;
 import model.Song;
 
 import javax.swing.*;

@@ -8,7 +8,6 @@ import model.Song;
 import model.SongLibrary;
 import view.ColorTheme;
 import view.MusicPlayerGUI;
-import view.SongListView;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -137,7 +136,30 @@ public class MainController {
 
         //change the play button text
         updatePlayBtnTextInAllWindow(MusicPlayerGUI.BTNTEXT_PAUSE);
-        //TODO update the currentSongIndex in PlayerControl?
+    }
+
+    /**
+     * Action of "Next" that occurs by button, menu, hotkey...
+     */
+    private void nextAction() {
+        //play the next song
+        playerControl.playNextSong();
+
+        //reflect to the view
+        updatePlayBtnTextInAllWindow(MusicPlayerGUI.BTNTEXT_PAUSE);
+        focusedWindow.changeTableRowSelection(playerControl.getCurrSongIndex());
+    }
+
+    /**
+     * Action of "Previous" that occurs by button, menu, hotkey...
+     */
+    private void prevAction() {
+        //play the previous song
+        playerControl.playPrevSong();
+
+        //reflect to the view
+        updatePlayBtnTextInAllWindow(MusicPlayerGUI.BTNTEXT_PAUSE);
+        focusedWindow.changeTableRowSelection(playerControl.getCurrSongIndex());
     }
 
 
@@ -187,23 +209,13 @@ public class MainController {
             } else if (btnName.equals("prev")) {
                 //PREV button action
                 System.out.println("[BUTTON] PREV button is pressed.");
+                prevAction();
 
-                playerControl.playPrevSong();
-                //reflect to the view: update all playBtnText
-                updatePlayBtnTextInAllWindow(MusicPlayerGUI.BTNTEXT_PAUSE);
-
-                focusedWindow.changeTableRowSelection(playerControl.getCurrSongIndex());
-                //focusedWindow.changeTableRowSelection(playerControl.getSongList().indexOf(playerControl.getCurrentSong()));
             } else if (btnName.equals("next")) {
                 //NEXT button action
                 System.out.println("[BUTTON] NEXT button is pressed.");
+                nextAction();
 
-                playerControl.playNextSong();
-                //reflect to the view: update all playBtnText
-                updatePlayBtnTextInAllWindow(MusicPlayerGUI.BTNTEXT_PAUSE);
-
-                System.out.println("current song index is: " + playerControl.getCurrSongIndex());
-                focusedWindow.changeTableRowSelection(playerControl.getCurrSongIndex());
             } else {
                 System.out.println("none of play/stop/prev/next buttons");
             }
@@ -487,11 +499,11 @@ public class MainController {
             }
             else if(menuName.equals("next")){
                 System.out.println("[Controls Menu] Next is pressed.");
-                //TODO connect to next button
+                nextAction();
             }
             else if(menuName.equals("previous")){
                 System.out.println("[Controls Menu] Previous is pressed.");
-                //TODO connect to previous button
+                prevAction();
             }
             else if(menuName.equals("play_recent")){
                 String text = menuItem.getText();
