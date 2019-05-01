@@ -59,6 +59,7 @@ public class SongListView extends JPanel {
         table.getColumnModel().getColumn(0).setWidth(0);
         table.getColumnModel().getColumn(0).setMaxWidth(0);
         table.getColumnModel().getColumn(0).setMaxWidth(0);
+        table.setAutoCreateRowSorter(true);
 
         createTableHeaderPopup(DatabaseHandler.getInstance().getShowHideColumns());
 
@@ -100,6 +101,7 @@ public class SongListView extends JPanel {
             tableModel.addRow(song.toArrayNoPath());
         }
         tableModel.fireTableDataChanged();
+        table.getRowSorter().toggleSortOrder(0);
         table.repaint();
         this.repaint();
     }

@@ -254,6 +254,7 @@ public class MusicPlayerGUI extends JFrame {
         setDisplayingListName("library");
 
         setShowHideColumns(SongListView.getColumnVisibility(), SongListView.getTableHeaderPopup(), table);
+
     }
 
     public void updateTableView(Playlist playlist, JTable table){

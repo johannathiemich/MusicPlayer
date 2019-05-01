@@ -117,6 +117,8 @@ public class MainController {
         playerView.getSongListView().addItemListenerTableHeader(new TableColumnCheckBoxListener());
         playerView.updateTableView(library, playerView.getSongTable());
 
+        playerView.getSongListView().getSongTable().getRowSorter().toggleSortOrder(0);
+
         //restore shown/hidden columns from last session
         //playerView.getSongListView().setColumnVisibility(DatabaseHandler.getInstance().getShowHideColumns(),
         //        playerView.getSongListView().getTableHeaderPopup());
@@ -852,8 +854,10 @@ public class MainController {
                                     }
 
                                     //update a playlist window if the playlist is also opened in a window
-                                    getPlaylistWindow(displaying).updateTableView(playlist,
-                                            getPlaylistWindow(displaying).getSongTable());
+                                    if (getPlaylistWindow(displaying) != null) {
+                                        getPlaylistWindow(displaying).updateTableView(playlist,
+                                                getPlaylistWindow(displaying).getSongTable());
+                                    }
 
                                 } else {
                                 //if displaying library on the targetWindow
