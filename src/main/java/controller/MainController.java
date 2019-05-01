@@ -118,6 +118,7 @@ public class MainController {
         playerView.updateTableView(library, playerView.getSongTable());
 
         playerView.getSongListView().getSongTable().getRowSorter().toggleSortOrder(0);
+        playerView.getSongListView().getSongTable().getRowSorter().toggleSortOrder(0);
 
         //restore shown/hidden columns from last session
         //playerView.getSongListView().setColumnVisibility(DatabaseHandler.getInstance().getShowHideColumns(),
@@ -1050,7 +1051,6 @@ public class MainController {
                     Playlist playlist = playlistLibrary.getPlaylistByName(selectedPlaylistName);
                     System.out.println("[Playlist:" + selectedPlaylistName + "] " + playlist.getSongList().size() + " songs\n");
                     //show the selected playlist on the main window
-
                     playerView.updateTableView(playlist, playerView.getSongTable());
                     playerControl.updateSongList(playlist.getSongList());
                     //playerView.getSongListView().setColumnVisibility(DatabaseHandler.getInstance().getShowHideColumns(),
@@ -1058,14 +1058,6 @@ public class MainController {
                 }
             }
         }
-
-        /**private boolean[] getShowHideColumns() {
-            boolean[] visibility = new boolean[5];
-            for (int i = 0; i < visibility.length; i++) {
-                visibility[i] = playerView.getSongListView().getColumnList().get(i+1).isSelected();
-            }
-            return visibility;
-        }**/
 
         /**
          * Extract only the playlist name from text in a tree node

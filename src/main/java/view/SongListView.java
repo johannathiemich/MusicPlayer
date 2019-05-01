@@ -11,7 +11,8 @@ import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
-
+import java.util.Iterator;
+import java.util.List;
 //import controller.TableRowTransferHandler;
 
 /**
@@ -101,8 +102,11 @@ public class SongListView extends JPanel {
             tableModel.addRow(song.toArrayNoPath());
         }
         tableModel.fireTableDataChanged();
+        table.getRowSorter().toggleSortOrder(1);
         table.getRowSorter().toggleSortOrder(0);
+        System.out.println("all rows changed");
         table.repaint();
+        this.keepSortOrder(table);
         this.repaint();
     }
 
@@ -202,8 +206,6 @@ public class SongListView extends JPanel {
                 numCol++;
             }
         }
-        System.out.println("number of columns: " + numCol);
-
         size = table.getWidth() / numCol;
 
         column.setWidth(size);
@@ -224,6 +226,67 @@ public class SongListView extends JPanel {
                 } else {
                     this.hideColumn(table.getColumnModel().getColumn(i));
                 }
+        }
+    }
+
+    private int[] getTableSortedColumns(JTable table){
+        int size = table.getColumnCount();
+        int[] index = new int[]{-1, -1, -1};
+
+        List<? extends RowSorter.SortKey> rowSorter = table.getRowSorter().getSortKeys();
+        System.out.println("get sort keys size: " + table.getRowSorter().getSortKeys().size());
+        Iterator<? extends RowSorter.SortKey> it = rowSorter.iterator();
+        int i = 0;
+        while(it.hasNext()){
+            RowSorter.SortKey sortKey = it.next();
+            if(sortKey.getSortOrder().compareTo(SortOrder.UNSORTED)!=0 ){
+                index[i] = sortKey.getColumn();
+                i++;
+            }
+        }
+        return index;
+    }
+
+    /**
+     * Return the sort orientation of a column.
+     * @param table
+     * @param columnIndex
+     * @return int i == ascending, -1 == descending, 0 == unsorted
+     */
+    private int getTableSortedOrientation(JTable table, int columnIndex){
+        int[] indices = getTableSortedColumns(table);
+        int orientation = 0;
+        for(int i = 0;i<indices.length;i++){
+            if(indices[i] == columnIndex){
+                SortOrder so = table.getRowSorter().getSortKeys().get(i).getSortOrder();
+                if(so.compareTo(SortOrder.ASCENDING) == 0){
+                    orientation = 1;
+                }else if(so.compareTo(SortOrder.DESCENDING) == 0){
+                    orientation = -1;
+                }
+            }
+        }
+        return orientation;
+    }
+
+    public void keepSortOrder(JTable table) {
+        int[] col = getTableSortedColumns(table);
+        for(int i = 0;i<col.length;i++){
+            if(col[i]>=0){
+                String orientation = "";
+                switch(getTableSortedOrientation(table, col[i])){
+                    case 1:
+                        orientation = "Ascending";
+                        break;
+                    case 0:
+                        orientation = "Unsorted";
+                        break;
+                    case -1:
+                        orientation = "Descending";
+                        break;
+                }
+                System.out.println("index "+col[i]+" "+orientation);
+            }
         }
     }
 
