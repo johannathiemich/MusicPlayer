@@ -35,7 +35,7 @@ public class SongListView extends JPanel {
      */
     public SongListView(){
         // Table setup
-        columnHeader = new String[]{"Title", "Artist", "Album", "Year", "Comment", "Genre"};
+        columnHeader = new String[]{"Path", "Title", "Artist", "Album", "Year", "Comment", "Genre"};
         table = new JTable(){
             @Override   //block table contents editing
             public boolean isCellEditable(int row, int column) { return false; }
@@ -99,7 +99,7 @@ public class SongListView extends JPanel {
     public void updateTableView(ArrayList<Song> songList) {
         initializeTable();
         for (Song song : songList) {
-            tableModel.addRow(song.toArrayNoPath());
+            tableModel.addRow(song.toArray());
         }
         tableModel.fireTableDataChanged();
         table.getRowSorter().toggleSortOrder(1);

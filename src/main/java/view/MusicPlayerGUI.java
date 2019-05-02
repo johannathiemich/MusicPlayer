@@ -8,6 +8,7 @@ import javax.swing.*;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.dnd.DropTarget;
 import java.awt.event.ActionListener;
@@ -264,7 +265,7 @@ public class MusicPlayerGUI extends JFrame {
 //        songListView.updateTableView(songList);
 //    }
 
-    public void updateTableView(SongLibrary library, JTable table){
+    public void updateTableView(ArrayList<Song> library, JTable table){
         songListView.updateTableView(library);
         sideView.getLibraryTree().setSelectionRow(0);
         sideView.getPlaylistTree().clearSelection();
@@ -316,6 +317,16 @@ public class MusicPlayerGUI extends JFrame {
      * @return JTable containing songs in the library
      */
     public JTable getSongTable(){ return songListView.getSongTable(); }
+
+    public ArrayList<Song> getSongListFromTable() {
+        TableModel model = songListView.getSongTable().getModel();
+        for (int i = 0; i < model.getRowCount(); i++) {
+            System.out.println(" getSongListFrom Table: " + model.getValueAt(i, 0) + " " +
+                               model.getValueAt(i, 1) + " " +
+                               model.getValueAt(i, 2));
+        }
+        return new ArrayList<Song>();
+    }
 
     /**
      * Gets songListView of the main window

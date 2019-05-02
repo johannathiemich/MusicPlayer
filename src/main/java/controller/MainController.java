@@ -78,6 +78,8 @@ public class MainController {
         selectedPlaylistName = null;
 
         //setup presentation
+        ArrayList<Song> list = new ArrayList<Song>();
+        playerView.updateTableView(list, playerView.getSongTable());
         playerView.getSideView().updatePlaylistTree(playlistLibrary.getAllPlaylistNames());
         playerView.setVisible(true);
 
@@ -116,7 +118,7 @@ public class MainController {
         playerView.getSongTable().getTableHeader().addMouseListener(new TableHeaderListener());
         playerView.getSongListView().addItemListenerTableHeader(new TableColumnCheckBoxListener());
         playerView.updateTableView(library, playerView.getSongTable());
-
+        playerView.getSongListFromTable();
         playerView.getSongListView().getSongTable().getRowSorter().toggleSortOrder(0);
         playerView.getSongListView().getSongTable().getRowSorter().toggleSortOrder(0);
 
@@ -318,6 +320,7 @@ public class MainController {
                                             getPlaylistWindow(windowName).getSongTable());
                         }
                         library.addSong(newSong);
+
                         playerView.updateTableView(library, playerView.getSongTable());
                         playerControl.updateSongList(library);
                     }
