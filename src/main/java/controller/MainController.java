@@ -868,7 +868,8 @@ public class MainController {
 
                     System.out.println("[DragDrop] string transferable" + droppedSongs);
                     draggedCount = droppedSongs.split("\n").length;
-
+                    //TODO drag&drop between windows stopped working.
+                    // Maybe because the string doesn't contain the content of hidden columns.
                     for (String song : droppedSongs.split("\n")) {
                         String songPath = song.split("\t")[0];
                         System.out.println("[DragDrop] song name is " + songPath);
