@@ -287,6 +287,20 @@ public class PlayerController {
             e.printStackTrace();
         }
     }
+    public void increaseVolume(){
+        System.out.println("Volume increased by 5%");
+        int currentVolume = playerView.getControlView().getVolumeSlider().getValue();
+        int increasedVolume = currentVolume + 5;
+        setVolume(increasedVolume);
+        playerView.setVolumeSlider(increasedVolume);
+    }
+    public void decreaseVolume(){
+        System.out.println("Volume decreased by 5%");
+        int currentVolume = playerView.getControlView().getVolumeSlider().getValue();
+        int decreasedVolume = currentVolume - 5;
+        setVolume(decreasedVolume);
+        playerView.setVolumeSlider(decreasedVolume);
+    }
 
     /**
      * Gets the volume of the basic player.

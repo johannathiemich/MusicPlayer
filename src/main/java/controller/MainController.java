@@ -78,7 +78,6 @@ public class MainController {
         selectedPlaylistName = null;
 
         //setup presentation
-        playerView.updateTableView(library, playerView.getSongTable());
         playerView.getSideView().updatePlaylistTree(playlistLibrary.getAllPlaylistNames());
         playerView.setVisible(true);
 
@@ -116,6 +115,10 @@ public class MainController {
 
         playerView.getSongTable().getTableHeader().addMouseListener(new TableHeaderListener());
         playerView.getSongListView().addItemListenerTableHeader(new TableColumnCheckBoxListener());
+        playerView.updateTableView(library, playerView.getSongTable());
+
+        playerView.getSongListView().getSongTable().getRowSorter().toggleSortOrder(0);
+        playerView.getSongListView().getSongTable().getRowSorter().toggleSortOrder(0);
 
         //restore shown/hidden columns from last session
         //playerView.getSongListView().setColumnVisibility(DatabaseHandler.getInstance().getShowHideColumns(),
@@ -535,11 +538,11 @@ public class MainController {
             }
             else if(menuName.equals("increase_volume")){
                 System.out.println("[Controls Menu] Increase is pressed.");
-                //TODO increase volume by 5%
+                playerControl.increaseVolume();
             }
             else if(menuName.equals("decrease_volume")){
                 System.out.println("[Controls Menu] Decrease is pressed.");
-                //TODO decrease volume by 5%
+                playerControl.decreaseVolume();
             }
             else if(menuName.equals("shuffle")){
                 System.out.println("[Controls Menu] Shuffle is pressed.");
@@ -753,8 +756,13 @@ public class MainController {
             for (int i = 0; i < playerView.getSongListView().getTableHeaderPopup().getComponentCount(); i++) {
                 JCheckBoxMenuItem item = (JCheckBoxMenuItem) playerView.getSongListView().
                         getTableHeaderPopup().getComponent(i);
-                System.out.println(item.getText());
-                if (item.isSelected()) {
+                System.out.println("Item changed: " + item.getText());
+                playerView.updateTableView(library, playerView.getSongTable());
+                for (int j = 0; j < playlistWindowArray.size(); j++) {
+                    playlistWindowArray.get(j).updateTableView(playlistLibrary.getPlaylistByName(playlistWindowArray.
+                            get(j).getDisplayingListName()), playlistWindowArray.get(j).getSongTable());
+                }
+                /**if (item.isSelected()) {
 
                     playerView.getSongListView().showColumn(playerView.getSongTable().
                             getColumnModel().getColumn(i), playerView.getSongListView().getTableHeaderPopup());
@@ -771,7 +779,7 @@ public class MainController {
                                 get(j).getSongTable().getColumnModel().getColumn(i));
                     }
 
-                }
+                }**/
                 if (i > 0) visibility[i-1] = item.isSelected();
             }
             DatabaseHandler.getInstance().saveShowHideColumns(visibility);
@@ -848,8 +856,10 @@ public class MainController {
                                     }
 
                                     //update a playlist window if the playlist is also opened in a window
-                                    getPlaylistWindow(displaying).updateTableView(playlist,
-                                            getPlaylistWindow(displaying).getSongTable());
+                                    if (getPlaylistWindow(displaying) != null) {
+                                        getPlaylistWindow(displaying).updateTableView(playlist,
+                                                getPlaylistWindow(displaying).getSongTable());
+                                    }
 
                                 } else {
                                 //if displaying library on the targetWindow
@@ -1043,7 +1053,6 @@ public class MainController {
                     Playlist playlist = playlistLibrary.getPlaylistByName(selectedPlaylistName);
                     System.out.println("[Playlist:" + selectedPlaylistName + "] " + playlist.getSongList().size() + " songs\n");
                     //show the selected playlist on the main window
-
                     playerView.updateTableView(playlist, playerView.getSongTable());
                     playerControl.updateSongList(playlist.getSongList());
                     //playerView.getSongListView().setColumnVisibility(DatabaseHandler.getInstance().getShowHideColumns(),
@@ -1051,14 +1060,6 @@ public class MainController {
                 }
             }
         }
-
-        /**private boolean[] getShowHideColumns() {
-            boolean[] visibility = new boolean[5];
-            for (int i = 0; i < visibility.length; i++) {
-                visibility[i] = playerView.getSongListView().getColumnList().get(i+1).isSelected();
-            }
-            return visibility;
-        }**/
 
         /**
          * Extract only the playlist name from text in a tree node
@@ -1117,6 +1118,8 @@ public class MainController {
                     //newPlaylistWindow.getSongListView().setColumnVisibility(DatabaseHandler.getInstance().
                     //    getShowHideColumns(), playerView.getSongListView().getTableHeaderPopup());
                     playlistWindowArray.add(newPlaylistWindow);
+                    newPlaylistWindow.updateTableView(playlistLibrary.getPlaylistByName(newPlaylistWindow.
+                            getDisplayingListName()), newPlaylistWindow.getSongTable());
                     //main window shows library
                     playerView.updateTableView(library, playerView.getSongTable());
                     //playerView.getSongListView().setColumnVisibility(DatabaseHandler.getInstance().getShowHideColumns(),
