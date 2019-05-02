@@ -117,8 +117,8 @@ public class MainController {
         playerView.getSongListView().addItemListenerTableHeader(new TableColumnCheckBoxListener());
         playerView.updateTableView(library, playerView.getSongTable());
 
-        playerView.getSongListView().getSongTable().getRowSorter().toggleSortOrder(0);
-        playerView.getSongListView().getSongTable().getRowSorter().toggleSortOrder(0);
+        playerView.getSongListView().getSongTable().getRowSorter().toggleSortOrder(1);
+        playerView.getSongListView().getSongTable().getRowSorter().toggleSortOrder(1);
 
         //restore shown/hidden columns from last session
         //playerView.getSongListView().setColumnVisibility(DatabaseHandler.getInstance().getShowHideColumns(),
