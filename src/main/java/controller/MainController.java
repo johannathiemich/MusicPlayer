@@ -117,6 +117,7 @@ public class MainController {
         playerView.getSongListView().addItemListenerTableHeader(new TableColumnCheckBoxListener());
         playerView.updateTableView(library, playerView.getSongTable());
 
+        //sort the table on title by default
         playerView.getSongListView().getSongTable().getRowSorter().toggleSortOrder(0);
         playerView.getSongListView().getSongTable().getRowSorter().toggleSortOrder(0);
 
@@ -167,14 +168,14 @@ public class MainController {
 
     /**
      * Action of "Go To Current Song"
-     * changes the focus of window/table to the playlist
+     * changes the focus to the library in the main window
      * and highlights the currently playing song of that playlist.
      */
     private void goToCurrentSongAction() {
-        //TODO need to check which playlist is activated in playerControl in order to
-        // 1) changes the focus of window/table to the playlist
-        // 2) highlights the currently playing song of that playlist
-        focusedWindow.changeTableRowSelection(playerControl.getCurrSongIndex());
+        int row = library.indexOf(playerControl.getCurrentSong());
+        playerView.toFront();
+        playerView.updateTableView(library, playerView.getSongTable());
+        playerView.changeTableRowSelection(row);
 
     }
 
