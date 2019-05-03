@@ -128,10 +128,10 @@ public class MainController {
     }
 
     /**
-     * Action of "Play" that occurs by button, double-click, menu, hotkey...
+     * Action of "Play" that occurs by button, double-click, [Play]menu, hotkey, [Play Recent]menu...
      */
     private void playAction() {
-        //update the current song of the player
+//update the current song of the player
         playerControl.setCurrSongIndex(selectedRow);
         playerControl.setCurrentSong(selectedSong);
 
@@ -140,6 +140,11 @@ public class MainController {
 
         //change the play button text
         updatePlayBtnTextInAllWindow(MusicPlayerGUI.BTNTEXT_PAUSE);
+
+        //TODO turn off [Repeat] and [Shuffle]
+        playerControl.setRepeat(false);
+        //update the [Repeat] checkbox menu to false
+        ((JCheckBoxMenuItem)playerView.getJMenuBar().getMenu(1).getItem(playerView.getJMenuBar().getMenu(1).getItemCount()-1)).setState(false);
     }
 
     /**
@@ -553,9 +558,9 @@ public class MainController {
                 System.out.println("[Controls Menu] Repeat is pressed.");
                 JCheckBoxMenuItem checkMenu = (JCheckBoxMenuItem)menuItem;
                 if(checkMenu.getState()) {
-                    playerControl.setIsRepeating(true);
+                    playerControl.setRepeat(true);
                 } else {
-                    playerControl.setIsRepeating(false);
+                    playerControl.setRepeat(false);
                 }
 
             }
