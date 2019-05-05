@@ -70,7 +70,7 @@ public class MainController {
         playerView = new MusicPlayerGUI(appName, 800, 600, "main", "library");
         library = new SongLibrary(); //should always be up-to-date with db
         playlistLibrary = new PlaylistLibrary(); //should always be up-to-date with db
-
+        playerView.addControlsMenuItemListener(new ControlsMenuItemListener());
         playerControl = new PlayerController(library, playerView);
         selectedSong = null;
 
@@ -92,7 +92,7 @@ public class MainController {
 
         //Add listeners to standard menu bar / popup menu items
         playerView.addMenuItemListener(new MenuItemListener());
-        playerView.addControlsMenuItemListener(new ControlsMenuItemListener());
+        //playerView.addControlsMenuItemListener(new ControlsMenuItemListener());
 
         //Add listener to table
         playerView.addSelectionListenerForTable(new SelectionListenerForTable());

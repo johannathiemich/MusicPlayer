@@ -1,5 +1,6 @@
 package controller;
 
+import database.DatabaseHandler;
 import javazoom.jlgui.basicplayer.*;
 import model.Song;
 import view.MusicPlayerGUI;
@@ -47,7 +48,15 @@ public class PlayerController {
         player.addBasicPlayerListener(new MyBasicPlayerListener());
 
         //initialize the recently played songs
-        recentlyPlayedSongs = new ArrayList<Song>();
+        //recentlyPlayedSongs = new ArrayList<Song>();
+        recentlyPlayedSongs = DatabaseHandler.getInstance().getRecentSongs();
+        initializeRecentlyPlayedMenu();
+    }
+
+    private void initializeRecentlyPlayedMenu() {
+        for (Song song : recentlyPlayedSongs) {
+            playerView.addMenuItemToPlayRecent(song.getFileName());
+        }
     }
 
     /**
@@ -106,7 +115,7 @@ public class PlayerController {
      * Gets the recentlyPlayedSongs
      * @return ArrayList<Song>
      */
-    public ArrayList<Song> getRecentlyPlayedSongs() { return recentlyPlayedSongs; }
+    public ArrayList<Song> getRecentlyPlayedSongs() { return DatabaseHandler.getInstance().getRecentSongs(); }
 
     /**
      * Sets isRepeating.
@@ -196,6 +205,7 @@ public class PlayerController {
         playerView.addMenuItemToPlayRecent(currentSong.getFileName());
         //System.out.println("[PlayerControl] '"+currentSong.getFileName()+"' is added to the recently played list.");
         System.out.println("'"+currentSong.getFileName()+"' is added to recentlyPlayedSongs and [Play Recent] submenu.");
+        DatabaseHandler.getInstance().addRecentSong(currentSong.getPath());
     }
 
     /**
