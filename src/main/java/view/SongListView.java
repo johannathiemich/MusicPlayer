@@ -57,7 +57,7 @@ public class SongListView extends JPanel {
         table.getTableHeader().setFont(MusicPlayerGUI.FONT);
         table.setRowHeight(tableRowHeight);
         table.setShowGrid(false);
-        table.getColumnModel().getColumn(0).setWidth(0);
+        table.getColumnModel().getColumn(0).setWidth(0);    //'FilePath' column is hidden.
         table.getColumnModel().getColumn(0).setMaxWidth(0);
         table.getColumnModel().getColumn(0).setMaxWidth(0);
         table.setAutoCreateRowSorter(true);

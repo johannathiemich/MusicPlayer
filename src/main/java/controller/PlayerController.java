@@ -112,9 +112,10 @@ public class PlayerController {
      * If true, repeat the currently playing song.
      * @param repeating the boolean
      */
-    public void setIsRepeating(boolean repeating) {
+    public void setRepeat(boolean repeating) {
         isRepeating = repeating;
         System.out.println("[Player] repeat: " + (isRepeating ? "on" : "off") );
+        //TODO better to have updateRepeatMenuCheck here...
     }
 
     //------------- Music player control --------------

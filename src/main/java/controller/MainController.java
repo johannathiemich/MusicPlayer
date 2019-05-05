@@ -118,6 +118,7 @@ public class MainController {
         playerView.getSongTable().getTableHeader().addMouseListener(new TableHeaderListener());
         playerView.getSongListView().addItemListenerTableHeader(new TableColumnCheckBoxListener());
         playerView.updateTableView(library, playerView.getSongTable());
+
         playerView.getSongListFromTable();
         //playerView.getSongListView().getSongTable().getRowSorter().toggleSortOrder(0);
         //playerView.getSongListView().getSongTable().getRowSorter().toggleSortOrder(0);
@@ -129,10 +130,10 @@ public class MainController {
     }
 
     /**
-     * Action of "Play" that occurs by button, double-click, menu, hotkey...
+     * Action of "Play" that occurs by button, double-click, [Play]menu, hotkey, [Play Recent]menu...
      */
     private void playAction() {
-        //update the current song of the player
+//update the current song of the player
         playerControl.setCurrSongIndex(selectedRow);
         playerControl.setCurrentSong(selectedSong);
 
@@ -141,6 +142,11 @@ public class MainController {
 
         //change the play button text
         updatePlayBtnTextInAllWindow(MusicPlayerGUI.BTNTEXT_PAUSE);
+
+        //TODO turn off [Repeat] and [Shuffle]
+        playerControl.setRepeat(false);
+        //update the [Repeat] checkbox menu to false
+        ((JCheckBoxMenuItem)playerView.getJMenuBar().getMenu(1).getItem(playerView.getJMenuBar().getMenu(1).getItemCount()-1)).setState(false);
     }
 
     /**
@@ -169,14 +175,14 @@ public class MainController {
 
     /**
      * Action of "Go To Current Song"
-     * changes the focus of window/table to the playlist
+     * changes the focus to the library in the main window
      * and highlights the currently playing song of that playlist.
      */
     private void goToCurrentSongAction() {
-        //TODO need to check which playlist is activated in playerControl in order to
-        // 1) changes the focus of window/table to the playlist
-        // 2) highlights the currently playing song of that playlist
-        focusedWindow.changeTableRowSelection(playerControl.getCurrSongIndex());
+        int row = library.indexOf(playerControl.getCurrentSong());
+        playerView.toFront();
+        playerView.updateTableView(library, playerView.getSongTable());
+        playerView.changeTableRowSelection(row);
 
     }
 
@@ -555,9 +561,9 @@ public class MainController {
                 System.out.println("[Controls Menu] Repeat is pressed.");
                 JCheckBoxMenuItem checkMenu = (JCheckBoxMenuItem)menuItem;
                 if(checkMenu.getState()) {
-                    playerControl.setIsRepeating(true);
+                    playerControl.setRepeat(true);
                 } else {
-                    playerControl.setIsRepeating(false);
+                    playerControl.setRepeat(false);
                 }
 
             }
@@ -648,10 +654,10 @@ public class MainController {
 
     /**
      * MouseListenerForTable covers:
-     * 1. popup trigger for right-click inside of table
-     * 2. popup trigger for right-click outside of table
-     * 3. clear selections for left-click outside of table
-     * 4. double-click to play the song
+     * [1-1] popup trigger for right-click inside of table
+     * [1-2] popup trigger for right-click outside of table
+     * [2] double-click to play the song
+     * [3] clear selections for left-click outside of table
      */
     class MouseListenerForTable extends MouseAdapter {
         private JTable source;
@@ -666,33 +672,35 @@ public class MainController {
             row = source.rowAtPoint(e.getPoint());
             col = source.columnAtPoint(e.getPoint());
             isRowInbound = (row >= 0) && (row < rowCount);
-            // Right-click Popup Trigger (for MacOS)
+
+            //[1] Right-click Popup Trigger (for MacOS)
             if (e.isPopupTrigger() && library.size() > 0) {
-                if (isRowInbound) {   //right click in table
+                if (isRowInbound) {   //[1-1] right click in table
                     System.out.println("right clicked in table. row:" + row);
                     //source.changeSelection(row, col, false, false);
                     playerView.getPopUpMenu().show(e.getComponent(), e.getX(), e.getY());
-                } else {                //right click out of table
+                } else {              //[1-2] right click out of table
                     System.out.println("right clicked outside of the table");
                     playerView.getPopUpMenuInBlankspace().show(e.getComponent(), e.getX(), e.getY());
                 }
             }
-            // Left-click outside of table to clear selection
-            if (!isRowInbound && !e.isPopupTrigger()) {
-                playerView.getSongTable().clearSelection();
-                System.out.println("Cleared row selections.");
-            }
+
+            //[3] Left-click outside of table to clear selection
+//            if (!isRowInbound && !e.isPopupTrigger()) {
+//                playerView.getSongTable().clearSelection();
+//                System.out.println("Cleared row selections.");
+//            }
         }
 
         @Override
         public void mouseReleased(MouseEvent e) {
-            // Right-click Popup Trigger (for Windows)
+            //[1] Right-click Popup Trigger (for Windows)
             if (e.isPopupTrigger()) {
-                if (isRowInbound) {   //right click in table
+                if (isRowInbound) {   //[1-1] right click in table
                     System.out.println("right clicked inside of the table");
                     //source.changeSelection(row, col, false, false);
                     playerView.getPopUpMenu().show(e.getComponent(), e.getX(), e.getY());
-                } else {                //right click out of table
+                } else {              //[1-2] right click out of table
                     System.out.println("right clicked outside of the table");
                     playerView.getPopUpMenuInBlankspace().show(e.getComponent(), e.getX(), e.getY());
                 }
@@ -701,19 +709,25 @@ public class MainController {
 
         @Override
         public void mouseClicked(MouseEvent e) {
-            // Double-click on a song to play
+            //[2] Double-click on a song to play
             if (isRowInbound) {
-                if ((e.getClickCount() == 2) && !e.isConsumed() && !e.isPopupTrigger()) {
-                    System.out.println("[Table] double clicked");
-                    selectedSong = playerControl.getSongList().get(row);
-                    selectedRow = row;
-                    playAction();
+                if(!e.isPopupTrigger()) {   //exclude right click
+                    if ((e.getClickCount() == 2) && !e.isConsumed()) {
+                        System.out.println("[Table] double clicked");
+                        selectedSong = playerControl.getSongList().get(row);
+                        selectedRow = row;
+                        playAction();
+                    }
                 }
             }
         }
     }
 
-    class TableHeaderListener implements MouseListener {
+    /**
+     * TableHeaderListener covers
+     * triggering a popup menu on the table header by right-click.
+     */
+    class TableHeaderListener extends MouseAdapter {
 
         @Override
         public void mouseClicked(MouseEvent e) {
@@ -735,19 +749,11 @@ public class MainController {
 
         @Override
         public void mouseReleased(MouseEvent e) {
-            System.out.println("mouse pressed on header");
+            System.out.println("mouse released on header");
             if (e.isPopupTrigger()) {
                 playerView.getSongListView().getTableHeaderPopupToShow().show(e.getComponent(), e.getX(), e.getY());
                 System.out.println("is popup");
             }
-        }
-
-        @Override
-        public void mouseEntered(MouseEvent e) {
-        }
-
-        @Override
-        public void mouseExited(MouseEvent e) {
         }
     }
 
@@ -787,6 +793,7 @@ public class MainController {
             }
             DatabaseHandler.getInstance().saveShowHideColumns(visibility);
         }
+
     }
 
     /**
@@ -880,7 +887,8 @@ public class MainController {
 
                     System.out.println("[DragDrop] string transferable" + droppedSongs);
                     draggedCount = droppedSongs.split("\n").length;
-
+                    //TODO drag&drop between windows stopped working.
+                    // Maybe because the string doesn't contain the content of hidden columns.
                     for (String song : droppedSongs.split("\n")) {
                         String songPath = song.split("\t")[0];
                         System.out.println("[DragDrop] song name is " + songPath);
