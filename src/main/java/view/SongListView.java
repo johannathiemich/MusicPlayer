@@ -6,6 +6,7 @@ import model.Song;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
@@ -98,12 +99,27 @@ public class SongListView extends JPanel {
         for (Song song : songList) {
             tableModel.addRow(song.toArray());
         }
+
         tableModel.fireTableDataChanged();
         table.getRowSorter().toggleSortOrder(2);
         table.getRowSorter().toggleSortOrder(1);
         System.out.println("all rows changed");
         table.repaint();
         this.repaint();
+    }
+
+    public void updateRowOrder
+
+    public ArrayList<Song> getSongListFromTable() {
+        ArrayList<Song> songList = new ArrayList<Song>();
+        for (int i = 0; i < tableModel.getRowCount(); i++) {
+            System.out.println("output: " +
+                    tableModel.getValueAt(i, 0) + " " +
+                    model.getValueAt(i, 1) + " " +
+                    model.getValueAt(i, 2) );
+
+        }
+        return new ArrayList<Song>();
     }
 
     public static JPopupMenu getTableHeaderPopup() {
