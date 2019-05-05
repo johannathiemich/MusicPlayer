@@ -147,6 +147,14 @@ public class MainController {
         playerControl.setRepeat(false);
         //update the [Repeat] checkbox menu to false
         ((JCheckBoxMenuItem)playerView.getJMenuBar().getMenu(1).getItem(playerView.getJMenuBar().getMenu(1).getItemCount()-1)).setState(false);
+        ((JCheckBoxMenuItem)playerView.getJMenuBar().getMenu(1).getItem(playerView.getJMenuBar().getMenu(1).getItemCount()-2)).setState(false);
+
+        for (int i = 0; i < playlistWindowArray.size(); i++) {
+            ((JCheckBoxMenuItem) playlistWindowArray.get(i).getJMenuBar().getMenu(1).
+                    getItem(playlistWindowArray.get(i).getJMenuBar().getMenu(1).getItemCount()-1)).setState(false);
+            ((JCheckBoxMenuItem) playlistWindowArray.get(i).getJMenuBar().getMenu(1).
+                    getItem(playlistWindowArray.get(i).getJMenuBar().getMenu(1).getItemCount()-2)).setState(false);
+        }
     }
 
     /**
@@ -556,6 +564,8 @@ public class MainController {
             else if(menuName.equals("shuffle")){
                 System.out.println("[Controls Menu] Shuffle is pressed.");
                 //TODO when this is clicked we need to have a random song play next
+                JCheckBoxMenuItem checkMenu = (JCheckBoxMenuItem) menuItem;
+                playerControl.setShuffle(checkMenu.getState());
             }
             else if(menuName.equals("repeat")){
                 System.out.println("[Controls Menu] Repeat is pressed.");

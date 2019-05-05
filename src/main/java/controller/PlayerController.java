@@ -27,6 +27,7 @@ public class PlayerController {
     private int recentlyPlayedLimit = 10;
 
     private boolean isRepeating = false;
+    private boolean isShuffling = false;
 
     /**
      * Constructor for this class
@@ -116,6 +117,11 @@ public class PlayerController {
         isRepeating = repeating;
         System.out.println("[Player] repeat: " + (isRepeating ? "on" : "off") );
         //TODO better to have updateRepeatMenuCheck here...
+    }
+
+    public void setShuffle(boolean shuffle) {
+        isShuffling = shuffle;
+        System.out.println("[Player] : " + (isShuffling ? "on" : "off"));
     }
 
     //------------- Music player control --------------
@@ -349,11 +355,16 @@ public class PlayerController {
         public void stateUpdated(BasicPlayerEvent basicPlayerEvent) {
             //Autoplay the next music when the player finishes playing the current music
             if(basicPlayerEvent.getCode() == BasicPlayerEvent.EOM) {    //EOM: End of MP3
-                //TODO check shuffle
                 if(isRepeating){
                     System.out.println("[Player] Repeat the song.");
                     playSong();
-                }else {
+                }else if (isShuffling){
+                    //TODO implement shuffle
+                    int nextSongIndex = (int)(Math.random() * songList.size());
+                    setCurrentSong(songList.get(nextSongIndex));
+                    System.out.println("[Player] next song index: " + nextSongIndex);
+
+                } else {
                     //if not, Auto play the next song
                     System.out.println("[Player] Auto play the next song.");
                     playNextSong();
