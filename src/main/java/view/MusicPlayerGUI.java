@@ -217,18 +217,6 @@ public class MusicPlayerGUI extends JFrame {
         controlsMenu.add(repeatMenuItem);
         //Shortcuts for Controls Menu
 
-       // playMenuItem.setMnemonic(KeyEvent.VK_P);
-       /* nextMenuItem.setMnemonic(KeyEvent.VK_N);
-        previousMenuItem.setMnemonic(KeyEvent.VK_P);
-        //playRecentMenu.setMnemonic(KeyEvent.VK_R);
-        goToCurrentSongMenuItem.setMnemonic(KeyEvent.VK_C);
-        increaseVolumeMenuItem.setMnemonic(KeyEvent.VK_I);
-        decreaseVolumeMenuItem.setMnemonic(KeyEvent.VK_D);
-        shuffleMenuItem.setMnemonic(KeyEvent.VK_S);
-        repeatMenuItem.setMnemonic(KeyEvent.VK_R);
-        */
-
-
         playMenuItem.setAccelerator(KeyStroke.getKeyStroke(32, 0));
 
         nextMenuItem.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_RIGHT,
