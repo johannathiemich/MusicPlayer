@@ -539,7 +539,7 @@ public class MainController {
                 System.out.println("[Controls Menu] Previous is pressed.");
                 prevAction();
             }
-            else if(menuName.equals("play_recent")){
+            else if(menuName.equals("recent")){
                 String text = menuItem.getText();
                 System.out.println("[Controls Menu] Play Recent is pressed. "+text);
 
