@@ -4,16 +4,12 @@ import database.DatabaseHandler;
 import model.Song;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
+import javax.swing.table.*;
 import java.awt.*;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.List;
-//import controller.TableRowTransferHandler;
 
 /**
  * SongListView class is to show either the library or a playlist.
@@ -35,7 +31,7 @@ public class SongListView extends JPanel {
      */
     public SongListView(){
         // Table setup
-        columnHeader = new String[]{"Title", "Artist", "Album", "Year", "Comment", "Genre"};
+        columnHeader = new String[]{"Path", "Title", "Artist", "Album", "Year", "Comment", "Genre"};
         table = new JTable(){
             @Override   //block table contents editing
             public boolean isCellEditable(int row, int column) { return false; }
@@ -57,12 +53,13 @@ public class SongListView extends JPanel {
         table.getTableHeader().setFont(MusicPlayerGUI.FONT);
         table.setRowHeight(tableRowHeight);
         table.setShowGrid(false);
-        table.getColumnModel().getColumn(0).setWidth(0);    //'FilePath' column is hidden.
-        table.getColumnModel().getColumn(0).setMaxWidth(0);
-        table.getColumnModel().getColumn(0).setMaxWidth(0);
-        table.setAutoCreateRowSorter(true);
 
+        table.setAutoCreateRowSorter(true);
         createTableHeaderPopup(DatabaseHandler.getInstance().getShowHideColumns());
+        table.getColumnModel().getColumn(0).setWidth(0);
+        table.getColumnModel().getColumn(0).setMinWidth(0);
+        table.getColumnModel().getColumn(0).setMaxWidth(0);
+        table.getColumnModel().getColumn(0).setResizable(false);
 
         //put table in place
         tableScrollPane = new JScrollPane(table);
@@ -89,6 +86,11 @@ public class SongListView extends JPanel {
         //for dynamic row addition
         tableModel = new DefaultTableModel(columnHeader,0);
         table.setModel(tableModel);
+        table.getColumnModel().getColumn(0).setWidth(0);
+        table.getColumnModel().getColumn(0).setMinWidth(0);
+        table.getColumnModel().getColumn(0).setMaxWidth(0);
+        table.getColumnModel().getColumn(0).setResizable(false);
+
     }
 
     /**
@@ -99,16 +101,34 @@ public class SongListView extends JPanel {
     public void updateTableView(ArrayList<Song> songList) {
         initializeTable();
         for (Song song : songList) {
-            tableModel.addRow(song.toArrayNoPath());
+            tableModel.addRow(song.toArray());
         }
         tableModel.fireTableDataChanged();
-        //table.getRowSorter().toggleSortOrder(1);
-        //table.getRowSorter().toggleSortOrder(0);
-        System.out.println("all rows changed");
+        table.getRowSorter().toggleSortOrder(2);
+        table.getRowSorter().toggleSortOrder(1);
+        table.getColumnModel().getColumn(0).setWidth(0);
+        table.getColumnModel().getColumn(0).setMinWidth(0);
+        table.getColumnModel().getColumn(0).setMaxWidth(0);
+        table.getColumnModel().getColumn(0).setResizable(false);
         table.repaint();
-        this.keepSortOrder(table);
         this.repaint();
     }
+
+    public void updateRowOrder() {
+
+    }
+
+/*    public ArrayList<Song> getSongListFromTable() {
+        ArrayList<Song> songList = new ArrayList<Song>();
+        for (int i = 0; i < tableModel.getRowCount(); i++) {
+            System.out.println("output: " +
+                    tableModel.getValueAt(i, 0) + " " +
+                    model.getValueAt(i, 1) + " " +
+                    model.getValueAt(i, 2) );
+
+        }
+        return new ArrayList<Song>();
+    }*/
 
     public static JPopupMenu getTableHeaderPopup() {
         return tableHeaderPopup;
@@ -194,6 +214,7 @@ public class SongListView extends JPanel {
         column.setWidth(0);
         column.setMinWidth(0);
         column.setMaxWidth(0);
+
     }
 
     public void showColumn(TableColumn column, JPopupMenu menu) {
@@ -207,7 +228,8 @@ public class SongListView extends JPanel {
             }
         }
         size = table.getWidth() / numCol;
-
+        System.out.println("size: " + size);
+        System.out.println("numCol: " + numCol);
         column.setWidth(size);
         column.setMinWidth(size);
         column.setMaxWidth(size);
@@ -218,75 +240,16 @@ public class SongListView extends JPanel {
     {
         Enumeration<TableColumn> columns = table.getColumnModel().getColumns();
         ArrayList<TableColumn> columnList = Collections.list(columns);
-        for (int i = 1; i < columnList.size(); i++) {
+
+        assert(menu.getComponentCount() == columnList.size());
+        for (int i = 1; i < menu.getComponentCount(); i++) {
             JCheckBoxMenuItem item = (JCheckBoxMenuItem) menu.getComponent(i);
                 item.setSelected(visibility[i - 1]);
                 if (visibility[i - 1]) {
-                    this.showColumn(table.getColumnModel().getColumn(i), menu);
+                    this.showColumn(table.getColumnModel().getColumn(i+1), menu);
                 } else {
-                    this.hideColumn(table.getColumnModel().getColumn(i));
+                    this.hideColumn(table.getColumnModel().getColumn(i+1));
                 }
-        }
-    }
-
-    private int[] getTableSortedColumns(JTable table){
-        int size = table.getColumnCount();
-        int[] index = new int[]{-1, -1, -1};
-
-        List<? extends RowSorter.SortKey> rowSorter = table.getRowSorter().getSortKeys();
-        System.out.println("get sort keys size: " + table.getRowSorter().getSortKeys().size());
-        Iterator<? extends RowSorter.SortKey> it = rowSorter.iterator();
-        int i = 0;
-        while(it.hasNext()){
-            RowSorter.SortKey sortKey = it.next();
-            if(sortKey.getSortOrder().compareTo(SortOrder.UNSORTED)!=0 ){
-                index[i] = sortKey.getColumn();
-                i++;
-            }
-        }
-        return index;
-    }
-
-    /**
-     * Return the sort orientation of a column.
-     * @param table
-     * @param columnIndex
-     * @return int i == ascending, -1 == descending, 0 == unsorted
-     */
-    private int getTableSortedOrientation(JTable table, int columnIndex){
-        int[] indices = getTableSortedColumns(table);
-        int orientation = 0;
-        for(int i = 0;i<indices.length;i++){
-            if(indices[i] == columnIndex){
-                SortOrder so = table.getRowSorter().getSortKeys().get(i).getSortOrder();
-                if(so.compareTo(SortOrder.ASCENDING) == 0){
-                    orientation = 1;
-                }else if(so.compareTo(SortOrder.DESCENDING) == 0){
-                    orientation = -1;
-                }
-            }
-        }
-        return orientation;
-    }
-
-    public void keepSortOrder(JTable table) {
-        int[] col = getTableSortedColumns(table);
-        for(int i = 0;i<col.length;i++){
-            if(col[i]>=0){
-                String orientation = "";
-                switch(getTableSortedOrientation(table, col[i])){
-                    case 1:
-                        orientation = "Ascending";
-                        break;
-                    case 0:
-                        orientation = "Unsorted";
-                        break;
-                    case -1:
-                        orientation = "Descending";
-                        break;
-                }
-                System.out.println("index "+col[i]+" "+orientation);
-            }
         }
     }
 

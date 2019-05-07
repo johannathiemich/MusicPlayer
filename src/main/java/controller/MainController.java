@@ -120,8 +120,9 @@ public class MainController {
         playerView.updateTableView(library, playerView.getSongTable());
 
         playerView.getSongListFromTable();
-        //playerView.getSongListView().getSongTable().getRowSorter().toggleSortOrder(0);
-        //playerView.getSongListView().getSongTable().getRowSorter().toggleSortOrder(0);
+
+        playerView.getSongListView().getSongTable().getRowSorter().toggleSortOrder(1);
+        playerView.getSongListView().getSongTable().getRowSorter().toggleSortOrder(1);
 
         //restore shown/hidden columns from last session
         //playerView.getSongListView().setColumnVisibility(DatabaseHandler.getInstance().getShowHideColumns(),

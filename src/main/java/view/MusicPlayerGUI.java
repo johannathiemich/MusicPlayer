@@ -260,20 +260,21 @@ public class MusicPlayerGUI extends JFrame {
         //add menu bar to main frame
         this.setJMenuBar(menuBar);
     }
-//
-//    public void updateTableView(ArrayList<Song> songList){
-//        songListView.updateTableView(songList);
-//    }
+
+
+    public void updateTableView(ArrayList<Song> songList){
+        songListView.updateTableView(songList);
+    }
 
     public void updateTableView(ArrayList<Song> library, JTable table){
         songListView.updateTableView(library);
+
         sideView.getLibraryTree().setSelectionRow(0);
         sideView.getPlaylistTree().clearSelection();
         //update displayingListName
         setDisplayingListName("library");
 
         setShowHideColumns(SongListView.getColumnVisibility(), SongListView.getTableHeaderPopup(), table);
-
     }
 
     public void updateTableView(Playlist playlist, JTable table){
@@ -327,6 +328,7 @@ public class MusicPlayerGUI extends JFrame {
         }
         return new ArrayList<Song>();
     }
+
 
     /**
      * Gets songListView of the main window
