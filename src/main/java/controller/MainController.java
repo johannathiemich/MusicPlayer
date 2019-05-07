@@ -1242,7 +1242,7 @@ public class MainController {
 
         //Disable the unnecessary componets
         playlistWindow.getSideView().setVisible(false);
-        playlistWindow.getJMenuBar().getMenu(1).setVisible(false);  //hide view menu
+        playlistWindow.getJMenuBar().getMenu(2).setVisible(false);  //hide view menu
 
         //Add listeners for the new window
         //menu

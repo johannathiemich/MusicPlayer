@@ -228,9 +228,8 @@ public class MusicPlayerGUI extends JFrame {
         repeatMenuItem.setMnemonic(KeyEvent.VK_R);
         */
 
-       // playMenuItem.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R,
-         //       java.awt.Event.CTRL_MASK));
-        //playMenuItem.setMnemonic(KeyEvent.VK_SPACE);
+
+        playMenuItem.setAccelerator(KeyStroke.getKeyStroke(32, 0));
 
         nextMenuItem.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_RIGHT,
                 java.awt.Event.CTRL_MASK));

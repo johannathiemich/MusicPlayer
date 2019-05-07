@@ -7,6 +7,7 @@ import javax.swing.*;
 import javax.swing.table.*;
 import java.awt.*;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -66,6 +67,12 @@ public class SongListView extends JPanel {
         tableScrollPane.setBorder(BorderFactory.createEmptyBorder());
         this.setLayout(new BorderLayout());
         this.add(tableScrollPane, BorderLayout.CENTER);
+
+        //disable left and right keys
+        KeyStroke leftArrow = KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, KeyEvent.CTRL_DOWN_MASK);
+        KeyStroke rightArrow = KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, KeyEvent.CTRL_DOWN_MASK);
+        table.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(leftArrow, 0);
+        table.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(rightArrow, 0);
     }
 
     /**
