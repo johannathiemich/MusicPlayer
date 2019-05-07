@@ -4,9 +4,7 @@ import database.DatabaseHandler;
 import model.Song;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableModel;
+import javax.swing.table.*;
 import java.awt.*;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
@@ -55,12 +53,13 @@ public class SongListView extends JPanel {
         table.getTableHeader().setFont(MusicPlayerGUI.FONT);
         table.setRowHeight(tableRowHeight);
         table.setShowGrid(false);
-        table.getColumnModel().getColumn(0).setWidth(0);
-        table.getColumnModel().getColumn(0).setMaxWidth(0);
-        table.getColumnModel().getColumn(0).setMaxWidth(0);
-        table.setAutoCreateRowSorter(true);
 
+        table.setAutoCreateRowSorter(true);
         createTableHeaderPopup(DatabaseHandler.getInstance().getShowHideColumns());
+        table.getColumnModel().getColumn(0).setWidth(0);
+        table.getColumnModel().getColumn(0).setMinWidth(0);
+        table.getColumnModel().getColumn(0).setMaxWidth(0);
+        table.getColumnModel().getColumn(0).setResizable(false);
 
         //put table in place
         tableScrollPane = new JScrollPane(table);
@@ -87,6 +86,11 @@ public class SongListView extends JPanel {
         //for dynamic row addition
         tableModel = new DefaultTableModel(columnHeader,0);
         table.setModel(tableModel);
+        table.getColumnModel().getColumn(0).setWidth(0);
+        table.getColumnModel().getColumn(0).setMinWidth(0);
+        table.getColumnModel().getColumn(0).setMaxWidth(0);
+        table.getColumnModel().getColumn(0).setResizable(false);
+
     }
 
     /**
@@ -103,14 +107,20 @@ public class SongListView extends JPanel {
         tableModel.fireTableDataChanged();
         table.getRowSorter().toggleSortOrder(2);
         table.getRowSorter().toggleSortOrder(1);
-        System.out.println("all rows changed");
+        table.getColumnModel().getColumn(0).setWidth(0);
+        table.getColumnModel().getColumn(0).setMaxWidth(0);
+        table.getColumnModel().getColumn(0).setMaxWidth(0);
+        table.getColumnModel().getColumn(0).setResizable(false);
+
         table.repaint();
         this.repaint();
     }
 
-    public void updateRowOrder
+    public void updateRowOrder() {
 
-    public ArrayList<Song> getSongListFromTable() {
+    }
+
+/*    public ArrayList<Song> getSongListFromTable() {
         ArrayList<Song> songList = new ArrayList<Song>();
         for (int i = 0; i < tableModel.getRowCount(); i++) {
             System.out.println("output: " +
@@ -120,7 +130,7 @@ public class SongListView extends JPanel {
 
         }
         return new ArrayList<Song>();
-    }
+    }*/
 
     public static JPopupMenu getTableHeaderPopup() {
         return tableHeaderPopup;
@@ -206,6 +216,7 @@ public class SongListView extends JPanel {
         column.setWidth(0);
         column.setMinWidth(0);
         column.setMaxWidth(0);
+
     }
 
     public void showColumn(TableColumn column, JPopupMenu menu) {
@@ -220,6 +231,7 @@ public class SongListView extends JPanel {
         }
         size = table.getWidth() / numCol;
         System.out.println("size: " + size);
+        System.out.println("numCol: " + numCol);
         column.setWidth(size);
         column.setMinWidth(size);
         column.setMaxWidth(size);
@@ -230,6 +242,10 @@ public class SongListView extends JPanel {
     {
         Enumeration<TableColumn> columns = table.getColumnModel().getColumns();
         ArrayList<TableColumn> columnList = Collections.list(columns);
+      /*  table.getColumnModel().getColumn(0).setResizable(false);
+        table.getColumnModel().getColumn(0).setWidth(0);
+        table.getColumnModel().getColumn(0).setMaxWidth(0);
+        table.getColumnModel().getColumn(0).setMinWidth(0);*/
         assert(menu.getComponentCount() == columnList.size());
         for (int i = 1; i < menu.getComponentCount(); i++) {
             JCheckBoxMenuItem item = (JCheckBoxMenuItem) menu.getComponent(i);
