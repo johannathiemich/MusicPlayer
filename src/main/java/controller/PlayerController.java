@@ -295,44 +295,53 @@ public class PlayerController {
      * @param val value to be set as volume, range from 0 to 100
      */
     public void setVolume(int val) {
-        System.out.println("volume: "+val);
-        double convertedVal = val / Math.abs(player.getMaximumGain() - player.getMinimumGain());
-        try {
-            player.setGain(convertedVal);
-            //System.out.println(player.getGainValue());
-        } catch (BasicPlayerException e) {
-            e.printStackTrace();
+        if (val <= 0) {
+            System.out.println("volume min 0");
+        } if (val >= 100) {
+            System.out.println("volume max 100");
+        } else {
+            double convertedVal = val / Math.abs(player.getMaximumGain() - player.getMinimumGain());
+            try {
+                player.setGain(convertedVal);
+            } catch (BasicPlayerException e) {
+                e.printStackTrace();
+            }
+            System.out.println("volume: " + val);
         }
     }
+
+    /**
+     * Increases the volume of the basic player by 5
+     */
     public void increaseVolume(){
         System.out.println("Volume increased by 5%");
         int currentVolume = playerView.getControlView().getVolumeSlider().getValue();
         int increasedVolume = currentVolume + 5;
+        if (increasedVolume > 100) { increasedVolume = 100; }
+
         setVolume(increasedVolume);
+        //update the view
         playerView.setVolumeSlider(increasedVolume);
     }
+
+    /**
+     * Decreases the volume of the basic player by 5
+     */
     public void decreaseVolume(){
         System.out.println("Volume decreased by 5%");
         int currentVolume = playerView.getControlView().getVolumeSlider().getValue();
         int decreasedVolume = currentVolume - 5;
-        setVolume(decreasedVolume);
-        playerView.setVolumeSlider(decreasedVolume);
-    }
+        if (decreasedVolume < 0) { decreasedVolume = 0; }
 
-    /**
-     * Gets the volume of the basic player.
-     * Note that the value is converted from player.getGainValue() to range from 0 to 100.
-     * @return integer from 0 to 100
-     */
-    public int getVolume() {
-        return (int)(player.getGainValue() * Math.abs(player.getMaximumGain() - player.getMinimumGain()));
+        setVolume(decreasedVolume);
+        //update the view
+        playerView.setVolumeSlider(decreasedVolume);
     }
 
     //TODO below should be removed and the related parts should be refactored.
     public int getCurrSongIndex() {
         return this.currSongIndex;
     }
-
 
     /**
      * MyBasicPlayerListener class implements the actions triggered from basic player
@@ -359,6 +368,7 @@ public class PlayerController {
 
         /**
          * Notification callback for basicplayer events such as opened, eom ...
+         * Repeat / Shuffle / Autoplay features are implemented.
          * @param basicPlayerEvent
          */
         @Override
@@ -369,7 +379,6 @@ public class PlayerController {
                     System.out.println("[Player] Repeat the song.");
                     playSong();
                 }else if (isShuffling){
-                    //TODO implement shuffle
                     int nextSongIndex = (int)(Math.random() * songList.size());
                     setCurrentSong(songList.get(nextSongIndex));
                     System.out.println("[Player] next song index: " + nextSongIndex);
