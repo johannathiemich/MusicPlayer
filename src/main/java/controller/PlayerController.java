@@ -181,6 +181,7 @@ public class PlayerController {
      * @param song to be played
      * @param index set the currSongIndex
      */
+    //TODO index should be not assigned this way..
     public void playSong(Song song, int index){
         playSong(song);
         currSongIndex = index;
@@ -378,10 +379,12 @@ public class PlayerController {
                 if(isRepeating){
                     System.out.println("[Player] Repeat the song.");
                     playSong();
+
                 }else if (isShuffling){
                     int nextSongIndex = (int)(Math.random() * songList.size());
-                    setCurrentSong(songList.get(nextSongIndex));
-                    System.out.println("[Player] next song index: " + nextSongIndex);
+                    System.out.println("[Player] shuffled next song index: " + nextSongIndex);
+                    setCurrSongIndex(nextSongIndex);
+                    playSong(songList.get(nextSongIndex));
 
                 } else {
                     //if not, Auto play the next song
