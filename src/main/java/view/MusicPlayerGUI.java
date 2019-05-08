@@ -2,17 +2,14 @@ package view;
 
 import model.Playlist;
 import model.Song;
-import model.SongLibrary;
 
 import javax.swing.*;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.dnd.DropTarget;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.WindowFocusListener;
 import java.util.ArrayList;
@@ -276,6 +273,21 @@ public class MusicPlayerGUI extends JFrame {
     }
 
     /**
+     * Checks or unchecks the JCheckMenuItem [Repeat].
+     * @param state true to check, false to uncheck
+     */
+    public void setRepeatMenuState(boolean state) {
+        repeatMenuItem.setState(state);
+    }
+    /**
+     * Checks or unchecks the JCheckMenuItem [Shuffle].
+     * @param state true to check, false to uncheck
+     */
+    public void setShuffleMenuState(boolean state) {
+        shuffleMenuItem.setState(state);
+    }
+
+    /**
      * Check if any row is selected in the song table
      * @return whether or not any row is selected.
      */
@@ -288,8 +300,7 @@ public class MusicPlayerGUI extends JFrame {
      * @param rowIndex row to be selected.
      */
     public void changeTableRowSelection(int rowIndex){
-        songListView.getSongTable().changeSelection(rowIndex,0,false,
-                false);
+        songListView.getSongTable().changeSelection(rowIndex,0,false,false);
     }
 
     /**
@@ -355,14 +366,6 @@ public class MusicPlayerGUI extends JFrame {
         deleteSongMenuItemPopup.setVisible(false);
         addToPlaylistPopupMenu.setVisible(false);
         return popUpMenu;
-    }
-
-    public void setSongListView(SongListView songListView) {
-        this.songListView = songListView;
-    }
-
-    public void setControlView(ControlView controlView) {
-        this.controlView = controlView;
     }
 
     /**
