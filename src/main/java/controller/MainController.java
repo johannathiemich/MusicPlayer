@@ -26,7 +26,6 @@ import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -124,8 +123,12 @@ public class MainController {
         playerView.getSongListFromTable();
 
         //sort the library on 'Title' column by default
-        playerView.getSongListView().getSongTable().getRowSorter().toggleSortOrder(1);
-        playerView.getSongListView().getSongTable().getRowSorter().toggleSortOrder(1);
+        RowSorter rowSorter = playerView.getSongListView().getSongTable().getRowSorter();
+        rowSorter.toggleSortOrder(1);
+        rowSorter.toggleSortOrder(1);
+        //TODO need sort actions to combine this in one place.
+        //sort - update the library
+        library.sortByTitle(true);
 
         //restore shown/hidden columns from last session
         //playerView.getSongListView().setColumnVisibility(DatabaseHandler.getInstance().getShowHideColumns(),
@@ -748,6 +751,7 @@ public class MainController {
     class TableHeaderListener extends MouseAdapter {
         private JTableHeader source;
         private String columnText;
+        private RowSorter rowSorter;
 
         @Override
         public void mousePressed(MouseEvent e) {
@@ -760,14 +764,12 @@ public class MainController {
                 source = (JTableHeader)e.getSource();
                 columnText = source.getColumnModel().getColumn(source.columnAtPoint(e.getPoint())).getHeaderValue().toString();
                 System.out.println("selected column: " + columnText);
+
+                //TODO 5/8/19 marker by sella
+//                rowSorter = playerView.getSongListView().getSongTable().getRowSorter();
+//                rowSorter.getSortKeys();
                 //sort the library object
-                library.sort(new Comparator<Song>() {
-                    // sorting in ascending order of title
-                    @Override
-                    public int compare(Song o1, Song o2) {
-                        return o1.getTitle().compareTo(o2.getTitle());
-                    }
-                });
+                library.sortByTitle(true);
             }
 
         }
