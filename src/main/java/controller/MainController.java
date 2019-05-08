@@ -134,7 +134,7 @@ public class MainController {
      * Action of "Play" that occurs by button, double-click, [Play]menu, hotkey, [Play Recent]menu...
      */
     private void playAction() {
-//update the current song of the player
+        //update the current song of the player
         playerControl.setCurrSongIndex(selectedRow);
         playerControl.setCurrentSong(selectedSong);
 
@@ -144,17 +144,15 @@ public class MainController {
         //change the play button text
         updatePlayBtnTextInAllWindow(MusicPlayerGUI.BTNTEXT_PAUSE);
 
-        //TODO turn off [Repeat] and [Shuffle]
+        //turn off Repeat & Shuffle
         playerControl.setRepeat(false);
-        //update the [Repeat] checkbox menu to false
-        ((JCheckBoxMenuItem)playerView.getJMenuBar().getMenu(1).getItem(playerView.getJMenuBar().getMenu(1).getItemCount()-1)).setState(false);
-        ((JCheckBoxMenuItem)playerView.getJMenuBar().getMenu(1).getItem(playerView.getJMenuBar().getMenu(1).getItemCount()-2)).setState(false);
-
-        for (int i = 0; i < playlistWindowArray.size(); i++) {
-            ((JCheckBoxMenuItem) playlistWindowArray.get(i).getJMenuBar().getMenu(1).
-                    getItem(playlistWindowArray.get(i).getJMenuBar().getMenu(1).getItemCount()-1)).setState(false);
-            ((JCheckBoxMenuItem) playlistWindowArray.get(i).getJMenuBar().getMenu(1).
-                    getItem(playlistWindowArray.get(i).getJMenuBar().getMenu(1).getItemCount()-2)).setState(false);
+        playerControl.setShuffle(false);
+        //update the checkmenu state of [Repeat] & [Shuffle] in all windows
+        playerView.setRepeatMenuState(false);
+        playerView.setShuffleMenuState(false);
+        for (MusicPlayerGUI playlistWindow : playlistWindowArray) {
+            playlistWindow.setRepeatMenuState(false);
+            playlistWindow.setShuffleMenuState(false);
         }
     }
 
@@ -564,18 +562,13 @@ public class MainController {
             }
             else if(menuName.equals("shuffle")){
                 System.out.println("[Controls Menu] Shuffle is pressed.");
-                //TODO when this is clicked we need to have a random song play next
                 JCheckBoxMenuItem checkMenu = (JCheckBoxMenuItem) menuItem;
                 playerControl.setShuffle(checkMenu.getState());
             }
             else if(menuName.equals("repeat")){
                 System.out.println("[Controls Menu] Repeat is pressed.");
                 JCheckBoxMenuItem checkMenu = (JCheckBoxMenuItem)menuItem;
-                if(checkMenu.getState()) {
-                    playerControl.setRepeat(true);
-                } else {
-                    playerControl.setRepeat(false);
-                }
+                playerControl.setRepeat(checkMenu.getState());
 
             }
 
