@@ -1213,7 +1213,7 @@ public class MainController {
     }
 
     /**
-     * Creates a new window for a playlist.
+     * Creates a new window for a playlist and set the configuration.
      * This new window reuses the same class MusicPlayerGUI that the main window used.
      *
      * @param playlistName the name of the playlist to be represented on a new window
@@ -1241,8 +1241,9 @@ public class MainController {
         playlistWindow.setPlayBtnText(parentView.getControlView().getPlayBtn().getText());
 
         //Disable the unnecessary componets
-        playlistWindow.getSideView().setVisible(false);
-        playlistWindow.getJMenuBar().getMenu(1).setVisible(false);  //hide view menu
+        playlistWindow.getSideView().setVisible(false); //hide side tree view
+        playlistWindow.getJMenuBar().getMenu(2).setVisible(false);  //hide view menu
+        playlistWindow.getControlView().showSongInfoPanel(false); //hide progress bar
 
         //Add listeners for the new window
         //menu
