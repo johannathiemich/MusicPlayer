@@ -121,6 +121,7 @@ public class MainController {
 
         playerView.getSongListFromTable();
 
+        //sort the library on 'Title' column by default
         playerView.getSongListView().getSongTable().getRowSorter().toggleSortOrder(1);
         playerView.getSongListView().getSongTable().getRowSorter().toggleSortOrder(1);
 
@@ -507,7 +508,21 @@ public class MainController {
         }
     }
 
-    //Class for controls menu actions
+
+    /**
+     * ControlsMenuItemListener class implements
+     * the actions of menu items under [Controls]
+     * by the name of the components.
+     * "play"               play a selected song
+     * "next"               play the next song
+     * "previous"           play the previous song
+     * "recent"             play the recently played songs under [Play Recent]
+     * "go_to_current"      highlight a row of the current song in library
+     * "increase_volume"    increase volume by 5%
+     * "decrease_volume"    decrease volume by 5%
+     * "shuffle"            turn on/off shuffle
+     * "repeat"             turn on/off repeat
+     */
     class ControlsMenuItemListener implements ActionListener {
         JMenuItem menuItem;
         String menuName;
