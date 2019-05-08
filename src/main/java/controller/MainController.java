@@ -14,6 +14,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.JTableHeader;
 import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
@@ -122,8 +123,12 @@ public class MainController {
         playerView.getSongListFromTable();
 
         //sort the library on 'Title' column by default
-        playerView.getSongListView().getSongTable().getRowSorter().toggleSortOrder(1);
-        playerView.getSongListView().getSongTable().getRowSorter().toggleSortOrder(1);
+        RowSorter rowSorter = playerView.getSongListView().getSongTable().getRowSorter();
+        rowSorter.toggleSortOrder(1);
+        rowSorter.toggleSortOrder(1);
+        //TODO need sort actions to combine this in one place.
+        //sort - update the library
+        library.sortByTitle(true);
 
         //restore shown/hidden columns from last session
         //playerView.getSongListView().setColumnVisibility(DatabaseHandler.getInstance().getShowHideColumns(),
@@ -693,16 +698,7 @@ public class MainController {
             isRowInbound = (row >= 0) && (row < rowCount);
 
             //[1] Right-click Popup Trigger (for MacOS)
-            if (e.isPopupTrigger() && library.size() > 0) {
-                if (isRowInbound) {   //[1-1] right click in table
-                    System.out.println("right clicked in table. row:" + row);
-                    //source.changeSelection(row, col, false, false);
-                    playerView.getPopUpMenu().show(e.getComponent(), e.getX(), e.getY());
-                } else {              //[1-2] right click out of table
-                    System.out.println("right clicked outside of the table");
-                    playerView.getPopUpMenuInBlankspace().show(e.getComponent(), e.getX(), e.getY());
-                }
-            }
+            rightClickPopup(e);
 
             //[3] Left-click outside of table to clear selection
 //            if (!isRowInbound && !e.isPopupTrigger()) {
@@ -714,6 +710,11 @@ public class MainController {
         @Override
         public void mouseReleased(MouseEvent e) {
             //[1] Right-click Popup Trigger (for Windows)
+            rightClickPopup(e);
+        }
+
+        //[1] Right-click Popup Trigger
+        private void rightClickPopup(MouseEvent e) {
             if (e.isPopupTrigger()) {
                 if (isRowInbound) {   //[1-1] right click in table
                     System.out.println("right clicked inside of the table");
@@ -743,39 +744,57 @@ public class MainController {
     }
 
     /**
-     * TableHeaderListener covers
-     * triggering a popup menu on the table header by right-click.
+     * TableHeaderListener implements
+     * [1] Right-click Popup menu on the header
+     * [2] Sort by left-click
      */
     class TableHeaderListener extends MouseAdapter {
-
-        @Override
-        public void mouseClicked(MouseEvent e) {
-            System.out.println("mouse Clicked on header");
-            if (e.isPopupTrigger()) {
-                playerView.getSongListView().getTableHeaderPopupToShow().show(e.getComponent(), e.getX(), e.getY());
-                System.out.println("is popup");
-            }
-        }
+        private JTableHeader source;
+        private String columnText;
+        private RowSorter rowSorter;
 
         @Override
         public void mousePressed(MouseEvent e) {
-            System.out.println("mouse pressed on header");
-            if (e.isPopupTrigger()) {
-                playerView.getSongListView().getTableHeaderPopupToShow().show(e.getComponent(), e.getX(), e.getY());
-                System.out.println("is popup");
+            //[1] Right-click popup menu (for MacOS)
+            rightClickPopup(e);
+
+            //[2] Sort by left-click
+            if (!e.isPopupTrigger()) {
+                System.out.println("table header left-click.");
+                source = (JTableHeader)e.getSource();
+                columnText = source.getColumnModel().getColumn(source.columnAtPoint(e.getPoint())).getHeaderValue().toString();
+                System.out.println("selected column: " + columnText);
+
+                //TODO 5/8/19 marker by sella
+//                rowSorter = playerView.getSongListView().getSongTable().getRowSorter();
+//                rowSorter.getSortKeys();
+                //sort the library object
+                library.sortByTitle(true);
             }
+
         }
 
         @Override
         public void mouseReleased(MouseEvent e) {
-            System.out.println("mouse released on header");
+            //[1] Right-click popup menu (for Windows)
+            rightClickPopup(e);
+        }
+
+        //[1] Right-click popup menu trigger
+        private void rightClickPopup(MouseEvent e) {
             if (e.isPopupTrigger()) {
                 playerView.getSongListView().getTableHeaderPopupToShow().show(e.getComponent(), e.getX(), e.getY());
-                System.out.println("is popup");
+                System.out.println("table header popup menu");
             }
         }
+
+        @Override
+        public void mouseClicked(MouseEvent e) { }
     }
 
+    /**
+     * TableColumnCheckBoxListener shows/hides the selected column
+     */
     class TableColumnCheckBoxListener implements ItemListener {
 
         @Override
@@ -790,7 +809,8 @@ public class MainController {
                     playlistWindowArray.get(j).updateTableView(playlistLibrary.getPlaylistByName(playlistWindowArray.
                             get(j).getDisplayingListName()), playlistWindowArray.get(j).getSongTable());
                 }
-                /**if (item.isSelected()) {
+                /*
+                if (item.isSelected()) {
 
                     playerView.getSongListView().showColumn(playerView.getSongTable().
                             getColumnModel().getColumn(i), playerView.getSongListView().getTableHeaderPopup());
@@ -807,7 +827,8 @@ public class MainController {
                                 get(j).getSongTable().getColumnModel().getColumn(i));
                     }
 
-                }**/
+                }
+                */
                 if (i > 0) visibility[i-1] = item.isSelected();
             }
             DatabaseHandler.getInstance().saveShowHideColumns(visibility);

@@ -3,6 +3,8 @@ package model;
 import database.DatabaseHandler;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 //same with SongDAO(Data Access Object). same concept same work.
 
@@ -133,6 +135,18 @@ public class SongLibrary extends ArrayList<Song>{
             }
         }
         return false;
+    }
+
+    /**
+     * Sort this library on Title
+     * @param order true for A-Z, false for Z-A
+     */
+    public void sortByTitle(boolean order) {
+        if(order) {   //ascending order
+            Collections.sort(this, Comparator.comparing(Song::getTitle));
+        } else {      //descending order
+            Collections.sort(this, Comparator.comparing(Song::getTitle, Collections.reverseOrder()));
+        }
     }
 
 }
