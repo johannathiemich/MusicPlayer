@@ -128,9 +128,14 @@ public class PlayerController {
         //TODO better to have updateRepeatMenuCheck here...
     }
 
-    public void setShuffle(boolean shuffle) {
-        isShuffling = shuffle;
-        System.out.println("[Player] : " + (isShuffling ? "on" : "off"));
+    /**
+     * Sets isShuffling.
+     * If true, shuffle the next song to play.
+     * @param shuffling the boolean
+     */
+    public void setShuffle(boolean shuffling) {
+        isShuffling = shuffling;
+        System.out.println("[Player] shuffle: " + (isShuffling ? "on" : "off"));
     }
 
     //------------- Music player control --------------
