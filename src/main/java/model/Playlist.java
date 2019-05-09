@@ -140,7 +140,7 @@ public class Playlist { //extends ArrayList<Song> {
         return false;
     }
 
-    /**  //TODO: maybe have a DB method that returns a list of Playlist objects instead of Strings
+    /*  //TODO: maybe have a DB method that returns a list of Playlist objects instead of Strings
      private static HashMap<String, Playlist> getPlaylistMapFromDB() {
      if (allPlaylists == null)
      allPlaylists = new HashMap<String, Playlist>();
@@ -150,16 +150,7 @@ public class Playlist { //extends ArrayList<Song> {
      allPlaylists.put(playlistName, newPlaylist);
      }
      return allPlaylists;
-     }**/
-
-    /**
-     * This method updates the library that this playlist is referring to
-     *
-     * @param plibrary the new library
-     */
-    public static void setLibrary(SongLibrary plibrary) {
-        library = plibrary;
-    }
+     }*/
 
     public void setSongList(ArrayList<Song> songList) {
         this.songList = songList;

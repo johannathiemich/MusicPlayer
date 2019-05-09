@@ -174,7 +174,9 @@ public class PlayerController {
         //reflect to the view
         //TODO make this to be handled in stateUpdated() of MyBasicPlayerListener (line 350)
         playerView.getControlView().updateCurrentPlayingView(currentSong);
-        playerView.changeTableRowSelection(currSongIndex);
+        if(playerView.isFocused()) {
+            playerView.changeTableRowSelection(currSongIndex);
+        }
 
         addRecentlyPlayed();
 
