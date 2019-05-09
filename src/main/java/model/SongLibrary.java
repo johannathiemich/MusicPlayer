@@ -16,10 +16,12 @@ public class SongLibrary extends ArrayList<Song>{
 
     private DatabaseHandler dbHandler;
 
-    //TODO better to return return codes FILEPATH_NULL=0, SUCCESS=1, ALREADY_EXIST=2
     public static final int     ADDSONG_FILEPATH_NULL = 0;
     public static final int     ADDSONG_SUCCESS = 1;
     public static final int     ADDSONG_ALREADY_EXIST = 2;
+
+    public static final int     SORT_ASCENDING = 1;
+    public static final int     SORT_DESCENDING = 0;
 
     /**
      * Construct an empty library
@@ -36,21 +38,6 @@ public class SongLibrary extends ArrayList<Song>{
     public SongLibrary(ArrayList<Song> songArray){
         this.dbHandler = DatabaseHandler.getInstance();
         this.addAll(songArray);
-    }
-
-    /**
-     * This method converts the song library to a list of string with each string containing the song path, title and
-     * artist. This method is needed for the ListDialgo class in order to choose a song to be deleted.
-     * @return the song library as a list of strings
-     */
-    public String[] convertToString() {
-        String[] resultString = new String[this.size()];
-
-        for (int i = 0; i < this.size(); i++) {
-            resultString[i] = this.get(i).getPath() + "     [" + this.get(i).getTitle()+ " - " +
-                    this.get(i).getArtist() + "]";
-        }
-        return resultString;
     }
 
     /**
@@ -75,8 +62,6 @@ public class SongLibrary extends ArrayList<Song>{
      * @return return code (ADDSONG_FILEPATH_NULL = 0, ADDSONG_SUCCESS = 1, ADDSONG_SONG_EXIST = 2)
      */
     public int addSong(Song song){
-        //TODO better to return return codes FILEPATH_NULL=0, SUCCESS=1, SONG_EXIST=2
-        //boolean success = false;
         if(song.getPath() == null) {
             System.out.println("[Library_ERROR] Not added. filePath: null\n");
             return ADDSONG_FILEPATH_NULL;
@@ -139,13 +124,23 @@ public class SongLibrary extends ArrayList<Song>{
 
     /**
      * Sort this library on Title
-     * @param order true for A-Z, false for Z-A
+     * @param order SORT_ASCENDING for A-Z, SORT_DESCENDING for Z-A
      */
-    public void sortByTitle(boolean order) {
-        if(order) {   //ascending order
-            Collections.sort(this, Comparator.comparing(Song::getTitle));
-        } else {      //descending order
-            Collections.sort(this, Comparator.comparing(Song::getTitle, Collections.reverseOrder()));
+    public void sortByTitle(int order) {
+        if(order != SORT_ASCENDING && order != SORT_DESCENDING ){
+            System.out.println("sortByColumnName() improper parameter: order "+order);
+        } else {
+            //TODO this still doesn't match exactly to the table view sort.
+            // 'Carry On' should come first than 'Car Wash'.
+            Collections.sort(this, Comparator.comparing(song -> song.getTitle().toLowerCase()));
+            System.out.print("library, " + this.size() + " songs sorted");
+            if (order == SORT_DESCENDING) {
+                Collections.reverseOrder();
+                System.out.print(" in descending order.");
+            } else {
+                System.out.print(" in ascending order.");
+            }
+            System.out.println();
         }
     }
 

@@ -128,7 +128,7 @@ public class MainController {
         rowSorter.toggleSortOrder(1);
         //TODO need sort actions to combine this in one place.
         //sort - update the library
-        library.sortByTitle(true);
+        library.sortByTitle(SongLibrary.SORT_ASCENDING);
 
         //restore shown/hidden columns from last session
         //playerView.getSongListView().setColumnVisibility(DatabaseHandler.getInstance().getShowHideColumns(),
@@ -766,10 +766,10 @@ public class MainController {
                 System.out.println("selected column: " + columnText);
 
                 //TODO 5/8/19 marker by sella
-//                rowSorter = playerView.getSongListView().getSongTable().getRowSorter();
-//                rowSorter.getSortKeys();
+                rowSorter = playerView.getSongListView().getSongTable().getRowSorter();
+                rowSorter.getSortKeys();
                 //sort the library object
-                library.sortByTitle(true);
+                library.sortByTitle(SongLibrary.SORT_DESCENDING);
             }
 
         }
