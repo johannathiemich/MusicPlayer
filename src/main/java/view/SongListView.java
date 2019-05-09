@@ -22,7 +22,7 @@ public class SongListView extends JPanel {
     private JScrollPane tableScrollPane;
     private JTable table;
     private DefaultTableModel tableModel;
-    private String[] columnHeader;
+    public static final String[] columnHeader = {"Path", "Title", "Artist", "Album", "Year", "Comment", "Genre"};
     private int tableRowHeight = 24;
     private static JPopupMenu tableHeaderPopup;
 
@@ -32,7 +32,6 @@ public class SongListView extends JPanel {
      */
     public SongListView(){
         // Table setup
-        columnHeader = new String[]{"Path", "Title", "Artist", "Album", "Year", "Comment", "Genre"};
         table = new JTable(){
             @Override   //block table contents editing
             public boolean isCellEditable(int row, int column) { return false; }
@@ -111,7 +110,6 @@ public class SongListView extends JPanel {
             tableModel.addRow(song.toArray());
         }
         tableModel.fireTableDataChanged();
-        table.getRowSorter().toggleSortOrder(2);
         table.getRowSorter().toggleSortOrder(1);
         table.getColumnModel().getColumn(0).setWidth(0);
         table.getColumnModel().getColumn(0).setMinWidth(0);

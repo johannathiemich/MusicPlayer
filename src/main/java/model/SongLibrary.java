@@ -3,8 +3,6 @@ package model;
 import database.DatabaseHandler;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 
 //same with SongDAO(Data Access Object). same concept same work.
 
@@ -12,7 +10,7 @@ import java.util.Comparator;
  * Model class in the MVC pattern.
  * SongLibrary class manages all songs.
  */
-public class SongLibrary extends ArrayList<Song>{
+public class SongLibrary extends SongArray{
 
     private DatabaseHandler dbHandler;
 
@@ -20,13 +18,11 @@ public class SongLibrary extends ArrayList<Song>{
     public static final int     ADDSONG_SUCCESS = 1;
     public static final int     ADDSONG_ALREADY_EXIST = 2;
 
-    public static final int     SORT_ASCENDING = 1;
-    public static final int     SORT_DESCENDING = 0;
-
     /**
      * Construct an empty library
      */
     public SongLibrary(){
+        super("library");
         this.dbHandler = DatabaseHandler.getInstance();
         this.addAll(dbHandler.getSongLibrary());
     }
@@ -36,23 +32,9 @@ public class SongLibrary extends ArrayList<Song>{
      * This might be removed later...
      */
     public SongLibrary(ArrayList<Song> songArray){
+        super("library");
         this.dbHandler = DatabaseHandler.getInstance();
         this.addAll(songArray);
-    }
-
-    /**
-     * Return Song in the library by its file path.
-     * If the song with such file path doesn't exist, returns null.
-     * @param path the path of the song to be selected
-     * @return the song at the corresponding path or null if the path is not contained in the library
-     */
-    public Song getSongByPath(String path) {
-        for (Song song : this) {
-            if (song.getPath().equals(path)) {
-                return song;
-            }
-        }
-        return null;
     }
 
     /**
@@ -77,16 +59,6 @@ public class SongLibrary extends ArrayList<Song>{
                 System.out.println("[Library] Added a new song.\t"+song.getTitleAndArtist());
                 return ADDSONG_SUCCESS;
             }
-        }
-    }
-
-    /**
-     * Add multiple songs to the library, if not present.
-     * @param songArray songs to be added to the list
-     */
-    public void addMutipleSongs(ArrayList<Song> songArray){
-        for (Song song : songArray) {
-            addSong(song);
         }
     }
 
@@ -120,28 +92,6 @@ public class SongLibrary extends ArrayList<Song>{
             }
         }
         return false;
-    }
-
-    /**
-     * Sort this library on Title
-     * @param order SORT_ASCENDING for A-Z, SORT_DESCENDING for Z-A
-     */
-    public void sortByTitle(int order) {
-        if(order != SORT_ASCENDING && order != SORT_DESCENDING ){
-            System.out.println("sortByColumnName() improper parameter: order "+order);
-        } else {
-            //TODO this still doesn't match exactly to the table view sort.
-            // 'Carry On' should come first than 'Car Wash'.
-            Collections.sort(this, Comparator.comparing(song -> song.getTitle().toLowerCase()));
-            System.out.print("library, " + this.size() + " songs sorted");
-            if (order == SORT_DESCENDING) {
-                Collections.reverseOrder();
-                System.out.print(" in descending order.");
-            } else {
-                System.out.print(" in ascending order.");
-            }
-            System.out.println();
-        }
     }
 
 }
