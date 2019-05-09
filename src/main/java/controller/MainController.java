@@ -8,13 +8,10 @@ import model.Song;
 import model.SongLibrary;
 import view.ColorTheme;
 import view.MusicPlayerGUI;
+import view.SongListView;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.table.JTableHeader;
+import javax.swing.event.*;
 import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
@@ -124,11 +121,12 @@ public class MainController {
 
         //sort the library on 'Title' column by default
         RowSorter rowSorter = playerView.getSongListView().getSongTable().getRowSorter();
+        rowSorter.addRowSorterListener(new RowSorterListener());
+        //rowSorter.toggleSortOrder(1);
         rowSorter.toggleSortOrder(1);
         rowSorter.toggleSortOrder(1);
-        //TODO need sort actions to combine this in one place.
         //sort - update the library
-        library.sortByTitle(true);
+        library.sortByColumn(SortOrder.ASCENDING,"Title");
 
         //restore shown/hidden columns from last session
         //playerView.getSongListView().setColumnVisibility(DatabaseHandler.getInstance().getShowHideColumns(),
@@ -744,42 +742,40 @@ public class MainController {
     }
 
     /**
+     * RowSorterListener also triggers sorting on the library/playlist object
+     */
+    class RowSorterListener implements javax.swing.event.RowSorterListener {
+        @Override
+        public void sorterChanged(RowSorterEvent e) {
+            if (e.getType() == RowSorterEvent.Type.SORTED) {
+                System.out.println("sorterChanged... ");
+                for (int i = 0; i < e.getSource().getSortKeys().size(); i++) {
+                    RowSorter.SortKey k = (RowSorter.SortKey) e.getSource().getSortKeys().get(i);
+                    int col = k.getColumn();
+                    System.out.println("column:" + col + " '" + SongListView.columnHeader[col] + "' " + k.getSortOrder());
+                }
+
+                RowSorter.SortKey recentKey = (RowSorter.SortKey) e.getSource().getSortKeys().get(0);
+                //TODO: library should be changed to the corresponding SongArray (library/playlist)
+                library.sortByColumn(recentKey.getSortOrder(), SongListView.columnHeader[recentKey.getColumn()]);
+            }
+        }
+    }
+    /**
      * TableHeaderListener implements
      * [1] Right-click Popup menu on the header
-     * [2] Sort by left-click
      */
     class TableHeaderListener extends MouseAdapter {
-        private JTableHeader source;
-        private String columnText;
-        private RowSorter rowSorter;
-
         @Override
         public void mousePressed(MouseEvent e) {
             //[1] Right-click popup menu (for MacOS)
             rightClickPopup(e);
-
-            //[2] Sort by left-click
-            if (!e.isPopupTrigger()) {
-                System.out.println("table header left-click.");
-                source = (JTableHeader)e.getSource();
-                columnText = source.getColumnModel().getColumn(source.columnAtPoint(e.getPoint())).getHeaderValue().toString();
-                System.out.println("selected column: " + columnText);
-
-                //TODO 5/8/19 marker by sella
-//                rowSorter = playerView.getSongListView().getSongTable().getRowSorter();
-//                rowSorter.getSortKeys();
-                //sort the library object
-                library.sortByTitle(true);
-            }
-
         }
-
         @Override
         public void mouseReleased(MouseEvent e) {
             //[1] Right-click popup menu (for Windows)
             rightClickPopup(e);
         }
-
         //[1] Right-click popup menu trigger
         private void rightClickPopup(MouseEvent e) {
             if (e.isPopupTrigger()) {
