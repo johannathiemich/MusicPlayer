@@ -110,7 +110,7 @@ public class SongListView extends JPanel {
             tableModel.addRow(song.toArray());
         }
         tableModel.fireTableDataChanged();
-        table.getRowSorter().toggleSortOrder(1);
+        //table.getRowSorter().toggleSortOrder(1);
         table.getColumnModel().getColumn(0).setWidth(0);
         table.getColumnModel().getColumn(0).setMinWidth(0);
         table.getColumnModel().getColumn(0).setMaxWidth(0);

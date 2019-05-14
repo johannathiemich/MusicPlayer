@@ -124,7 +124,6 @@ public class MainController {
         rowSorter.addRowSorterListener(new RowSorterListener());
         //rowSorter.toggleSortOrder(1);
         rowSorter.toggleSortOrder(1);
-        rowSorter.toggleSortOrder(1);
         //sort - update the library
         library.sortByColumn(SortOrder.ASCENDING,"Title");
 
